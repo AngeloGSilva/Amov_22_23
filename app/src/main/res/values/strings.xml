@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Amov_22_23</string>
+    <string name="mode1">Mode 1</string>
+    <string name="mode2">Mode 2</string>
+    <string name="name">Name: %s</string>
+    <string name="btn_choose_photo">Choose Photo</string>
+    <string name="btn_take_photo">Camera</string>
 </resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Amov_22_23</string>
+    <string name="mode1">Modo 1</string>
+    <string name="mode2">Modo 2</string>
+    <string name="name">Nome</string>
+    <string name="btn_choose_photo">Escolhe Foto</string>
+    <string name="btn_take_photo">Camera</string>
+</resources>
