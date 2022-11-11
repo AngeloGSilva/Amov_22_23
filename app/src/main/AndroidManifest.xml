@@ -13,6 +13,13 @@
         android:theme="@style/Theme.Amov_22_23"
         tools:targetApi="30">
         <activity
+            android:name=".CameraActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ProfileActivity"
             android:exported="false">
             <meta-data
