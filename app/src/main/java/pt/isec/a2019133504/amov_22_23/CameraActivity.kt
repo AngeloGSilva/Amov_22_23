@@ -39,6 +39,8 @@ class CameraActivity : AppCompatActivity() {
     lateinit var buttonSair : Button
     lateinit var viewFinder: androidx.camera.view.PreviewView
     private val pickImage = 100
+    // Select back camera as a default
+    var cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var binding: ActivityCameraBinding
@@ -73,6 +75,14 @@ class CameraActivity : AppCompatActivity() {
         binding.btnPhotos.setOnClickListener{
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
+        }
+
+        binding.btnSwitchCam.setOnClickListener {
+            if (cameraSelector.equals(CameraSelector.DEFAULT_FRONT_CAMERA))
+                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            else
+                cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+            startCamera()
         }
 
         buttonSair.setOnClickListener { finish() }
@@ -175,8 +185,10 @@ class CameraActivity : AppCompatActivity() {
             imageCapture = ImageCapture.Builder()
                 .build()
 
+/*
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+*/
 
             try {
                 // Unbind use cases before rebinding

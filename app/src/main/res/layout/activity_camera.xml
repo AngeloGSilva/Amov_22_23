@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="96dp"
-        tools:layout_editor_absoluteY="44dp" />
+        tools:layout_editor_absoluteY="44dp" >
+
+    </androidx.camera.view.PreviewView>
 
     <Button
         android:id="@+id/exit_camera"
@@ -29,6 +31,7 @@
         android:background="@drawable/ic_camera"
         android:backgroundTintMode="add"
         android:backgroundTint="@color/black"
+        style="@style/Widget.MaterialComponents.Button"
         app:layout_constraintBottom_toBottomOf="@+id/viewFinder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -38,10 +41,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="Button"
         android:background="@drawable/ic_photos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btn_switch_cam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/ic_camera_switch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
