@@ -41,6 +41,8 @@ class CameraActivity : AppCompatActivity() {
     private val pickImage = 100
     // Select back camera as a default
     var cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+
+
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var binding: ActivityCameraBinding
@@ -50,7 +52,7 @@ class CameraActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-/*        //set FullScreen just work on Api "<=30"
+/*        //set FullScreen just works on Api "<=30"
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
-import pt.isec.a2019133504.amov_22_23.databinding.ActivityMainBinding
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityProfileBinding
 
 class ProfileActivity : AppCompatActivity() {
