@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
+import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityProfileBinding
 
 class ProfileActivity : AppCompatActivity() {
@@ -49,8 +50,13 @@ class ProfileActivity : AppCompatActivity() {
 /*            Snackbar.make(binding.root,"ola", Snackbar.LENGTH_LONG).setBackgroundTint(resources.getColor(R.color.principalVariante))
                 .show()*/
         }
-
-
+        //TODO alterar para o player mesmo (apenas teste)
+        binding.realizaLogin.setOnClickListener {
+            var perfil = Perfil("Angelo","angelo@emial", imgdata.toString())
+            var intent = Intent(this,MainActivity::class.java)
+            intent.putExtra("profileUser",perfil as java.io.Serializable)
+            startActivity(intent)
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

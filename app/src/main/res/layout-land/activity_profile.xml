@@ -9,51 +9,60 @@
     <Button
         android:id="@+id/btn_capture"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:text="@string/btn_take_photo"
         android:textSize="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profilephoto" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilephoto"
-        android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_launcher_foreground"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|center"
+        android:layout_marginEnd="100dp"
         android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_capture">
+        tools:layout_editor_absoluteY="229dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
+            android:layout_gravity="center"
+            android:layout_margin="25dp"
+            android:layout_marginTop="25dp"
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/namePlayer"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/editprofile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="editar"
+                android:textSize="10dp" />
+
+            <Button
+                android:id="@+id/realizaLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Save"
+                android:textSize="10dp" />
 
         </LinearLayout>
 
@@ -61,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:orientation="vertical">
@@ -74,32 +83,13 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="25dp"
-            android:layout_marginTop="25dp">
-
-            <Button
-                android:id="@+id/editprofile"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/namePlayer"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="editar"
-                android:textSize="10dp" />
-
-            <Button
-                android:id="@+id/realizaLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:text="Save"
-                android:textSize="10dp" />
+                android:text="@string/name"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
