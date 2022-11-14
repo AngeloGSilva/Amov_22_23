@@ -20,10 +20,13 @@ class MainActivity : AppCompatActivity() {
         }
         //TODO alterar para activity modo1 (apenas teste)
         binding.btnMode1.setOnClickListener {
-            var perfil : Perfil = intent.getSerializableExtra("profileUser") as Perfil
+            /*var perfil : Perfil = intent.getSerializableExtra("profileUser") as Perfil
 
             binding.MainLogo.setImageURI(Uri.parse(perfil.imgdata))
-            binding.btnMode1.text = perfil.nomestr
+            binding.btnMode1.text = perfil.nomestr*/
+            val intent = Intent(this,Mode1Activity::class.java)
+            startActivity(intent)
+
         }
     }
 }
