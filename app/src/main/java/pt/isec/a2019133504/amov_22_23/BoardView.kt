@@ -20,6 +20,11 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     private var selectedRow = -1
     private var selectedCol = -1
 
+    private val textPaint = Paint().apply {
+        color = Color.BLACK
+        textAlign = Paint.Align.CENTER
+    }
+
     private val thickLinePaint = Paint().apply {
         style = Paint.Style.STROKE
         color = Color.BLACK
@@ -52,13 +57,26 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         cellSizePixels = (width / size).toFloat()
         fillCells(canvas)
         drawLines(canvas)
+        numbersOperators(canvas)
+    }
+
+    private fun numbersOperators(canvas: Canvas){
+        textPaint.textSize = 24F
+            for (r in 0 .. size) {
+                for (c in 0..size) {
+                    if (r % 2 == 0 && c % 2 == 0)
+                        canvas?.drawText("12",(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
+                    else
+                        canvas?.drawText("X",(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
+                }
+            }
     }
 
     private fun fillCells(canvas: Canvas) {
-        if (selectedRow == -1 && selectedCol == -1) return
-
-            for (r in 0 .. size) {
-                for (c in 0..size) {
+            if (selectedRow == -1 && selectedCol == -1) return
+        //TODO MELHORAR FUNCAO...(SIZE-1) PARA NAO PINTAR UN QUADRADO A MAIS
+            for (r in 0 .. size-1) {
+                for (c in 0..size-1) {
                     if (c == selectedCol && selectedRow == -1)
                         fillCell(canvas, r, c, selectedCellPaint)
                     if (r == selectedRow && selectedCol == -1)
@@ -66,17 +84,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                 }
             }
 
-/*        for (r in 0..size) {
-            for (c in 0..size) {
-                if (r == selectedRow && c == selectedCol) {
-                    fillCell(canvas, r, c, selectedCellPaint)
-                } else if (r == selectedRow || c == selectedCol) {
-                    fillCell(canvas, r, c, conflictingCellPaint)
-                } else if (r / 5 == selectedRow / 5 && c / 5 == selectedCol / 5) {
-                    fillCell(canvas, r, c, conflictingCellPaint)
-                }
-            }
-        }*/
     }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
@@ -86,26 +93,27 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     private fun drawLines(canvas: Canvas) {
         canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), thickLinePaint)
 
-        for (i in 1 until size) {
-            val paintToUse = when (i % 5) {
-                0 -> thickLinePaint
-                else -> thinLinePaint
-            }
-
+        //TODO MELHORAR FUNCAO DE DESENHO
+        //Desenha Linhas Verticais
+        for (i in 0 until size) {
             canvas.drawLine(
                 i * cellSizePixels,
                 0F,
                 i * cellSizePixels,
-                height.toFloat(),
-                paintToUse
+                (cellSizePixels * size), // height.toFloatheight.toFloat()
+                thickLinePaint
             )
 
+        }
+
+        //Desenha Linhas horizontais
+        for (i in 0 until size+1) {
             canvas.drawLine(
                 0F,
                 i * cellSizePixels,
-                width.toFloat(),
+                (cellSizePixels * size), //width.toFloat()
                 i * cellSizePixels,
-                paintToUse
+                thickLinePaint
             )
         }
     }
