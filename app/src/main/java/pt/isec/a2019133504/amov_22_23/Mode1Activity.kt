@@ -26,17 +26,13 @@ class Mode1Activity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+
+        //TODO passar perfil do utilizador e meter nas views
+        //getExtra
+        //binding.imageView.setImageURI()
+
     }
 
-
-
-
-
-
-
-    private fun GestureDetector(context: CoroutineContext, mode1Activity: Mode1Activity): Any {
-        TODO("Not yet implemented")
-    }
 
 
 }

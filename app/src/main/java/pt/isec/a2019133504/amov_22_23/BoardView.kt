@@ -17,8 +17,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private var cellSizePixels = 0F
 
-    private var selectedRow = 0
-    private var selectedCol = 0
+    private var selectedRow = -1
+    private var selectedCol = -1
 
     private val thickLinePaint = Paint().apply {
         style = Paint.Style.STROKE
@@ -55,9 +55,18 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     private fun fillCells(canvas: Canvas) {
-        if (selectedRow == -1 || selectedCol == -1) return
+        if (selectedRow == -1 && selectedCol == -1) return
 
-        for (r in 0..size) {
+            for (r in 0 .. size) {
+                for (c in 0..size) {
+                    if (c == selectedCol && selectedRow == -1)
+                        fillCell(canvas, r, c, selectedCellPaint)
+                    if (r == selectedRow && selectedCol == -1)
+                        fillCell(canvas, r, c, selectedCellPaint)
+                }
+            }
+
+/*        for (r in 0..size) {
             for (c in 0..size) {
                 if (r == selectedRow && c == selectedCol) {
                     fillCell(canvas, r, c, selectedCellPaint)
@@ -67,7 +76,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                     fillCell(canvas, r, c, conflictingCellPaint)
                 }
             }
-        }
+        }*/
     }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
@@ -160,14 +169,16 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             //selectedRow = row
             if (row % 2 == 0) {
                 selectedRow = row
-                System.out.println("Linha" + row)
+                selectedCol = -1
+                System.out.println("Linha" + row + "e Coluna " + selectedCol)
             }
         }else{
             val x = (event1.x+event2.x)/2
             val col = (x/cellSizePixels).toInt()
             if (col % 2 == 0) {
                 selectedCol = col
-                System.out.println("Coluna" + col)
+                selectedRow = -1
+                System.out.println("Coluna" + col + "Linha "+ selectedRow)
             }
         }
 
