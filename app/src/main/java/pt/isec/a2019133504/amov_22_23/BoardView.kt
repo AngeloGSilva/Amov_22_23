@@ -3,18 +3,16 @@ package pt.isec.a2019133504.amov_22_23
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import kotlin.math.abs
 
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),GestureDetector.OnGestureListener {
     //private var sqrtSize = 3
     private var size = 5
-
+    var board = Board()
     private var cellSizePixels = 0F
 
     private var selectedRow = -1
@@ -62,14 +60,20 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private fun numbersOperators(canvas: Canvas){
         textPaint.textSize = 24F
-            for (r in 0 .. size) {
+           /* for (r in 0 .. size) {
                 for (c in 0..size) {
                     if (r % 2 == 0 && c % 2 == 0)
                         canvas?.drawText("12",(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
                     else
                         canvas?.drawText("X",(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
                 }
+            }*/
+
+        for (r in 0 until size) {
+            for (c in 0 until size) {
+                canvas.drawText(board.board[r][c],(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
             }
+        }
     }
 
     private fun fillCells(canvas: Canvas) {
@@ -83,7 +87,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                         fillCell(canvas, r, c, selectedCellPaint)
                 }
             }
-
     }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
