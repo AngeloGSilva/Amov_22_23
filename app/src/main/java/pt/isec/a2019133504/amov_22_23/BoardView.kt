@@ -12,7 +12,7 @@ import kotlin.math.abs
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),GestureDetector.OnGestureListener {
     //private var sqrtSize = 3
     private var size = 5
-    var board = Board()
+    var board = Board(1)
     private var cellSizePixels = 0F
     private var initialValCelX = 0.5f
     private var initialValCelY = 0.55f
@@ -62,13 +62,26 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         numbersOperators(canvas)
     }
 
-    private fun numbersOperators(canvas: Canvas){
+/*    fun prencheBoard(){*/
+/*        var boards: Array<Array<String>> = emptyArray()*/
+/*        for (r in 0 until size){*/
+/*            for (c in 0 until  size){*/
+/*                if (r % 2 == 0 && c % 2 == 0) {*/
+/*                    boards[r][c] = "12"*/
+/*                }else*/
+/*                    boards[r][c] = "X"*/
+/*            }*/
+/*        }*/
+/*        board.setValue(boards)*/
+/*    }*/
+
+     private fun numbersOperators(canvas: Canvas){
         textPaint.textSize = numbertextsize
             for (r in 0 .. size-1) {
                 for (c in 0..size-1) {
                     if (r % 2 == 0 && c % 2 == 0) {
                         canvas?.drawText(
-                            "12",
+                            board.board[r][c].toString(),
                             (c + initialValCelX) * cellSizePixels,
                             (r + initialValCelY) * cellSizePixels,
                             textPaint
@@ -76,7 +89,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                     }else if((r==c && (r%2!=0 || c%2!=0)) || (r%2!=0 && c%2!=0)){
                         continue
                     }else
-                        canvas?.drawText("*",(c+initialValCelX) * cellSizePixels,(r+initialValCelY) * cellSizePixels,textPaint)
+                        canvas?.drawText(board.board[r][c].toString(),(c+initialValCelX) * cellSizePixels,(r+initialValCelY) * cellSizePixels,textPaint)
                 }
             }
 
