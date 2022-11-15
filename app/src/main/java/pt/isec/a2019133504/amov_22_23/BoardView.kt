@@ -153,16 +153,28 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        val y=(event1.y+event2.y)/2
-        val row = (y/cellSizePixels).toInt()
-        System.out.println(row)
-        selectedRow = row
-        selectedCol = 0
+        if (abs(velocityX)> abs(velocityY)) {
+            val y = (event1.y + event2.y) / 2
+            val row = (y / cellSizePixels).toInt()
+            System.out.println(row)
+            //selectedRow = row
+            if (row % 2 == 0) {
+                selectedRow = row
+                System.out.println("Linha" + row)
+            }
+        }else{
+            val x = (event1.x+event2.x)/2
+            val col = (x/cellSizePixels).toInt()
+            if (col % 2 == 0) {
+                selectedCol = col
+                System.out.println("Coluna" + col)
+            }
+        }
 
-
-        Toast.makeText(context, "Fling Gesture", Toast.LENGTH_LONG).show()
+/*        Toast.makeText(context, "Fling Gesture", Toast.LENGTH_LONG).show()
         System.out.println("onFling: " +event1 + event2)
-        Log.d(VIEW_LOG_TAG, "onFling: $event1 $event2")
+        Log.d(VIEW_LOG_TAG, "onFling: $event1 $event2")*/
+        invalidate()
         return true
     }
 }
