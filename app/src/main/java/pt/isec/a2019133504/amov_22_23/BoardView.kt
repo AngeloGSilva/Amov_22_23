@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import kotlin.math.abs
 
@@ -125,7 +126,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     override fun onDown(p0: MotionEvent?): Boolean {
         System.out.println("onDown:" + p0)
-        return false
+        return true
     }
 
     override fun onShowPress(p0: MotionEvent?) {
@@ -152,6 +153,14 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         velocityX: Float,
         velocityY: Float
     ): Boolean {
+        val y=(event1.y+event2.y)/2
+        val row = (y/cellSizePixels).toInt()
+        System.out.println(row)
+        selectedRow = row
+        selectedCol = 0
+
+
+        Toast.makeText(context, "Fling Gesture", Toast.LENGTH_LONG).show()
         System.out.println("onFling: " +event1 + event2)
         Log.d(VIEW_LOG_TAG, "onFling: $event1 $event2")
         return true
