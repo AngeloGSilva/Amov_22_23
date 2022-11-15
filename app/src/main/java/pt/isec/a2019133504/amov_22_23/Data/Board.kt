@@ -58,18 +58,16 @@ class Board(nivel : Int) {
 
     //TODO CHEGAR AO RESULDADO DA LINHA/COLUNA
     fun getResultadoLinha(linha : Int){
-        var numero: Any? = null
+/*        var numero=0
         var operador: Any? = null
         for (r in 0 until size){
             for (c in 0 until  size){
                 if (r == linha){
                     if (r%2==0)
-                        numero = board[r][c]
-                    else
-                        operador = board[r][c]
+
                 }
             }
-        }
+        }*/
     }
 
     fun getResultadoColuna(coluna : Int){

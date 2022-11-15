@@ -22,6 +22,10 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     private var selectedRow = -1
     private var selectedCol = -1
 
+    private var longPressRow = -1
+    private var longPressCol = -1
+
+
     private val textPaint = Paint().apply {
         color = Color.BLACK
         textAlign = Paint.Align.CENTER
@@ -44,6 +48,11 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         color = Color.parseColor("#6ead3a")
     }
 
+    private val suggestedCellPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.parseColor("#D6C9C6")
+    }
+
     private val conflictingCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.parseColor("#efedef")
@@ -57,9 +66,14 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     override fun onDraw(canvas: Canvas) {
         cellSizePixels = (width / size).toFloat()
+        fillCellsSuggested(canvas)
         fillCells(canvas)
         drawLines(canvas)
         numbersOperators(canvas)
+        longPressRow = -1
+        longPressCol = -1
+        selectedCol = -1
+        selectedRow = -1
     }
 
 /*    fun prencheBoard(){*/
@@ -98,6 +112,19 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                 canvas.drawText(board.board[r][c],(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
             }
         }*/
+    }
+
+    private fun fillCellsSuggested(canvas: Canvas) {
+        if (longPressRow == -1 && longPressCol == -1) return
+        //TODO MELHORAR FUNCAO...(SIZE-1) PARA NAO PINTAR UN QUADRADO A MAIS
+        for (r in 0 .. size-1) {
+            for (c in 0..size-1) {
+                if (c == longPressCol)
+                    fillCell(canvas, r, c, suggestedCellPaint)
+                if (r == longPressRow)
+                    fillCell(canvas, r, c, suggestedCellPaint)
+            }
+        }
     }
 
     private fun fillCells(canvas: Canvas) {
@@ -160,13 +187,20 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         selectedCol = (x / cellSizePixels).toInt()
         invalidate()
     }*/
+
+
+
+
+
     val gestureDetector = GestureDetector(context,this)
+
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (gestureDetector.onTouchEvent(event))
             return true
         return super.onTouchEvent(event)
     }
+
 
     override fun onDown(p0: MotionEvent?): Boolean {
         System.out.println("onDown:" + p0)
@@ -188,7 +222,14 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     override fun onLongPress(p0: MotionEvent?) {
-        System.out.println("onLongPress:"+ p0)
+        val row = (p0!!.y/cellSizePixels).toInt()
+        val col = (p0!!.x/cellSizePixels).toInt()
+        if (row % 2 == 0)
+            longPressRow = row
+        if (col % 2 == 0)
+            longPressCol = col
+        System.out.println("onLongPress:"+ row+col)
+        invalidate()
     }
 
     override fun onFling(
