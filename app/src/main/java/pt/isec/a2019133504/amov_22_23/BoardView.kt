@@ -14,6 +14,10 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     private var size = 5
     var board = Board()
     private var cellSizePixels = 0F
+    private var initialValCelX = 0.5f
+    private var initialValCelY = 0.55f
+
+    private var numbertextsize = 60f
 
     private var selectedRow = -1
     private var selectedCol = -1
@@ -59,21 +63,28 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     private fun numbersOperators(canvas: Canvas){
-        textPaint.textSize = 24F
-           /* for (r in 0 .. size) {
-                for (c in 0..size) {
-                    if (r % 2 == 0 && c % 2 == 0)
-                        canvas?.drawText("12",(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
-                    else
-                        canvas?.drawText("X",(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
+        textPaint.textSize = numbertextsize
+            for (r in 0 .. size-1) {
+                for (c in 0..size-1) {
+                    if (r % 2 == 0 && c % 2 == 0) {
+                        canvas?.drawText(
+                            "12",
+                            (c + initialValCelX) * cellSizePixels,
+                            (r + initialValCelY) * cellSizePixels,
+                            textPaint
+                        )
+                    }else if((r==c && (r%2!=0 || c%2!=0)) || (r%2!=0 && c%2!=0)){
+                        continue
+                    }else
+                        canvas?.drawText("*",(c+initialValCelX) * cellSizePixels,(r+initialValCelY) * cellSizePixels,textPaint)
                 }
-            }*/
+            }
 
-        for (r in 0 until size) {
+        /*for (r in 0 until size) {
             for (c in 0 until size) {
                 canvas.drawText(board.board[r][c],(c+0.5F) * cellSizePixels,r + cellSizePixels*3/5,textPaint)
             }
-        }
+        }*/
     }
 
     private fun fillCells(canvas: Canvas) {
