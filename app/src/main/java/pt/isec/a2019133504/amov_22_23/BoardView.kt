@@ -76,6 +76,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         longPressCol = -1
         selectedCol = -1
         selectedRow = -1
+        updateText()
     }
 
 /*    fun prencheBoard(){*/
@@ -234,15 +235,22 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         invalidate()
     }
 
+
+    fun updateText(){
+       board.getallResult()
+        val myTextView = findViewById<TextView>(R.id.textView2)
+        myTextView.text = board.linhasValores.toString()
+    }
+
     override fun onFling(
         event1: MotionEvent,
         event2: MotionEvent,
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        var buff = board?.getallResult().toString()
+/*        var buff = board?.getallResult().toString()
         val myTextView = findViewById<TextView>(R.id.textView2)
-        myTextView.text = buff
+        myTextView.text = buff*/
         if (abs(velocityX)> abs(velocityY)) {
             val y = (event1.y + event2.y) / 2
             val row = (y / cellSizePixels).toInt()

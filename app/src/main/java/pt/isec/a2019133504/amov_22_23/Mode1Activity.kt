@@ -28,7 +28,8 @@ class Mode1Activity : AppCompatActivity() {
         boardView = findViewById(R.id.board)
         //val myTextView = findViewById<TextView>(R.id.textView2)
         //myTextView.text =
-        binding.textView2.text = boardView.board.getallResult().toString()
+
+        //binding.textView2.text = boardView.board.linhasValores.toString()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 

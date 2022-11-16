@@ -9,6 +9,9 @@ class Board(nivel : Int) {
     companion object{
         private val size = 5
     }
+
+    var colunasValores = arrayListOf<Int>()
+    var linhasValores = arrayListOf<Int>()
     val corretas = 0
         get() = field
 
@@ -57,8 +60,8 @@ class Board(nivel : Int) {
             }
         }*/
 
-    fun getallResult(): ArrayList<Int> {
-        var  result = arrayListOf<Int>()
+    fun getallResult(){
+/*        var  result = arrayListOf<Int>()
         var sum = 0;
         var ia = IntArray(size)
         for(r in 0 until size) {
@@ -81,7 +84,23 @@ class Board(nivel : Int) {
                 result.add(sum)
             }
         }
-        return result
+        return result*/
+        var colunas = arrayListOf<Int>()
+        var linhas = arrayListOf<Int>()
+        for (r in 0 until size){
+            for (c in 0 until  size){
+                if (r % 2 == 0){
+                    linhas[c] = (board[r][c] as Int)
+                    //linhas.add(board[r][c] as kotlin.Int )
+                }
+                if (c % 2 == 0){
+                    colunas[c] = (board[r][c] as Int)
+                    //colunas.add(board[r][c] as kotlin.Int)
+                }
+            }
+        }
+        colunasValores = colunas
+        linhasValores = linhas
     }
 
     //TODO CHEGAR AO RESULDADO DA LINHA/COLUNA
