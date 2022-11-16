@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
+import org.w3c.dom.Text
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import kotlin.math.abs
 
@@ -238,6 +240,9 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         velocityX: Float,
         velocityY: Float
     ): Boolean {
+        var buff = board?.getallResult().toString()
+        val myTextView = findViewById<TextView>(R.id.textView2)
+        myTextView.text = buff
         if (abs(velocityX)> abs(velocityY)) {
             val y = (event1.y + event2.y) / 2
             val row = (y / cellSizePixels).toInt()

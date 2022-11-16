@@ -13,7 +13,8 @@ class Board(nivel : Int) {
         get() = field
 
     val nivel = nivel
-    var operators = arrayListOf<String>("*","+","/","-")
+    //var operators = arrayListOf<String>("*","+","/","-")
+    var operators = arrayListOf<String>("+")
     //var board: Array<String>[size][size]
     var board = Array(size){ linha ->
         Array(size){ coluna ->
@@ -55,6 +56,33 @@ class Board(nivel : Int) {
                 }
             }
         }*/
+
+    fun getallResult(): ArrayList<Int> {
+        var  result = arrayListOf<Int>()
+        var sum = 0;
+        var ia = IntArray(size)
+        for(r in 0 until size) {
+            sum = 0;
+            if (r == 0 || r==2 || r==4 ){
+                for (c in 0 until size) {
+                    var operador = board[r][1]
+                    var operador2 = board[r][3]
+                    if (c == 0 || c == 2 || c == 4)
+                        ia[c] = (board[r][c] as kotlin.Int)
+                    else
+                        ia[c] = 0
+                    when (operador) {
+                        "+" -> {
+                            sum += ia[c]
+                            System.out.println(sum)
+                        }
+                    }
+                }
+                result.add(sum)
+            }
+        }
+        return result
+    }
 
     //TODO CHEGAR AO RESULDADO DA LINHA/COLUNA
     fun getResultadoLinha(linha : Int){
