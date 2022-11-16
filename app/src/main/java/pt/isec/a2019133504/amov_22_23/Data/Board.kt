@@ -85,22 +85,22 @@ class Board(nivel : Int) {
             }
         }
         return result*/
-        var colunas = arrayListOf<Int>()
-        var linhas = arrayListOf<Int>()
+        var colunas = IntArray(size)
+        var linhas = IntArray(size)
         for (r in 0 until size){
             for (c in 0 until  size){
-                if (r % 2 == 0){
+                if (r % 2 == 0 && c % 2 == 0){
                     linhas[c] = (board[r][c] as Int)
                     //linhas.add(board[r][c] as kotlin.Int )
                 }
-                if (c % 2 == 0){
+                if (c % 2 == 0 && r % 2 == 0){
                     colunas[c] = (board[r][c] as Int)
                     //colunas.add(board[r][c] as kotlin.Int)
                 }
             }
         }
-        colunasValores = colunas
-        linhasValores = linhas
+        colunasValores = colunas.toList() as ArrayList<Int>
+        linhasValores = linhas.toList() as ArrayList<Int>
     }
 
     //TODO CHEGAR AO RESULDADO DA LINHA/COLUNA

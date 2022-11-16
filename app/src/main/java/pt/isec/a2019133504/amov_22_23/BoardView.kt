@@ -238,8 +238,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     fun updateText(){
        board.getallResult()
-        val myTextView = findViewById<TextView>(R.id.textView2)
-        myTextView.text = board.linhasValores.toString()
+       /* val myTextView = findViewById<TextView>(R.id.textView2)
+        myTextView.text = board.linhasValores.toString()*/
     }
 
     override fun onFling(
