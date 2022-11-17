@@ -245,7 +245,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     fun updateText(){
-       board.getallResult()
+       board.attresults()
        /* val myTextView = findViewById<TextView>(R.id.textView2)
         myTextView.text = board.linhasValores.toString()*/
     }

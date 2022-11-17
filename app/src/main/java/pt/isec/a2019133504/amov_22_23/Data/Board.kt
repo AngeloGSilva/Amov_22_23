@@ -11,8 +11,8 @@ class Board(nivel : Int) {
         private val size = 5
     }
 
-    var colunasValores = arrayListOf<Int>()
-    var linhasValores = arrayListOf<Int>()
+    var colunasValores = arrayListOf<Double>()
+    var linhasValores = arrayListOf<Double>()
     val corretas = 0
         get() = field
 
@@ -25,7 +25,7 @@ class Board(nivel : Int) {
     var board = Array(size) { linha ->
         Array(size) { coluna ->
             if (linha % 2 == 0 && coluna % 2 == 0) {
-                Random.nextInt(0..10 * nivel)
+                Random.nextInt(0,10)*1.0
             } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
                 " "
             } else {
@@ -47,7 +47,6 @@ class Board(nivel : Int) {
             Obstacle(row, col)
         }
     }*/
-
 /*    var board: Array<Array<String>>
       get() {
             return null
@@ -90,9 +89,6 @@ class Board(nivel : Int) {
         return result*/
         var colunas = IntArray(size)
         var linhas = IntArray(size)
-        colunasValores.clear()
-        linhasValores.clear()
-
         //Preenche os arrays com numeros
         for (r in 0 until size) {
             for (c in 0 until size) {
@@ -106,35 +102,36 @@ class Board(nivel : Int) {
                 }
             }
         }
-        //colunasValores = colunas.toList() as ArrayList<Int>
-        //linhasValores = linhas.toList() as ArrayList<Int>
-        //Calcular as linhas
-
-        //colunasValores.add(getResultadoColuna(0))
-        //colunasValores.add(getResultadoColuna(2))
-        //colunasValores.add(getResultadoColuna(4))
-
-        linhasValores.add(getResultadoLinha(0))
-        linhasValores.add(getResultadoLinha(2))
-        linhasValores.add(getResultadoLinha(4))
+        attresults()
 
 
     }
+    fun attresults(){
+        colunasValores.clear()
+        linhasValores.clear()
+        linhasValores.add(getResultadoLinha(0))
+        linhasValores.add(getResultadoLinha(2))
+        linhasValores.add(getResultadoLinha(4))
+        //colunasValores.add(getResultadoColuna(0))
+        //colunasValores.add(getResultadoColuna(2))
+        //colunasValores.add(getResultadoColuna(4))
+    }
 
     //TODO Falta tratar do caso de dividir por zero
-    fun getResultadoLinha(linha: Int): Int {
-         var result = 0
+    fun getResultadoLinha(linha: Int): Double {
+         var result = 0.0
         var operator = board[linha][1]
         var operator2 = board[linha][3]
-        var num1 = (board[linha][0]as Int)
-        var num3 = (board[linha][2]as Int)
-        var num5 = (board[linha][4]as Int)
+        var num1 = (board[linha][0] as Double)
+        var num3 = (board[linha][2]as Double)
+        var num5 = (board[linha][4]as Double)
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
                 when (operator2) {
                     "+" -> {
-                        result = ((num1.times(num3)).plus(num5))
+                        result = (num1 * num3) + num5
+                        //result = ((num1.times(num3)).plus(num5))
                     }
                     "-" -> {
                         result = (num1.times(num3)).minus(num5)
@@ -143,7 +140,8 @@ class Board(nivel : Int) {
                         result = num1.times(num3).times(num5)
                     }
                     "/"->{
-                        result = num1.times(num3).div(num5)
+                        result = (num1 * num3)/num5
+                        //result = num1.times(num3).div(num5)
                     }
                 }
             }
@@ -196,14 +194,14 @@ class Board(nivel : Int) {
                 }
             }
         }
-        return result
+        return result.toDouble()
         }
 
-    fun getResultadoColuna(coluna: Int):Int {
+    fun getResultadoColuna(coluna: Int):Double {
         var result = 0
         var operator = board[1][coluna]
         var operator2 = board[3][coluna]
-        var num1 = (board[0][coluna]as Int)
+        var num1 = (board[0][coluna] as Int)
         var num3 = (board[2][coluna]as Int)
         var num5 = (board[4][coluna]as Int)
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
@@ -273,7 +271,7 @@ class Board(nivel : Int) {
                 }
             }
         }
-        return result
+        return result.toDouble()
         }
 
 
