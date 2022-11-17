@@ -7,13 +7,15 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import org.w3c.dom.Text
 import pt.isec.a2019133504.amov_22_23.Data.Board
+import java.nio.file.attribute.AclEntry.Builder
 import java.text.DecimalFormat
 import kotlin.math.abs
 
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),GestureDetector.OnGestureListener {
-    //private var sqrtSize = 3
+
     private var size = 5
     var board = Board(1)
     private var cellSizePixels = 0F
@@ -24,12 +26,16 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private var count = 0
 
+    var text = findViewById<TextView>(R.id.textView2)
+
     private var selectedRow = -1
     private var selectedCol = -1
 
     private var longPressRow = -1
     private var longPressCol = -1
 
+    var CORRETA = false
+        get() = field
 
     private val textPaint = Paint().apply {
         color = Color.BLACK
@@ -75,27 +81,17 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         fillCells(canvas)
         drawLines(canvas)
         numbersOperators(canvas)
+        updateText()
         longPressRow = -1
         longPressCol = -1
         selectedCol = -1
         selectedRow = -1
-        if(count%2==0)nextlevel()
-        count++
-        updateText()
-    }
+        if (CORRETA)
+            text.text = "Correta"
+        /*if(count%2==0)nextlevel()
+        count++*/
 
-/*    fun prencheBoard(){*/
-/*        var boards: Array<Array<String>> = emptyArray()*/
-/*        for (r in 0 until size){*/
-/*            for (c in 0 until  size){*/
-/*                if (r % 2 == 0 && c % 2 == 0) {*/
-/*                    boards[r][c] = "12"*/
-/*                }else*/
-/*                    boards[r][c] = "X"*/
-/*            }*/
-/*        }*/
-/*        board.setValue(boards)*/
-/*    }*/
+    }
 
      private fun numbersOperators(canvas: Canvas){
         textPaint.textSize = numbertextsize
@@ -182,6 +178,13 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         }
     }
 
+    fun checkVitoria(){
+        if (selectedRow != -1 && board.getResultadoLinha(selectedRow) == board.maiorValor)
+            CORRETA = true
+        else if (selectedCol != -1 && board.getResultadoColuna(selectedCol) == board.maiorValor)
+            CORRETA = true
+    }
+
 /*    override fun onTouchEvent(event: MotionEvent): Boolean {
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -197,10 +200,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         selectedCol = (x / cellSizePixels).toInt()
         invalidate()
     }*/
-
-
-
-
 
     val gestureDetector = GestureDetector(context,this)
 
@@ -247,6 +246,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     fun updateText(){
        board.attresults()
+        board.setMaiorValor()
        /* val myTextView = findViewById<TextView>(R.id.textView2)
         myTextView.text = board.linhasValores.toString()*/
     }
@@ -282,10 +282,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 /*        Toast.makeText(context, "Fling Gesture", Toast.LENGTH_LONG).show()
         System.out.println("onFling: " +event1 + event2)
         Log.d(VIEW_LOG_TAG, "onFling: $event1 $event2")*/
+        checkVitoria()
         invalidate()
         return true
-    }
-    fun nextlevel(){
-        board = Board(2);
     }
 }

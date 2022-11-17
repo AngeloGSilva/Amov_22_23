@@ -12,7 +12,11 @@ class Board(nivel : Int) {
     }
 
     var colunasValores = arrayListOf<Double>()
+        get() = field
+
     var linhasValores = arrayListOf<Double>()
+        get() = field
+    var maiorValor = 0.0
     val corretas = 0
         get() = field
 
@@ -112,9 +116,9 @@ class Board(nivel : Int) {
         linhasValores.add(getResultadoLinha(0))
         linhasValores.add(getResultadoLinha(2))
         linhasValores.add(getResultadoLinha(4))
-        //colunasValores.add(getResultadoColuna(0))
-        //colunasValores.add(getResultadoColuna(2))
-        //colunasValores.add(getResultadoColuna(4))
+        colunasValores.add(getResultadoColuna(0))
+        colunasValores.add(getResultadoColuna(2))
+        colunasValores.add(getResultadoColuna(4))
     }
 
     //TODO Falta tratar do caso de dividir por zero
@@ -194,16 +198,16 @@ class Board(nivel : Int) {
                 }
             }
         }
-        return result.toDouble()
+        return result
         }
 
     fun getResultadoColuna(coluna: Int):Double {
-        var result = 0
+        var result = 0.0
         var operator = board[1][coluna]
         var operator2 = board[3][coluna]
-        var num1 = (board[0][coluna] as Int)
-        var num3 = (board[2][coluna]as Int)
-        var num5 = (board[4][coluna]as Int)
+        var num1 = (board[0][coluna] as Double)
+        var num3 = (board[2][coluna]as Double)
+        var num5 = (board[4][coluna]as Double)
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
@@ -271,8 +275,21 @@ class Board(nivel : Int) {
                 }
             }
         }
-        return result.toDouble()
+        return result
         }
 
+    fun getColunaMax():Double{
+        return colunasValores.max()
+    }
 
+    fun getLinhaMax():Double{
+        return linhasValores.max()
+    }
+
+    fun setMaiorValor(){
+        if (getColunaMax() > getLinhaMax())
+            maiorValor = getColunaMax()
+        else
+            maiorValor = getLinhaMax()
+    }
 }
