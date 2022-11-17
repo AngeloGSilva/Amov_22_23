@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import org.w3c.dom.Text
 import pt.isec.a2019133504.amov_22_23.Data.Board
+import java.text.DecimalFormat
 import kotlin.math.abs
 
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),GestureDetector.OnGestureListener {
@@ -102,7 +103,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                 for (c in 0..size-1) {
                     if (r % 2 == 0 && c % 2 == 0) {
                         canvas?.drawText(
-                            board.board[r][c].toString(),
+                            DecimalFormat("#").format(board.board[r][c]).toString(),
                             (c + initialValCelX) * cellSizePixels,
                             (r + initialValCelY) * cellSizePixels,
                             textPaint
