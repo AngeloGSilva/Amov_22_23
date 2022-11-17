@@ -1,6 +1,7 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
 import org.xml.sax.Parser
+import java.math.BigDecimal
 import java.text.ParseException
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -10,8 +11,8 @@ class Board(nivel : Int) {
         private val size = 5
     }
 
-    var colunasValores = arrayListOf<Double>()
-    var linhasValores = arrayListOf<Double>()
+    var colunasValores = arrayListOf<Int>()
+    var linhasValores = arrayListOf<Int>()
     val corretas = 0
         get() = field
 
@@ -120,20 +121,20 @@ class Board(nivel : Int) {
 
     }
 
-    //TODO CHEGAR AO RESULDADO DA LINHA/COLUNA
-    fun getResultadoLinha(linha: Int): Double {
-         var result = 0.0
+    //TODO Falta tratar do caso de dividir por zero
+    fun getResultadoLinha(linha: Int): Int {
+         var result = 0
         var operator = board[linha][1]
         var operator2 = board[linha][3]
-        var num1 = (board[linha][0].toString())
-        var num3 = (board[linha][2].toString())
-        var num5 = (board[linha][4].toString())
+        var num1 = (board[linha][0]as Int)
+        var num3 = (board[linha][2]as Int)
+        var num5 = (board[linha][4]as Int)
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
                 when (operator2) {
                     "+" -> {
-                        result = (num1.times(num3)).plus(num5)
+                        result = ((num1.times(num3)).plus(num5))
                     }
                     "-" -> {
                         result = (num1.times(num3)).minus(num5)
@@ -197,20 +198,20 @@ class Board(nivel : Int) {
         }
         return result
         }
-/*
-    fun getResultadoColuna(coluna: Int): Double {
-        var result = 0.0
+
+    fun getResultadoColuna(coluna: Int):Int {
+        var result = 0
         var operator = board[1][coluna]
         var operator2 = board[3][coluna]
-        var num1:Float = (board[0][coluna])
-        var num3:Float = (board[2][coluna])
-        var num5:Float = (board[4][coluna])
+        var num1 = (board[0][coluna]as Int)
+        var num3 = (board[2][coluna]as Int)
+        var num5 = (board[4][coluna]as Int)
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
                 when (operator2) {
                     "+" -> {
-                        result = (num1.times(num3)).plus(num5)
+                        result = ((num1.times(num3)).plus(num5))
                     }
                     "-" -> {
                         result = (num1.times(num3)).minus(num5)
@@ -274,6 +275,6 @@ class Board(nivel : Int) {
         }
         return result
         }
-        */
+
 
 }
