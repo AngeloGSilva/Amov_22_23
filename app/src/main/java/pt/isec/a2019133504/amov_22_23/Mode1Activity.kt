@@ -29,9 +29,8 @@ class Mode1Activity : AppCompatActivity() {
         //val myTextView = findViewById<TextView>(R.id.textView2)
         //myTextView.text =
         boardView.updateText()
-        binding.textView2.text = boardView.board.linhasValores.toString()
+        binding.textView2.text = boardView.board.linhasValores.toString() + boardView.board.colunasValores.toString()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         //TODO passar perfil do utilizador e meter nas views
         //getExtra
         //binding.imageView.setImageURI()

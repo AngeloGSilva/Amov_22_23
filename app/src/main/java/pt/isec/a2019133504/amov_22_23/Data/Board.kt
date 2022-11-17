@@ -6,26 +6,28 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 class Board(nivel : Int) {
-    companion object{
+    companion object {
         private val size = 5
     }
 
-    var colunasValores = arrayListOf<Int>()
-    var linhasValores = arrayListOf<Int>()
+    var colunasValores = arrayListOf<Double>()
+    var linhasValores = arrayListOf<Double>()
     val corretas = 0
         get() = field
 
     val nivel = nivel
-    //var operators = arrayListOf<String>("*","+","/","-")
-    var operators = arrayListOf<String>("+")
+
+    var operators = arrayListOf<String>("*","+","/","-")
+    //var operators = arrayListOf<String>("+")
+
     //var board: Array<String>[size][size]
-    var board = Array(size){ linha ->
-        Array(size){ coluna ->
-            if (linha % 2 == 0 && coluna % 2 == 0){
-                Random.nextInt(0..10*nivel)
-            }else if ((linha==coluna && (linha%2!=0 || coluna%2!=0)) || (linha%2!=0 && coluna%2!=0)){
-                    " "
-            }else{
+    var board = Array(size) { linha ->
+        Array(size) { coluna ->
+            if (linha % 2 == 0 && coluna % 2 == 0) {
+                Random.nextInt(0..10 * nivel)
+            } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
+                " "
+            } else {
                 operators.random()
             }
         }
@@ -60,7 +62,7 @@ class Board(nivel : Int) {
             }
         }*/
 
-    fun getallResult(){
+    fun getallResult() {
 /*        var  result = arrayListOf<Int>()
         var sum = 0;
         var ia = IntArray(size)
@@ -87,41 +89,191 @@ class Board(nivel : Int) {
         return result*/
         var colunas = IntArray(size)
         var linhas = IntArray(size)
-        for (r in 0 until size){
-            for (c in 0 until  size){
-                if (r % 2 == 0 && c % 2 == 0){
+        colunasValores.clear()
+        linhasValores.clear()
+
+        //Preenche os arrays com numeros
+        for (r in 0 until size) {
+            for (c in 0 until size) {
+                if (r % 2 == 0 && c % 2 == 0) {
                     linhas[c] = (board[r][c] as Int)
                     //linhas.add(board[r][c] as kotlin.Int )
                 }
-                if (c % 2 == 0 && r % 2 == 0){
+                if (c % 2 == 0 && r % 2 == 0) {
                     colunas[c] = (board[r][c] as Int)
                     //colunas.add(board[r][c] as kotlin.Int)
                 }
             }
         }
-        colunasValores = colunas.toList() as ArrayList<Int>
-        linhasValores = linhas.toList() as ArrayList<Int>
+        //colunasValores = colunas.toList() as ArrayList<Int>
+        //linhasValores = linhas.toList() as ArrayList<Int>
+        //Calcular as linhas
+
+        //colunasValores.add(getResultadoColuna(0))
+        //colunasValores.add(getResultadoColuna(2))
+        //colunasValores.add(getResultadoColuna(4))
+
+        linhasValores.add(getResultadoLinha(0))
+        linhasValores.add(getResultadoLinha(2))
+        linhasValores.add(getResultadoLinha(4))
+
+
     }
 
     //TODO CHEGAR AO RESULDADO DA LINHA/COLUNA
-    fun getResultadoLinha(linha : Int){
-/*        var numero=0
-        var operador: Any? = null
-        for (r in 0 until size){
-            for (c in 0 until  size){
-                if (r == linha){
-                    if (r%2==0)
-
+    fun getResultadoLinha(linha: Int): Double {
+         var result = 0.0
+        var operator = board[linha][1]
+        var operator2 = board[linha][3]
+        var num1 = (board[linha][0].toString())
+        var num3 = (board[linha][2].toString())
+        var num5 = (board[linha][4].toString())
+        //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
+        when (operator) {
+            "*" -> {
+                when (operator2) {
+                    "+" -> {
+                        result = (num1.times(num3)).plus(num5)
+                    }
+                    "-" -> {
+                        result = (num1.times(num3)).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.times(num3).times(num5)
+                    }
+                    "/"->{
+                        result = num1.times(num3).div(num5)
+                    }
                 }
             }
-        }*/
-    }
-
-    fun getResultadoColuna(coluna : Int){
-        for (r in 0 until size){
-            for (c in 0 until  size){
-
+            "/" ->{
+                when (operator2) {
+                    "+" -> {
+                        result = (num1.div(num3)).plus(num5)
+                    }
+                    "-" -> {
+                        result = (num1.div(num3)).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.div(num3).times(num5)
+                    }
+                    "/"->{
+                        result = num1.div(num3).div(num5)
+                    }
+                }
+            }
+            "+" -> {
+                when (operator2) {
+                    "+" -> {
+                        result = num1.plus(num3).plus(num5)
+                    }
+                    "-" -> {
+                        result = num1.plus(num3).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.plus(num3.times(num5))
+                    }
+                    "/"->{
+                        result = num1.plus(num3.div(num5))
+                    }
+                }
+            }
+            "-"->{
+                when (operator2) {
+                    "+" -> {
+                        result = num1.minus(num3).plus(num5)
+                    }
+                    "-" -> {
+                        result = num1.minus(num3).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.minus(num3.times(num5))
+                    }
+                    "/"->{
+                        result = num1.minus(num3.div(num5))
+                    }
+                }
             }
         }
-    }
+        return result
+        }
+/*
+    fun getResultadoColuna(coluna: Int): Double {
+        var result = 0.0
+        var operator = board[1][coluna]
+        var operator2 = board[3][coluna]
+        var num1:Float = (board[0][coluna])
+        var num3:Float = (board[2][coluna])
+        var num5:Float = (board[4][coluna])
+        //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
+        when (operator) {
+            "*" -> {
+                when (operator2) {
+                    "+" -> {
+                        result = (num1.times(num3)).plus(num5)
+                    }
+                    "-" -> {
+                        result = (num1.times(num3)).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.times(num3).times(num5)
+                    }
+                    "/"->{
+                        result = num1.times(num3).div(num5)
+                    }
+                }
+            }
+            "/" ->{
+                when (operator2) {
+                    "+" -> {
+                        result = (num1.div(num3)).plus(num5)
+                    }
+                    "-" -> {
+                        result = (num1.div(num3)).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.div(num3).times(num5)
+                    }
+                    "/"->{
+                        result = num1.div(num3).div(num5)
+                    }
+                }
+            }
+            "+" -> {
+                when (operator2) {
+                    "+" -> {
+                        result = num1.plus(num3).plus(num5)
+                    }
+                    "-" -> {
+                        result = num1.plus(num3).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.plus(num3.times(num5))
+                    }
+                    "/"->{
+                        result = num1.plus(num3.div(num5))
+                    }
+                }
+            }
+            "-"->{
+                when (operator2) {
+                    "+" -> {
+                        result = num1.minus(num3).plus(num5)
+                    }
+                    "-" -> {
+                        result = num1.minus(num3).minus(num5)
+                    }
+                    "*"->{
+                        result = num1.minus(num3.times(num5))
+                    }
+                    "/"->{
+                        result = num1.minus(num3.div(num5))
+                    }
+                }
+            }
+        }
+        return result
+        }
+        */
+
 }

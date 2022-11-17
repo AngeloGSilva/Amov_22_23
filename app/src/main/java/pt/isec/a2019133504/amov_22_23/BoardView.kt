@@ -21,6 +21,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private var numbertextsize = 60f
 
+    private var count = 0
+
     private var selectedRow = -1
     private var selectedCol = -1
 
@@ -76,6 +78,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         longPressCol = -1
         selectedCol = -1
         selectedRow = -1
+        if(count%2==0)nextlevel()
+        count++
         updateText()
     }
 
@@ -118,7 +122,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     private fun fillCellsSuggested(canvas: Canvas) {
-        if (longPressRow == -1 && longPressCol == -1) return
         //TODO MELHORAR FUNCAO...(SIZE-1) PARA NAO PINTAR UN QUADRADO A MAIS
         for (r in 0 .. size-1) {
             for (c in 0..size-1) {
@@ -131,7 +134,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     private fun fillCells(canvas: Canvas) {
-            if (selectedRow == -1 && selectedCol == -1) return
         //TODO MELHORAR FUNCAO...(SIZE-1) PARA NAO PINTAR UN QUADRADO A MAIS
             for (r in 0 .. size-1) {
                 for (c in 0..size-1) {
@@ -141,6 +143,10 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                         fillCell(canvas, r, c, selectedCellPaint)
                 }
             }
+    }
+
+    private fun repaintcells(canvas: Canvas){
+
     }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
@@ -201,6 +207,9 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (gestureDetector.onTouchEvent(event))
             return true
+        if(!gestureDetector.isLongpressEnabled()){
+            invalidate()
+        }
         return super.onTouchEvent(event)
     }
 
@@ -234,7 +243,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         System.out.println("onLongPress:"+ row+col)
         invalidate()
     }
-
 
     fun updateText(){
        board.getallResult()
@@ -270,11 +278,13 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                 System.out.println("Coluna" + col + "Linha "+ selectedRow)
             }
         }
-
 /*        Toast.makeText(context, "Fling Gesture", Toast.LENGTH_LONG).show()
         System.out.println("onFling: " +event1 + event2)
         Log.d(VIEW_LOG_TAG, "onFling: $event1 $event2")*/
         invalidate()
         return true
+    }
+    fun nextlevel(){
+        board = Board(2);
     }
 }
