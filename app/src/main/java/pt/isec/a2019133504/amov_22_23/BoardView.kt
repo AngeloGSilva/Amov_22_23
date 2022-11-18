@@ -2,11 +2,14 @@ package pt.isec.a2019133504.amov_22_23
 
 import android.content.Context
 import android.graphics.*
+import android.nfc.Tag
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import org.w3c.dom.Text
 import pt.isec.a2019133504.amov_22_23.Data.Board
@@ -86,8 +89,11 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         longPressCol = -1
         selectedCol = -1
         selectedRow = -1
-        if (CORRETA)
-            text.text = "Correta"
+        if (CORRETA) {
+            Toast.makeText(context, "Acertaste na expressão correta!", Toast.LENGTH_SHORT).show()
+            //Log.i(VIEW_LOG_TAG,"Acertaste na expressão correta!")
+            CORRETA=false
+        }
         /*if(count%2==0)nextlevel()
         count++*/
 
