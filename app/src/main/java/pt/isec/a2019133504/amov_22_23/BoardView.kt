@@ -20,20 +20,15 @@ import kotlin.math.abs
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),GestureDetector.OnGestureListener {
 
     private var size = 5
-    var board = Board(1)
     private var cellSizePixels = 0F
     private var initialValCelX = 0.5f
     private var initialValCelY = 0.55f
-
     private var numbertextsize = 60f
-
-    private var count = 0
-
+    private var nivel = 1
+    var board = Board(nivel)
     var text = findViewById<TextView>(R.id.textView2)
-
     private var selectedRow = -1
     private var selectedCol = -1
-
     private var longPressRow = -1
     private var longPressCol = -1
 
@@ -93,10 +88,13 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             Toast.makeText(context, "Acertaste na expressão correta!", Toast.LENGTH_SHORT).show()
             //Log.i(VIEW_LOG_TAG,"Acertaste na expressão correta!")
             CORRETA=false
+            nivel+=1
+            board = Board(nivel)
+            fillCells(canvas)
+            drawLines(canvas)
+            updateText()
+            numbersOperators(canvas)
         }
-        /*if(count%2==0)nextlevel()
-        count++*/
-
     }
 
      private fun numbersOperators(canvas: Canvas){
