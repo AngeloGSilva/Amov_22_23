@@ -17,6 +17,7 @@ class Board(nivel : Int) {
     var linhasValores = arrayListOf<Double>()
         get() = field
     var maiorValor = 0.0
+    var SecondMaiorValor = 0.0
     val corretas = 0
         get() = field
 
@@ -65,7 +66,6 @@ class Board(nivel : Int) {
                 }
             }
         }*/
-
     fun getallResult() {
 /*        var  result = arrayListOf<Int>()
         var sum = 0;
@@ -107,9 +107,8 @@ class Board(nivel : Int) {
             }
         }
         attresults()
-
-
     }
+
     fun attresults(){
         colunasValores.clear()
         linhasValores.clear()
@@ -286,10 +285,25 @@ class Board(nivel : Int) {
         return linhasValores.max()
     }
 
+    fun getColunaSecondMax():Double{
+        return colunasValores.sortedDescending().get(1)
+    }
+
+    fun getLinhaSecondMax():Double{
+        return linhasValores.sortedDescending().get(1)
+    }
+
     fun setMaiorValor(){
         if (getColunaMax() > getLinhaMax())
             maiorValor = getColunaMax()
         else
             maiorValor = getLinhaMax()
+    }
+
+    fun setSecondMaiorValor(){
+        if (getColunaSecondMax() > getLinhaSecondMax())
+            SecondMaiorValor = getColunaSecondMax()
+        else
+            SecondMaiorValor = getLinhaSecondMax()
     }
 }

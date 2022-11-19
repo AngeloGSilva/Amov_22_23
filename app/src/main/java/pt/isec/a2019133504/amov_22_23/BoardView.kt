@@ -74,16 +74,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     override fun onDraw(canvas: Canvas) {
-        cellSizePixels = (width / size).toFloat()
-        fillCellsSuggested(canvas)
-        fillCells(canvas)
-        drawLines(canvas)
-        numbersOperators(canvas)
-        updateText()
-        longPressRow = -1
-        longPressCol = -1
-        selectedCol = -1
-        selectedRow = -1
         if (CORRETA) {
             Toast.makeText(context, "Acertaste na expressão correta!", Toast.LENGTH_SHORT).show()
             //Log.i(VIEW_LOG_TAG,"Acertaste na expressão correta!")
@@ -94,7 +84,18 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             drawLines(canvas)
             updateText()
             numbersOperators(canvas)
+        }else {
+            cellSizePixels = (width / size).toFloat()
+            fillCellsSuggested(canvas)
+            fillCells(canvas)
+            drawLines(canvas)
+            numbersOperators(canvas)
+            updateText()
         }
+        longPressRow = -1
+        longPressCol = -1
+        selectedCol = -1
+        selectedRow = -1
     }
 
      private fun numbersOperators(canvas: Canvas){
@@ -146,10 +147,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             }
     }
 
-    private fun repaintcells(canvas: Canvas){
-
-    }
-
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
         canvas.drawRect(c * cellSizePixels, r * cellSizePixels, (c + 1) * cellSizePixels, (r + 1) * cellSizePixels, paint)
     }
@@ -183,9 +180,9 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     fun checkVitoria(){
-        if (selectedRow != -1 && board.getResultadoLinha(selectedRow) == board.maiorValor)
+        if (selectedRow != -1 && (board.getResultadoLinha(selectedRow) == board.maiorValor || board.getResultadoLinha(selectedRow) == board.SecondMaiorValor))
             CORRETA = true
-        else if (selectedCol != -1 && board.getResultadoColuna(selectedCol) == board.maiorValor)
+        else if (selectedCol != -1 && (board.getResultadoColuna(selectedCol) == board.maiorValor || board.getResultadoColuna(selectedCol) == board.SecondMaiorValor))
             CORRETA = true
     }
 
@@ -249,8 +246,9 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     fun updateText(){
-       board.attresults()
+        board.attresults()
         board.setMaiorValor()
+        board.setSecondMaiorValor()
        /* val myTextView = findViewById<TextView>(R.id.textView2)
         myTextView.text = board.linhasValores.toString()*/
     }
