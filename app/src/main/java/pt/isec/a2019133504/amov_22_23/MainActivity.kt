@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.coroutines.delay
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMainBinding
 
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         }
         //TODO alterar para activity modo1 (apenas teste)
         binding.btnMode1.setOnClickListener {
+
+
             /*var perfil : Perfil = intent.getSerializableExtra("profileUser") as Perfil
 
             binding.MainLogo.setImageURI(Uri.parse(perfil.imgdata))

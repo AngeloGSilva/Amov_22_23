@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 import pt.isec.a2019133504.amov_22_23.Data.Cell
 import pt.isec.a2019133504.amov_22_23.Data.MyViewModel
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
@@ -17,23 +19,35 @@ class Mode1Activity : AppCompatActivity(),BoardView.OnTouchListener {
     private val viewModel : MyViewModel by viewModels()
 
     private lateinit var binding: ActivityMode1Binding
+    //private var cells =viewModel.mathGame.getContent()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
-
         binding.boardGame.registerListener(this)
 
+        //binding.boardGame.updateCells(cells)
+        binding.boardGame.updateCells(viewModel.mathGame.board.cells)
+        viewModel.mathGame.cellsLiveData.observe(this) { updateCells(it) }
 
+        viewModel.mathGame.selectedCellLiveData.observe(this) { updateSelectedCellUI(it) }
+        viewModel.mathGame.maioresValores.observe(this) { updateValores(it) }
+        viewModel.mathGame.vitoriaLiveData.observe(this) { updateVitoria(it) }
+        viewModel.mathGame.pontosLiveData.observe(this) { updatePontos(it) }
 
-        viewModel.mathGame.selectedCellLiveData.observe(this, Observer {updateSelectedCellUI(it)})
-        viewModel.mathGame.maioresValores.observe(this,Observer{updateValores(it)})
-        viewModel.mathGame.vitoriaLiveData.observe(this,Observer{updateVitoria(it)})
-        viewModel.mathGame.pontosLiveData.observe(this,Observer{updatePontos(it)})
-        viewModel.mathGame.cellsLiveData.observe(this, Observer { updateCells(it)})
+/*        viewModel.mathGame.cellsLiveData.observe(this){
+            it?.run { updateCells(it) }
+        }*/
+        //Thread.sleep(10000)
+
     }
+
+/*    override fun onStart() {
+        binding.boardGame.updateCells(viewModel.mathGame.board.cells)
+        super.onStart()
+    }*/
 
     private fun updateVitoria(estado : Boolean){
         if (estado)

@@ -24,10 +24,11 @@ class MathGame {
 
     private var pontos = 0
 
-    private val board: Board
+    val board: Board
 
 
     var operators = arrayListOf<String>("*","+","/","-")
+
     init {
         var cells = Array(5){ linha ->
             Array(5){ coluna ->
@@ -47,6 +48,10 @@ class MathGame {
         vitoriaLiveData.postValue(false)
         pontosLiveData.postValue(pontos)
         vitoria = false
+    }
+
+    fun getContent(): Array<Array<Cell>> {
+        return board.cells
     }
 
 /*    fun handleInput(number: Int) {
