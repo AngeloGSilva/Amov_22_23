@@ -212,11 +212,11 @@ class MathGame {
 
     fun getResultadoColuna(coluna: Int): Double {
         var result = 0.0
-        var operator = board.cells[coluna][1].value
-        var operator2 = board.cells[coluna][3].value
-        var num1 = board.cells[coluna][0].value.toDouble()
-        var num3 = board.cells[coluna][2].value.toDouble()
-        var num5 = board.cells[coluna][4].value.toDouble()
+        var operator = board.cells[1][coluna].value
+        var operator2 = board.cells[3][coluna].value
+        var num1 = board.cells[0][coluna].value.toDouble()
+        var num3 = board.cells[2][coluna].value.toDouble()
+        var num5 = board.cells[4][coluna].value.toDouble()
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
@@ -300,7 +300,7 @@ class MathGame {
 
     fun getMaiorCol(){
         var max = 0.0
-        for (i in 0 until board.size - 2){
+        for (i in 0 until board.size){
             if (i % 2 == 0 && getResultadoColuna(i) >= max){
                 max = getResultadoColuna(i)
                 maiorCol = i
@@ -310,8 +310,8 @@ class MathGame {
 
     fun getMaiorRow(){
         var max = 0.0
-        for (i in 0 until board.size - 2){
-            if (i % 2 == 0 && getResultadoLinha(i) >= max){
+        for (i in 0 until board.size){
+            if (i % 2 == 0 && getResultadoLinha(i) >= max){ //i%2 linhas validas
                 max = getResultadoLinha(i)
                 maiorRow = i
             }

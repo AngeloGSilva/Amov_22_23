@@ -75,7 +75,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updateValores(valores: Pair<Int, Int>){
-        binding.InfoPontos.text = (valores.first).toString()+(valores.second).toString()
+        binding.InfoPontos.text = "L" + (valores.first).toString()+ " C" +(valores.second).toString()
     }
 
     private fun updateCells(cells: Array<Array<Cell>>?) = cells?.let {
