@@ -5,12 +5,12 @@ import kotlin.random.Random
 
 
 class MathGame {
+    //para atualizar dados na view
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
     var maioresValores = MutableLiveData<Pair<Int,Int>>()
     var pontosLiveData = MutableLiveData<Int>()
     var cellsLiveData = MutableLiveData< Array<Array<Cell>>>()
     var vitoriaLiveData = MutableLiveData<Boolean>()
-
 
     private var selectedRow = -1
     private var selectedCol = -1
@@ -22,12 +22,16 @@ class MathGame {
 
     private var vitoria = false
 
+    private var level = 1
+
     private var pontos = 0
 
     var board: Board
 
-
-    var operators = arrayListOf<String>("*","+","/","-")
+    var opLevel1 = "+"
+    var opLevel2 = arrayListOf<String>("+","-")
+    var opLevel3 = arrayListOf<String>("+","-","*")
+    var opLevel4 = arrayListOf<String>("+","-","*","/")
 
     init {
 /*        var cells = Array(5){ linha ->
@@ -54,7 +58,6 @@ class MathGame {
 
     fun resetBoardAtributos(){
         var cells = getrandomBoard()
-
         board = Board(5, cells)
         cellsLiveData.postValue(board.cells)
         selectedRow = -1
@@ -70,19 +73,29 @@ class MathGame {
         var cells = Array(5){ linha ->
             Array(5){ coluna ->
                 if (linha % 2 == 0 && coluna % 2 == 0) {
-                    Cell(linha,coluna,(Random.nextInt(0,10)*1.0).toString(),false)
+                    when(level){
+                        1 -> Cell(linha,coluna,(Random.nextInt(1,9)*1.0).toString(),false)
+                        2 -> Cell(linha,coluna,(Random.nextInt(1,99)*1.0).toString(),false)
+                        else -> {
+                            Cell(linha,coluna,(Random.nextInt(1,999)*1.0).toString(),false)
+                        }
+                    }
+                    //Cell(linha,coluna,(Random.nextInt(0,10)*1.0).toString(),false)
                 }else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
                     Cell(linha,coluna," ",false)
                 }else {
-                    Cell(linha,coluna,operators.random(),true)
+                    when(level){
+                        1 -> Cell(linha,coluna,opLevel1,true)
+                        2 -> Cell(linha,coluna,opLevel2.random(),true)
+                        3 -> Cell(linha,coluna,opLevel3.random(),true)
+                        else -> {
+                            Cell(linha, coluna, opLevel4.random(), true)
+                        }
+                    }
                 }
             }
         }
         return cells
-    }
-
-    fun getContent(): Array<Array<Cell>> {
-        return board.cells
     }
 
 /*    fun handleInput(number: Int) {
@@ -95,7 +108,6 @@ class MathGame {
     fun updateValor(){
         maioresValores.postValue(Pair(maiorRow,maiorCol))
     }
-
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
@@ -111,7 +123,6 @@ class MathGame {
         checkVitoria()
     }
 
-
     //TODO Falta tratar do caso de dividir por zero
     fun getResultadoLinha(linha: Int): Double {
         var result = 0.0
@@ -126,7 +137,6 @@ class MathGame {
         var num1 = board.cells[linha][0].value.toDouble()
         var num3 = board.cells[linha][2].value.toDouble()
         var num5 = board.cells[linha][4].value.toDouble()
-
 
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
@@ -314,8 +324,8 @@ class MathGame {
             pontos++
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
+            level++
             //resetBoardAtributos()
         }
     }
-
 }
