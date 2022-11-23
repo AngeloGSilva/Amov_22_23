@@ -40,8 +40,9 @@
             android:layout_weight="1"
             android:text="TextView" />
 
-        <Chronometer
+        <TextView
             android:id="@+id/viewTimer"
+            android:text="timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
