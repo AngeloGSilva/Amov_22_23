@@ -29,7 +29,9 @@ class Mode1Activity : AppCompatActivity(),BoardView.OnTouchListener {
         binding.boardGame.registerListener(this)
 
         //binding.boardGame.updateCells(cells)
+        //TODO VERIFICAR SE É A MELHOR MANEIRA DE RESOLVER O CRASH
         binding.boardGame.updateCells(viewModel.mathGame.board.cells)
+
         viewModel.mathGame.cellsLiveData.observe(this) { updateCells(it) }
 
         viewModel.mathGame.selectedCellLiveData.observe(this) { updateSelectedCellUI(it) }
