@@ -35,7 +35,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         viewModel.mathGame.selectedCellLiveData.observe(this) { updateSelectedCellUI(it) }
         viewModel.mathGame.maioresValores.observe(this) { updateValores(it) }
         viewModel.mathGame.vitoriaLiveData.observe(this) { updateVitoria(it) }
-        viewModel.mathGame.pontosLiveData.observe(this) { updatePontos(it) }
+        //viewModel.mathGame.pontosLiveData.observe(this) { updatePontos(it) }
 
 /*        viewModel.mathGame.cellsLiveData.observe(this){
             it?.run { updateCells(it) }
