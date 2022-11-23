@@ -7,20 +7,24 @@
     tools:context=".Mode1Activity">
 
     <pt.isec.a2019133504.amov_22_23.BoardView
-        android:id="@+id/board"
+        android:id="@+id/boardGame"
         android:layout_width="wrap_content"
         android:layout_height="411dp"
-
-        tools:layout_editor_absoluteY="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="78dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boardGame">
 
         <ImageView
             android:id="@+id/imageView"
@@ -30,7 +34,7 @@
             android:src="@drawable/ic_no_pic" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/InfoPontos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
