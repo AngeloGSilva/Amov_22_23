@@ -1,4 +1,4 @@
-package pt.isec.a2019133504.amov_22_23
+package pt.isec.a2019133504.amov_22_23.View
 
 import android.content.Context
 import android.graphics.Canvas
@@ -25,7 +25,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     private var selectedCol = 0
 
 
-    private var listener: BoardView.OnTouchListener? = null
+    private var listener: OnTouchListener? = null
 
     private var cells : Array<Array<Cell>>? = null
 
@@ -38,14 +38,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private val thickLinePaintForSelect = Paint().apply {
         style = Paint.Style.STROKE
-        color = Color.BLACK
+        color = Color.parseColor("#9c4239")
         strokeWidth = 10F
-    }
-
-
-    private val selectedCellPaint = Paint().apply {
-        style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#6ead3a")
     }
 
 
@@ -54,16 +48,28 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         color = Color.BLACK
     }
 
+
+    private val startingCellPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.parseColor("#ffdad5")
+    }
+
+
+/*
+    private val selectedCellPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.parseColor("#6ead3a")
+    }
+
+
     private val startingCellTextPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.BLACK
         typeface = Typeface.DEFAULT_BOLD
     }
+*/
 
-    private val startingCellPaint = Paint().apply {
-        style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#DAF7A6")
-    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         val sizePixels = Math.min(widthMeasureSpec, heightMeasureSpec)
@@ -256,7 +262,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         invalidate()
     }
 
-    fun registerListener(listener: BoardView.OnTouchListener) {
+    fun registerListener(listener: OnTouchListener) {
         this.listener = listener
     }
 

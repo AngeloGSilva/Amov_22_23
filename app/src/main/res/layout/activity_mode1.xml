@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Mode1Activity">
 
-    <pt.isec.a2019133504.amov_22_23.BoardView
+    <pt.isec.a2019133504.amov_22_23.View.BoardView
         android:id="@+id/boardGame"
         android:layout_width="wrap_content"
         android:layout_height="411dp"

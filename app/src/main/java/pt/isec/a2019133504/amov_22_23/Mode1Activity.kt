@@ -1,20 +1,17 @@
 package pt.isec.a2019133504.amov_22_23
 
-import android.animation.ObjectAnimator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.delay
 import pt.isec.a2019133504.amov_22_23.Data.Cell
-import pt.isec.a2019133504.amov_22_23.Data.MyViewModel
+import pt.isec.a2019133504.amov_22_23.View.BoardView
+import pt.isec.a2019133504.amov_22_23.View.MyViewModel
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
 
 
-class Mode1Activity : AppCompatActivity(),BoardView.OnTouchListener {
+class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     private val viewModel : MyViewModel by viewModels()
 
@@ -23,6 +20,7 @@ class Mode1Activity : AppCompatActivity(),BoardView.OnTouchListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -52,8 +50,10 @@ class Mode1Activity : AppCompatActivity(),BoardView.OnTouchListener {
     }*/
 
     private fun updateVitoria(estado : Boolean){
-        if (estado)
-            Toast.makeText(baseContext, "Acertou", Toast.LENGTH_LONG).show()
+        if (estado) {
+            Toast.makeText(baseContext, "Acertou", Toast.LENGTH_SHORT).show()
+            viewModel.mathGame.resetBoardAtributos()
+        }
     }
 
     private fun updateValores(valores: Pair<Int, Int>){

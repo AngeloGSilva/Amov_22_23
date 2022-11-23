@@ -24,12 +24,49 @@ class MathGame {
 
     private var pontos = 0
 
-    val board: Board
+    var board: Board
 
 
     var operators = arrayListOf<String>("*","+","/","-")
 
     init {
+/*        var cells = Array(5){ linha ->
+            Array(5){ coluna ->
+                if (linha % 2 == 0 && coluna % 2 == 0) {
+                    Cell(linha,coluna,(Random.nextInt(0,10)*1.0).toString(),false)
+                }else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
+                    Cell(linha,coluna," ",false)
+                }else {
+                    Cell(linha,coluna,operators.random(),true)
+                }
+            }
+        }*/
+        var cells = getrandomBoard()
+
+        board = Board(5, cells)
+        cellsLiveData.postValue(board.cells)
+        selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
+        getMaiorCalculo()
+        vitoriaLiveData.postValue(false)
+        pontosLiveData.postValue(pontos)
+        vitoria = false
+    }
+
+    fun resetBoardAtributos(){
+        var cells = getrandomBoard()
+
+        board = Board(5, cells)
+        cellsLiveData.postValue(board.cells)
+        selectedRow = -1
+        selectedCol = -1
+        //selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
+        getMaiorCalculo()
+        vitoriaLiveData.postValue(false)
+        pontosLiveData.postValue(pontos)
+        vitoria = false
+    }
+
+    fun getrandomBoard(): Array<Array<Cell>> {
         var cells = Array(5){ linha ->
             Array(5){ coluna ->
                 if (linha % 2 == 0 && coluna % 2 == 0) {
@@ -41,13 +78,7 @@ class MathGame {
                 }
             }
         }
-        board = Board(5, cells)
-        cellsLiveData.postValue(board.cells)
-        selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
-        getMaiorCalculo()
-        vitoriaLiveData.postValue(false)
-        pontosLiveData.postValue(pontos)
-        vitoria = false
+        return cells
     }
 
     fun getContent(): Array<Array<Cell>> {
@@ -283,6 +314,7 @@ class MathGame {
             pontos++
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
+            //resetBoardAtributos()
         }
     }
 
