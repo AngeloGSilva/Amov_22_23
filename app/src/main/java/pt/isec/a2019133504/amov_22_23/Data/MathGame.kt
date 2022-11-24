@@ -299,7 +299,7 @@ class MathGame {
     }
 
     fun getMaiorCol(){
-        var max = 0.0
+        var max = getResultadoColuna(0)
         for (i in 0 until board.size){
             if (i % 2 == 0 && getResultadoColuna(i) >= max){
                 max = getResultadoColuna(i)
@@ -309,7 +309,7 @@ class MathGame {
     }
 
     fun getMaiorRow(){
-        var max = 0.0
+        var max = getResultadoLinha(0)
         for (i in 0 until board.size){
             if (i % 2 == 0 && getResultadoLinha(i) >= max){ //i%2 linhas validas
                 max = getResultadoLinha(i)

@@ -10,6 +10,7 @@ import pt.isec.a2019133504.amov_22_23.Data.Cell
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.View.MyViewModel
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
+import java.util.Objects
 
 
 class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
@@ -18,7 +19,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     private lateinit var binding: ActivityMode1Binding
     //private var cells =viewModel.mathGame.getContent()
-
+    private lateinit var timerObject : CountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -42,24 +43,27 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             it?.run { updateCells(it) }
         }*/
         //Thread.sleep(10000)
+        startTimer(10)
 
 
+    }
+
+    private fun startTimer(totalTime : Int){
         // time count down for 30 seconds,
         // with 1 second as countDown interval
-        object : CountDownTimer(30000, 1000) {
-
+        timerObject = object : CountDownTimer((totalTime*1000).toLong(), 1000) {
             // Callback function, fired on regular interval
             override fun onTick(millisUntilFinished: Long) {
-                binding.viewTimer.setText("seconds remaining: " + millisUntilFinished / 1000)
+                binding.viewTimer.text = "seconds remaining: " + millisUntilFinished / 1000
             }
-
             // Callback function, fired
             // when the time is up
             override fun onFinish() {
-                binding.viewTimer.setText("done!")
+                viewModel.mathGame.resetBoardAtributos()
+                binding.viewTimer.text = "done!"
+                startTimer(10)
             }
         }.start()
-
     }
 
 /*    override fun onStart() {
@@ -71,6 +75,8 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         if (estado) {
             Toast.makeText(baseContext, "Acertou", Toast.LENGTH_SHORT).show()
             viewModel.mathGame.resetBoardAtributos()
+            timerObject.cancel()
+            startTimer(10)
         }
     }
 
