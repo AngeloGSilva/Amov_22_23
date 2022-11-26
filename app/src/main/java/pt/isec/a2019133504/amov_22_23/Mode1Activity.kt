@@ -10,12 +10,13 @@ import pt.isec.a2019133504.amov_22_23.Data.Cell
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.View.MyViewModel
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
-import java.util.Objects
 
 
 class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     private val viewModel : MyViewModel by viewModels()
+
+    private var paused : Long = 0
 
     private lateinit var binding: ActivityMode1Binding
     //private var cells =viewModel.mathGame.getContent()
@@ -27,6 +28,8 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.boardGame.registerListener(this)
+
+        binding.imageView.setImageURI(ProfileActivity.imgdata)
 
         //binding.boardGame.updateCells(cells)
         //TODO VERIFICAR SE É A MELHOR MANEIRA DE RESOLVER O CRASH
@@ -43,7 +46,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             it?.run { updateCells(it) }
         }*/
         //Thread.sleep(10000)
-        startTimer(10)
+        startTimer(15)
 
 
     }
@@ -55,13 +58,15 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             // Callback function, fired on regular interval
             override fun onTick(millisUntilFinished: Long) {
                 binding.viewTimer.text = "seconds remaining: " + millisUntilFinished / 1000
+                paused = millisUntilFinished / 1000
             }
             // Callback function, fired
             // when the time is up
             override fun onFinish() {
                 viewModel.mathGame.resetBoardAtributos()
                 binding.viewTimer.text = "done!"
-                startTimer(10)
+                binding.boardGame.visibility = View.INVISIBLE
+                //startTimer(10)
             }
         }.start()
     }
@@ -76,7 +81,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             Toast.makeText(baseContext, "Acertou", Toast.LENGTH_SHORT).show()
             viewModel.mathGame.resetBoardAtributos()
             timerObject.cancel()
-            startTimer(10)
+            startTimer(paused.toInt()+10)
         }
     }
 

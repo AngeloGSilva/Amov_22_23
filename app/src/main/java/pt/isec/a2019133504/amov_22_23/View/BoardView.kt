@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import pt.isec.a2019133504.amov_22_23.Data.Cell
 import kotlin.math.abs
+import kotlin.random.Random
 
 
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),
@@ -27,7 +28,17 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private var listener: OnTouchListener? = null
 
-    private var cells : Array<Array<Cell>>? = null
+    private var cells : Array<Array<Cell>>? = Array(5) { linha ->
+        Array(5) { coluna ->
+            if (linha % 2 == 0 && coluna % 2 == 0) {
+                Cell(linha, coluna, (Random.nextInt(0, 10) * 1.0).toString(), false)
+            } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
+                Cell(linha, coluna, " ", false)
+            } else {
+                Cell(linha, coluna, "+", true)
+            }
+        }
+    }
 
     private val thickLinePaint = Paint().apply {
         style = Paint.Style.STROKE
