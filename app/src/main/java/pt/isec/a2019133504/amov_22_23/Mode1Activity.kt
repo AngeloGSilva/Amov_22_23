@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import pt.isec.a2019133504.amov_22_23.Data.Cell
+import pt.isec.a2019133504.amov_22_23.Data.MathGame
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.View.MyViewModel
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
@@ -40,13 +41,13 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         viewModel.mathGame.selectedCellLiveData.observe(this) { updateSelectedCellUI(it) }
         viewModel.mathGame.maioresValores.observe(this) { updateValores(it) }
         viewModel.mathGame.vitoriaLiveData.observe(this) { updateVitoria(it) }
-        //viewModel.mathGame.pontosLiveData.observe(this) { updatePontos(it) }
+        viewModel.mathGame.pontosLiveData.observe(this) { updatePontos(it) }
 
 /*        viewModel.mathGame.cellsLiveData.observe(this){
             it?.run { updateCells(it) }
         }*/
         //Thread.sleep(10000)
-        startTimer(15)
+        startTimer(MathGame.level.maxTime)
 
 
     }
@@ -81,7 +82,10 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             Toast.makeText(baseContext, "Acertou", Toast.LENGTH_SHORT).show()
             viewModel.mathGame.resetBoardAtributos()
             timerObject.cancel()
-            startTimer(paused.toInt()+10)
+            if (paused < MathGame.level.maxTime)
+                startTimer(paused.toInt() + MathGame.level.winTime)
+            else
+                startTimer(MathGame.level.maxTime)
         }
     }
 
@@ -94,7 +98,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updatePontos(pontos : Int){
-        binding.InfoPontos.text = pontos.toString()
+        binding.InfoP.text = pontos.toString()
 /*        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 4f)
         val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 4f)
         val animator = ObjectAnimator.ofPropertyValuesHolder(

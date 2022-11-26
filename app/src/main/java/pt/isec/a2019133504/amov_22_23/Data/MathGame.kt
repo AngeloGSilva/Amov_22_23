@@ -2,9 +2,21 @@ package pt.isec.a2019133504.amov_22_23.Data
 
 import androidx.lifecycle.MutableLiveData
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 class MathGame {
+
+    companion object{
+        //TODO CORRIGIR CLASS LEVEL CALL (isto esta assim pois o kotlin ja tem um class Level)
+        lateinit var level:pt.isec.a2019133504.amov_22_23.Data.Level
+
+        val level1 = Level(1,arrayListOf("+"),2,30,3,1..9)
+        val level2 = Level(2,arrayListOf("+","-"),4,40,6,1..99)
+        val level3 = Level(3,arrayListOf("+","-","*"),8,50,12,1..999)
+        val level4 = Level(4,arrayListOf("+","-","*","/"),16,60,24,1..999)
+    }
+
     //para atualizar dados na view
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
     var maioresValores = MutableLiveData<Pair<Int,Int>>()
@@ -22,16 +34,15 @@ class MathGame {
 
     private var vitoria = false
 
-    private var level = 1
 
     private var pontos = 0
 
     var board: Board
 
-    var opLevel1 = "+"
+/*    var opLevel1 = "+"
     var opLevel2 = arrayListOf<String>("+","-")
     var opLevel3 = arrayListOf<String>("+","-","*")
-    var opLevel4 = arrayListOf<String>("+","-","*","/")
+    var opLevel4 = arrayListOf<String>("+","-","*","/")*/
 
     init {
 /*        var cells = Array(5){ linha ->
@@ -45,6 +56,8 @@ class MathGame {
                 }
             }
         }*/
+
+        level = level1
         var cells = getrandomBoard()
 
         board = Board(5, cells)
@@ -73,6 +86,9 @@ class MathGame {
         var cells = Array(5){ linha ->
             Array(5){ coluna ->
                 if (linha % 2 == 0 && coluna % 2 == 0) {
+                    Cell(linha,coluna,(Random.nextInt(level.range)*1.0).toString(),false)
+
+                /*
                     when(level){
                         1 -> Cell(linha,coluna,(Random.nextInt(1,9)*1.0).toString(),false)
                         2 -> Cell(linha,coluna,(Random.nextInt(1,99)*1.0).toString(),false)
@@ -81,9 +97,11 @@ class MathGame {
                         }
                     }
                     //Cell(linha,coluna,(Random.nextInt(0,10)*1.0).toString(),false)
-                }else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
+                */}else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
                     Cell(linha,coluna," ",false)
                 }else {
+                    Cell(linha,coluna,level.opLevel.random(),true)
+                /*
                     when(level){
                         1 -> Cell(linha,coluna,opLevel1,true)
                         2 -> Cell(linha,coluna,opLevel2.random(),true)
@@ -91,7 +109,7 @@ class MathGame {
                         else -> {
                             Cell(linha, coluna, opLevel4.random(), true)
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -321,11 +339,21 @@ class MathGame {
     fun checkVitoria(){
         if (selectedRow == maiorRow && selectedCol == -1 || selectedCol == maiorCol && selectedRow == -1) {
             vitoria = true
-            pontos++
+            pontos += level.winPoints
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
-            level++
+            changeLevel(level.ident)
             //resetBoardAtributos()
+        }
+    }
+
+    //TODO ALTERAR O LEVEL APENAS QUANTO ACERTOU EM X CALCULOS
+    fun changeLevel(levelAtual : Int){
+        when(levelAtual){
+            1 -> level = level2
+            2 -> level = level3
+            3 -> level = level4
+            else -> level = level4
         }
     }
 }
