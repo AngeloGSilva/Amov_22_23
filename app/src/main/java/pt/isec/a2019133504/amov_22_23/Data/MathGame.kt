@@ -7,6 +7,7 @@ import kotlin.random.nextInt
 
 class MathGame {
 
+    //TODO VERIFICAR SE COMPANION OBJECT È A MELHOR MANEIRA PARA RESOLVER O PROBLEMA DE ACEDER AO LEVEL TIME NA ACTIVITY MODE 1
     companion object{
         //TODO CORRIGIR CLASS LEVEL CALL (isto esta assim pois o kotlin ja tem um class Level)
         lateinit var level:pt.isec.a2019133504.amov_22_23.Data.Level
