@@ -65,7 +65,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             // when the time is up
             override fun onFinish() {
                 viewModel.mathGame.resetBoardAtributos()
-                binding.viewTimer.text = "done!"
+                binding.viewTimer.text = "Done!"
                 binding.boardGame.visibility = View.INVISIBLE
                 //startTimer(10)
             }
@@ -90,7 +90,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updateValores(valores: Pair<Int, Int>){
-        binding.InfoPontos.text = "L" + (valores.first).toString()+ " C" +(valores.second).toString()
+        binding.InfoPontos.text = "Linha: " + (valores.first).toString()+ " Coluna: " +(valores.second).toString()
     }
 
     private fun updateCells(cells: Array<Array<Cell>>?) = cells?.let {
@@ -98,7 +98,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updatePontos(pontos : Int){
-        binding.InfoP.text = pontos.toString()
+        binding.InfoP.text = "Pontos: $pontos"
 /*        val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 4f)
         val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 4f)
         val animator = ObjectAnimator.ofPropertyValuesHolder(

@@ -18,9 +18,9 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilephoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_no_pic"
+        android:layout_width="230dp"
+        android:layout_height="match_parent"
+        android:src="@mipmap/profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
         app:layout_constraintStart_toStartOf="parent"
