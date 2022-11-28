@@ -10,12 +10,13 @@ class MathGame {
     //TODO VERIFICAR SE COMPANION OBJECT È A MELHOR MANEIRA PARA RESOLVER O PROBLEMA DE ACEDER AO LEVEL TIME NA ACTIVITY MODE 1
     companion object{
         //TODO CORRIGIR CLASS LEVEL CALL (isto esta assim pois o kotlin ja tem um class Level)
+
         lateinit var level:pt.isec.a2019133504.amov_22_23.Data.Level
 
-        val level1 = Level(1,arrayListOf("+"),2,30,3,1..9)
-        val level2 = Level(2,arrayListOf("+","-"),4,40,6,1..99)
-        val level3 = Level(3,arrayListOf("+","-","*"),8,50,12,1..999)
-        val level4 = Level(4,arrayListOf("+","-","*","/"),16,60,24,1..999)
+        val level1 = Level(1,arrayListOf("+"),2,5,30,3,1..9)
+        val level2 = Level(2,arrayListOf("+","-"),4,5,40,6,1..99)
+        val level3 = Level(3,arrayListOf("+","-","*"),8,5,50,12,1..999)
+        val level4 = Level(4,arrayListOf("+","-","*","/"),16,5,60,24,1..999)
     }
 
     //para atualizar dados na view
@@ -35,8 +36,9 @@ class MathGame {
 
     private var vitoria = false
 
-
     private var pontos = 0
+
+    private var numeroAcertos = 0
 
     var board: Board
 
@@ -60,7 +62,6 @@ class MathGame {
 
         level = level1
         var cells = getrandomBoard()
-
         board = Board(5, cells)
         cellsLiveData.postValue(board.cells)
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
@@ -343,13 +344,16 @@ class MathGame {
             pontos += level.winPoints
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
-            changeLevel(level.ident)
-            //resetBoardAtributos()
+            numeroAcertos++
+            if(numeroAcertos == level.numeroAcertos){
+                changeLevel(level.ident)
+            }
         }
     }
 
     //TODO ALTERAR O LEVEL APENAS QUANTO ACERTOU EM X CALCULOS
     fun changeLevel(levelAtual : Int){
+        numeroAcertos = 0
         when(levelAtual){
             1 -> level = level2
             2 -> level = level3
