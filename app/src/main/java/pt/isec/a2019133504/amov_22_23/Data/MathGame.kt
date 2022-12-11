@@ -284,9 +284,7 @@ class MathGame {
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
             numeroAcertos++
-            if(numeroAcertos == level.numeroAcertos){
-                changeLevel(level.ident)
-            }
+            changeLevel(level.ident)
         }
     }
 
