@@ -1,11 +1,13 @@
 package pt.isec.a2019133504.amov_22_23
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import pt.isec.a2019133504.amov_22_23.Data.Cell
 import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.MathGame
@@ -52,7 +54,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             }
             override fun onFinish() {
                 viewModel.mathGame.resetBoardAtributos()
-                binding.viewTimer.text = "done!"
+                binding.viewTimer.text = "Done!"
                 binding.boardGame.visibility = View.INVISIBLE
             }
         }.start()
@@ -61,18 +63,19 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     private fun updateVitoria(estado : Boolean){
         if (estado) {
-            Toast.makeText(baseContext, "Acertou", Toast.LENGTH_SHORT).show()
             viewModel.mathGame.resetBoardAtributos()
             timerObject.cancel()
-            if (paused < MathGame.level.maxTime)
+            if (paused + MathGame.level.winTime < MathGame.level.maxTime)
                 startTimer(paused.toInt() + MathGame.level.winTime)
             else
                 startTimer(MathGame.level.maxTime)
+
+            //runBlocking { launch { delay(5000) } }
         }
     }
 
     private fun updateValores(valores: Pair<Int, Int>){
-        binding.InfoPontos.text = "L" + (valores.first).toString()+ " C" +(valores.second).toString()
+        binding.InfoPontos.text = "Linha: " + (valores.first).toString()+ " Coluna: " +(valores.second).toString()
     }
 
     private fun updateCells(cells: Array<Array<Cell>>?) = cells?.let {
@@ -83,8 +86,23 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.InfoP.text = pontos.toString()
     }
 
+
     override fun onCellTouched(row: Int, col: Int) {
         viewModel.mathGame.updateSelectedCell(row, col)
+    }
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Alerta de Jogo")
+        builder.setMessage("Se saires agora, o jogo nao será salvo!")
+
+        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+            finish()
+        }
+
+        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+
+        }
+        builder.show()
     }
 }
 

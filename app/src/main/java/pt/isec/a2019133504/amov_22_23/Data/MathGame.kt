@@ -32,8 +32,9 @@ class MathGame {
 
     private var vitoria = false
 
-
     private var pontos = 0
+
+    private var numeroAcertos = 0
 
     var board: Board
 
@@ -282,13 +283,16 @@ class MathGame {
             pontos += 1
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
-            changeLevel(level.ident)
-            //resetBoardAtributos()
+            numeroAcertos++
+            if(numeroAcertos == level.numeroAcertos){
+                changeLevel(level.ident)
+            }
         }
     }
 
     //TODO ALTERAR O LEVEL APENAS QUANTO ACERTOU EM X CALCULOS
     fun changeLevel(levelAtual : Int){
+        numeroAcertos = 0
         when(levelAtual){
             1 -> level = Level.level2
             2 -> level = Level.level3
