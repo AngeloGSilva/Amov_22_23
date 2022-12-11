@@ -10,6 +10,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import pt.isec.a2019133504.amov_22_23.Data.Cell
+import pt.isec.a2019133504.amov_22_23.Data.MathGame
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -19,26 +20,12 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private var size = 5
 
+    private lateinit var cells : Array<Array<Cell>>
+
     // these are set in onDraw
     private var cellSizePixels = 0F
 
-    private var selectedRow = 0
-    private var selectedCol = 0
-
-
     private var listener: OnTouchListener? = null
-
-    private var cells : Array<Array<Cell>>? = Array(5) { linha ->
-        Array(5) { coluna ->
-            if (linha % 2 == 0 && coluna % 2 == 0) {
-                Cell(linha, coluna, (Random.nextInt(0, 10) * 1.0).toString(), false)
-            } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
-                Cell(linha, coluna, " ", false)
-            } else {
-                Cell(linha, coluna, "+", true)
-            }
-        }
-    }
 
     private val thickLinePaint = Paint().apply {
         style = Paint.Style.STROKE
@@ -46,40 +33,21 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         strokeWidth = 4F
     }
 
-
     private val thickLinePaintForSelect = Paint().apply {
         style = Paint.Style.STROKE
         color = Color.parseColor("#9c4239")
         strokeWidth = 10F
     }
 
-
     private val textPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.BLACK
     }
 
-
     private val startingCellPaint = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.parseColor("#ffdad5")
     }
-
-
-/*
-    private val selectedCellPaint = Paint().apply {
-        style = Paint.Style.FILL_AND_STROKE
-        color = Color.parseColor("#6ead3a")
-    }
-
-
-    private val startingCellTextPaint = Paint().apply {
-        style = Paint.Style.FILL_AND_STROKE
-        color = Color.BLACK
-        typeface = Typeface.DEFAULT_BOLD
-    }
-*/
-
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -93,21 +61,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         //updateMeasurements(width)
         drawLines(canvas)
         drawText(canvas)
-        fillCells(canvas)
     }
 
-
-    private fun fillCells(canvas: Canvas) {
-        //TODO MELHORAR FUNCAO...(SIZE-1) PARA NAO PINTAR UN QUADRADO A MAIS
-        for (r in 0 until  size) {
-            for (c in 0 until size) {
-                if (c == selectedCol && selectedRow == -1)
-                    fillCell(canvas, r, c, thickLinePaintForSelect)
-                if (r == selectedRow && selectedCol == -1)
-                    fillCell(canvas, r, c, thickLinePaintForSelect)
-            }
-        }
-    }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
         canvas.drawRect(c * cellSizePixels, r * cellSizePixels, (c + 1) * cellSizePixels, (r + 1) * cellSizePixels, paint)
@@ -128,7 +83,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             )
 
         }
-
         //Desenha Linhas horizontais
         for (i in 0 until size+1) {
             canvas.drawLine(
@@ -140,7 +94,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             )
         }
     }
-
 
     private fun drawText(canvas: Canvas) {
         textPaint.textSize = 60f
@@ -166,26 +119,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                 }
             }
         }
-
-        /*cells?.forEach {rows ->
-            row.forEach{ cole ->
-                val value = cole.value
-
-                val row = rows
-                val col = cole
-                val valueString = col.value
-
-                val paintToUse = if (col.isOperator) startingCellTextPaint else textPaint
-                val textBounds = Rect()
-                paintToUse.getTextBounds(valueString, 0, valueString.length, textBounds)
-                val textWidth = paintToUse.measureText(valueString)
-                val textHeight = textBounds.height()
-
-                canvas.drawText(
-                    valueString, (col * cellSizePixels) + cellSizePixels / 2 - textWidth / 2,
-                    (row * cellSizePixels) + cellSizePixels / 2 + textHeight / 2, paintToUse
-                )
-            }}*/
     }
 
     val gestureDetector = GestureDetector(context,this)
@@ -208,27 +141,21 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             System.out.println(row)
             //selectedRow = row
             if (row % 2 == 0) {
-                selectedRow = row
-                selectedCol = -1
-                System.out.println("Linha" + row + "e Coluna " + selectedCol)
+                listener?.onCellTouched(row,-1)
+
             }
         }else{
             val x = (event1.x+event2.x)/2
             val col = (x/cellSizePixels).toInt()
             if (col % 2 == 0) {
-                selectedCol = col
-                selectedRow = -1
-                System.out.println("Coluna" + col + "Linha "+ selectedRow)
+                listener?.onCellTouched(-1,col)
+
             }
         }
-/*        Toast.makeText(context, "Fling Gesture", Toast.LENGTH_LONG).show()
-        System.out.println("onFling: " +event1 + event2)
-        Log.d(VIEW_LOG_TAG, "onFling: $event1 $event2")*/
-        listener?.onCellTouched(selectedRow,selectedCol)
+
         invalidate()
         return true
     }
-
 
     override fun onDown(p0: MotionEvent?): Boolean {
         System.out.println("onDown:" + p0)
@@ -251,20 +178,12 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     override fun onLongPress(p0: MotionEvent?) {
         System.out.println("onLongPress:")
-
     }
 
     private fun handleTouchEvent(x: Float, y: Float) {
         val possibleSelectedRow = (y / cellSizePixels).toInt()
         val possibleSelectedCol = (x / cellSizePixels).toInt()
         listener?.onCellTouched(possibleSelectedRow, possibleSelectedCol)
-    }
-
-
-    fun updateSelectedCellUI(row: Int, col: Int) {
-        selectedRow = row
-        selectedCol = col
-        invalidate()
     }
 
 

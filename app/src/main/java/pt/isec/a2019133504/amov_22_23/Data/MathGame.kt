@@ -1,5 +1,7 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import android.os.CountDownTimer
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -7,15 +9,10 @@ import kotlin.random.nextInt
 
 class MathGame {
 
-    //TODO VERIFICAR SE COMPANION OBJECT È A MELHOR MANEIRA PARA RESOLVER O PROBLEMA DE ACEDER AO LEVEL TIME NA ACTIVITY MODE 1
-    companion object{
-        //TODO CORRIGIR CLASS LEVEL CALL (isto esta assim pois o kotlin ja tem um class Level)
-        lateinit var level:pt.isec.a2019133504.amov_22_23.Data.Level
+    lateinit var boardsLevel : Array<Board>
 
-        val level1 = Level(1,arrayListOf("+"),2,30,3,1..9)
-        val level2 = Level(2,arrayListOf("+","-"),4,40,6,1..99)
-        val level3 = Level(3,arrayListOf("+","-","*"),8,50,12,1..999)
-        val level4 = Level(4,arrayListOf("+","-","*","/"),16,60,24,1..999)
+    companion object{
+        var level: Level = Level.level1
     }
 
     //para atualizar dados na view
@@ -40,28 +37,22 @@ class MathGame {
 
     var board: Board
 
+
 /*    var opLevel1 = "+"
     var opLevel2 = arrayListOf<String>("+","-")
     var opLevel3 = arrayListOf<String>("+","-","*")
     var opLevel4 = arrayListOf<String>("+","-","*","/")*/
 
+    //TODO Init apenas para criar boards
+    //TODO objeto singlePlayer onde sao criadas boards e passadas para o MathGame
+    //TODO no single player ter o timer no mathGame
+    //TODO class multiplayer onde vai receber boards/set delas
+    //TODO fling no single vai incaminhr para o mathgame no multiplayer envia em json para o server
+    //TODO apagar a cena da vitoria
+
     init {
-/*        var cells = Array(5){ linha ->
-            Array(5){ coluna ->
-                if (linha % 2 == 0 && coluna % 2 == 0) {
-                    Cell(linha,coluna,(Random.nextInt(0,10)*1.0).toString(),false)
-                }else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
-                    Cell(linha,coluna," ",false)
-                }else {
-                    Cell(linha,coluna,operators.random(),true)
-                }
-            }
-        }*/
-
-        level = level1
-        var cells = getrandomBoard()
-
-        board = Board(5, cells)
+        level = Level.level1
+        board = Board(5, level)
         cellsLiveData.postValue(board.cells)
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         getMaiorCalculo()
@@ -71,58 +62,16 @@ class MathGame {
     }
 
     fun resetBoardAtributos(){
-        var cells = getrandomBoard()
-        board = Board(5, cells)
+        board = Board(5, level)
         cellsLiveData.postValue(board.cells)
         selectedRow = -1
         selectedCol = -1
-        //selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         getMaiorCalculo()
         vitoriaLiveData.postValue(false)
         pontosLiveData.postValue(pontos)
         vitoria = false
     }
 
-    fun getrandomBoard(): Array<Array<Cell>> {
-        var cells = Array(5){ linha ->
-            Array(5){ coluna ->
-                if (linha % 2 == 0 && coluna % 2 == 0) {
-                    Cell(linha,coluna,(Random.nextInt(level.range)*1.0).toString(),false)
-
-                /*
-                    when(level){
-                        1 -> Cell(linha,coluna,(Random.nextInt(1,9)*1.0).toString(),false)
-                        2 -> Cell(linha,coluna,(Random.nextInt(1,99)*1.0).toString(),false)
-                        else -> {
-                            Cell(linha,coluna,(Random.nextInt(1,999)*1.0).toString(),false)
-                        }
-                    }
-                    //Cell(linha,coluna,(Random.nextInt(0,10)*1.0).toString(),false)
-                */}else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
-                    Cell(linha,coluna," ",false)
-                }else {
-                    Cell(linha,coluna,level.opLevel.random(),true)
-                /*
-                    when(level){
-                        1 -> Cell(linha,coluna,opLevel1,true)
-                        2 -> Cell(linha,coluna,opLevel2.random(),true)
-                        3 -> Cell(linha,coluna,opLevel3.random(),true)
-                        else -> {
-                            Cell(linha, coluna, opLevel4.random(), true)
-                        }
-                    }*/
-                }
-            }
-        }
-        return cells
-    }
-
-/*    fun handleInput(number: Int) {
-        if (selectedRow == -1 || selectedCol == -1) return
-        val cell = board.getCell(selectedRow, selectedCol)
-        if (cell.isOperator) return
-        cellsLiveData.postValue(board.cells)
-    }*/
 
     fun updateValor(){
         maioresValores.postValue(Pair(maiorRow,maiorCol))
@@ -130,12 +79,6 @@ class MathGame {
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
-/*        val cell = board.getCell(row, col)
-        if (!cell.isOperator) {
-            selectedRow = row
-            selectedCol = col
-            selectedCellLiveData.postValue(Pair(row, col))
-        }*/
         selectedRow = row
         selectedCol = col
         selectedCellLiveData.postValue(Pair(row, col))
@@ -143,13 +86,9 @@ class MathGame {
     }
 
     //TODO Falta tratar do caso de dividir por zero
+    //FIXME
     fun getResultadoLinha(linha: Int): Double {
         var result = 0.0
-/*        var operator = board[linha][1]
-        var operator2 = board[linha][3]
-        var num1 = (board[linha][0] as Double)
-        var num3 = (board[linha][2]as Double)
-        var num5 = (board[linha][4]as Double)*/
 
         var operator = board.cells[linha][1].value
         var operator2 = board.cells[linha][3].value
@@ -157,7 +96,6 @@ class MathGame {
         var num3 = board.cells[linha][2].value.toDouble()
         var num5 = board.cells[linha][4].value.toDouble()
 
-        //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
                 when (operator2) {
@@ -306,6 +244,7 @@ class MathGame {
         return result
     }
 
+
     fun getMaiorCalculo(){
         getMaiorCol()
         getMaiorRow()
@@ -340,7 +279,7 @@ class MathGame {
     fun checkVitoria(){
         if (selectedRow == maiorRow && selectedCol == -1 || selectedCol == maiorCol && selectedRow == -1) {
             vitoria = true
-            pontos += level.winPoints
+            pontos += 1
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
             changeLevel(level.ident)
@@ -351,10 +290,10 @@ class MathGame {
     //TODO ALTERAR O LEVEL APENAS QUANTO ACERTOU EM X CALCULOS
     fun changeLevel(levelAtual : Int){
         when(levelAtual){
-            1 -> level = level2
-            2 -> level = level3
-            3 -> level = level4
-            else -> level = level4
+            1 -> level = Level.level2
+            2 -> level = Level.level3
+            3 -> level = Level.level4
+            else -> level = Level.level4
         }
     }
 }
