@@ -22,6 +22,8 @@ class MathGame {
     var cellsLiveData = MutableLiveData< Array<Array<Cell>>>()
     var vitoriaLiveData = MutableLiveData<Boolean>()
 
+    lateinit var boards : Array<Board>
+
     private var selectedRow = -1
     private var selectedCol = -1
 
@@ -52,8 +54,12 @@ class MathGame {
     //TODO apagar a cena da vitoria
 
     init {
+        //TODO ver quantas boards criar para level (5 por agora) e se pode ser assim
+        boards = Array(5){Board(5, level)}
+
         level = Level.level1
-        board = Board(5, level)
+        //board = Board(5, level)
+        board = boards[0]
         cellsLiveData.postValue(board.cells)
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         getMaiorCalculo()
@@ -64,6 +70,7 @@ class MathGame {
 
     fun resetBoardAtributos(){
         board = Board(5, level)
+        //board = boards[++]
         cellsLiveData.postValue(board.cells)
         selectedRow = -1
         selectedCol = -1
