@@ -2,6 +2,7 @@ package pt.isec.a2019133504.amov_22_23.Data
 
 import android.os.CountDownTimer
 import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -40,20 +41,36 @@ class MathGame {
 
     var board: Board
 
-
-/*    var opLevel1 = "+"
-    var opLevel2 = arrayListOf<String>("+","-")
-    var opLevel3 = arrayListOf<String>("+","-","*")
-    var opLevel4 = arrayListOf<String>("+","-","*","/")*/
-
     //TODO Init apenas para criar boards
     //TODO objeto singlePlayer onde sao criadas boards e passadas para o MathGame
-    //TODO no single player ter o timer no mathGame
+    //TODO single player ter o timer no mathGame
     //TODO class multiplayer onde vai receber boards/set delas
     //TODO fling no single vai incaminhr para o mathgame no multiplayer envia em json para o server
     //TODO apagar a cena da vitoria
 
+    private lateinit var textTimer : TextView
+    //buscar a textView??
+    private lateinit var timerObject : CountDownTimer
+    private fun startTimer(totalTime : Int){
+        timerObject = object : CountDownTimer((totalTime*1000).toLong(), 1000) {
+            // Callback function, fired on regular interval
+            override fun onTick(millisUntilFinished: Long) {
+                //binding.viewTimer.text = "seconds remaining: " + millisUntilFinished / 1000
+                //paused = millisUntilFinished / 1000
+            }
+            override fun onFinish() {
+                resetBoardAtributos()
+                //binding.viewTimer.text = "Done!"
+                //boardGame.visibility = View.INVISIBLE
+            }
+        }.start()
+    }
+
+
+
     init {
+
+        //startTimer(30)
         //TODO ver quantas boards criar para level (5 por agora) e se pode ser assim
         boards = Array(5){Board(5, level)}
 
@@ -292,6 +309,16 @@ class MathGame {
             vitoriaLiveData.postValue(true)
             numeroAcertos++
             changeLevel(level.ident)
+
+/*
+            timerObject.cancel()
+            if (paused + MathGame.level.winTime < MathGame.level.maxTime)
+                startTimer(paused.toInt() + MathGame.level.winTime)
+            else
+                startTimer(MathGame.level.maxTime)
+
+*/
+
         }
     }
 

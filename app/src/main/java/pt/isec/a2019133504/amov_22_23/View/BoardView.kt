@@ -180,13 +180,6 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         System.out.println("onLongPress:")
     }
 
-    private fun handleTouchEvent(x: Float, y: Float) {
-        val possibleSelectedRow = (y / cellSizePixels).toInt()
-        val possibleSelectedCol = (x / cellSizePixels).toInt()
-        listener?.onCellTouched(possibleSelectedRow, possibleSelectedCol)
-    }
-
-
     fun updateCells(cells:  Array<Array<Cell>>) {
         this.cells = cells
         invalidate()
