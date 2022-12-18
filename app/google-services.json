@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "474516482484",
+    "project_id": "tpamovfirebase",
+    "storage_bucket": "tpamovfirebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474516482484:android:4571ec8b77ac0c3a366ae1",
+        "android_client_info": {
+          "package_name": "pt.isec.a2019133504.amov_22_23"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474516482484-h1lihr7udi7erm3cmpb06o5onn0ptmmd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.isec.a2019133504.amov_22_23",
+            "certificate_hash": "3dd1a215d314b6fea06ddc761ff1a1bbf0b40ac0"
+          }
+        },
+        {
+          "client_id": "474516482484-12u0roug6k85slea8bsd67dapsgodh12.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeCiQr0ANu-iQ2tFxuBxbIp-1_SNS4-_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474516482484-12u0roug6k85slea8bsd67dapsgodh12.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
