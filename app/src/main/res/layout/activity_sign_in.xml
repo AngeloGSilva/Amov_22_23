@@ -1,28 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="UsingOnClickInXml"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scrollView"
-    tools:context=".SignInActivity">
+    tools:context=".SignInActivity"
+    tools:ignore="UsingOnClickInXml">
+
+    <TextView
+        android:id="@+id/TextAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/appfont"
+        android:text="@string/App_Title"
+        android:textSize="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/data_Login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
+
+    <TextView
+        android:id="@+id/AppinfoTakes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/appfont"
+        android:text="@string/AppInfoTakes"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@+id/TextAppName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextAppName"></TextView>
+
+    <ImageView
+        android:id="@+id/MainLogo"
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:alpha="0.8"
+        android:src="@mipmap/logo"
+        app:layout_constraintBottom_toBottomOf="@+id/data_Login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/TextAppName" />
 
     <LinearLayout
-        android:padding="16dp"
+        android:id="@+id/data_Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:text="@string/msg_status"
-            android:id="@+id/tvStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:padding="16dp"
-            android:background="#c0c0c0"
-            android:textColor="@color/black"
-            android:fontFamily="monospace" />
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_EnterAccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextAppName">
 
         <TextView
             android:layout_width="match_parent"
@@ -32,11 +65,11 @@
 
         <EditText
             android:id="@+id/edEmail"
-            android:hint="@string/msg_email_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:importantForAutofill="no" />
+            android:hint="@string/msg_email_address"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress" />
 
         <TextView
             android:layout_width="match_parent"
@@ -46,38 +79,53 @@
 
         <EditText
             android:id="@+id/edPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/hint_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:inputType="textPassword" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onCreateAccountEmail"
-            android:text="@string/btn_createAccount" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSignInEmail"
-            android:text="@string/btn_signIn" />
-
-        <Button
+        <!-- <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onLogoutEmail"
-            android:text="@string/btn_logout" />
-
-
-
-
-
-
-
-
-
+            android:text="@string/btn_logout" />-->
 
     </LinearLayout>
-</ScrollView>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/data_Login" />
+
+    <Button
+        android:id="@+id/btn_EnterAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onSignInEmail"
+        android:text="@string/btn_signIn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_CreateAccount"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/data_Login" />
+
+    <Button
+        android:id="@+id/btn_CreateAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onCreateAccountEmail"
+        android:text="@string/btn_createAccount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_EnterAccount"
+        app:layout_constraintTop_toBottomOf="@+id/data_Login" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

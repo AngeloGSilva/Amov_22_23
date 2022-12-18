@@ -22,4 +22,5 @@
     <string name="btn_update_data">Update data</string>
     <string name="btn_observe_data">Observe data</string>
     <string name="btn_remove_data">Remove data</string>
+    <string name="App_Title">Cerburs</string>
 </resources>

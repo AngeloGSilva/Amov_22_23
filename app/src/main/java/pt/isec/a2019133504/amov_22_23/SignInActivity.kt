@@ -13,8 +13,9 @@ import pt.isec.a2019133504.amov_22_23.databinding.ActivitySignInBinding
 
 class SignInActivity : AppCompatActivity() {
     companion object{
-        private const val TAG = "SIGNINACTICITY"
+        private var TAG = ""
     }
+
     private lateinit var binding: ActivitySignInBinding
     private lateinit var auth: FirebaseAuth
     private val strEmail get() = binding.edEmail.text.toString()
@@ -28,60 +29,56 @@ class SignInActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        showUser(auth.currentUser)
     }
 
-    fun createUserWithEmail(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener(this) { result ->
-                Log.i(TAG, "createUser: success")
-                showUser(auth.currentUser)
-            }
-            .addOnFailureListener(this) { e ->
-                Log.i(TAG, "createUser: failure ${e.message}")
-                showUser(null)
-            }
-    }
-
-    fun onSignInEmail(view: View) {
-        signInWithEmail(strEmail,strPass)
-    }
-    fun onLogoutEmail(view: View) {
-        signOut()
-    }
-
-    fun signInWithEmail(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener(this) { result ->
-                Log.d(TAG, "signInWithEmail: success")
-                showUser(auth.currentUser)
-                val intent = Intent(this,MainActivity::class.java)
-                startActivity(intent)
-            }
-            .addOnFailureListener(this) { e->
-                Log.d(TAG, "signInWithEmail: failure ${e.message}")
-                showUser(null)
-            }
-    }
-
-    fun onCreateAccountEmail(view: View) {
-        if(strEmail.isBlank() || strPass.isBlank()) return
-        createUserWithEmail(strEmail,strPass)
+    fun showStatus() {
+        binding.tvStatus.text = TAG
     }
 
     fun signOut() {
         if (auth.currentUser != null) {
             auth.signOut()
         }
-        showUser(auth.currentUser)
+
     }
 
-    fun showUser(user : FirebaseUser? = auth.currentUser) {
-        val str = when (user) {
-            null -> "No authenticated user"
-            else -> "User: ${user.email}"
+    fun signInWithEmail(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener(this) { result ->
+                val intent = Intent(this,MainActivity::class.java)
+                startActivity(intent)
+            }
+            .addOnFailureListener(this) { e->
+                TAG = "Login Falhou"
+                showStatus()
+            }
+    }
+    fun createUserWithEmail(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener(this) { result ->
+                val intent = Intent(this,MainActivity::class.java)
+                startActivity(intent)
+            }
+            .addOnFailureListener(this) { e ->
+                TAG = "Registo Falhou"
+                showStatus()
+            }
+    }
+    fun onSignInEmail(view: View) {
+        if(strEmail.isBlank() || strPass.isBlank()){
+            TAG = "Preencha os campos"
+            showStatus()
+            return
         }
-        binding.tvStatus.text = str
-        Log.i(TAG,str)
+        signInWithEmail(strEmail,strPass)
+    }
+
+    fun onCreateAccountEmail(view: View) {
+        if(strEmail.isBlank() || strPass.isBlank()) {
+            TAG = "Preencha os campos"
+            showStatus()
+            return
+        }
+        createUserWithEmail(strEmail,strPass)
     }
 }
