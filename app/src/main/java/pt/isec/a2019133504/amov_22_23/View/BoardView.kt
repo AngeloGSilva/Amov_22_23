@@ -4,15 +4,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import pt.isec.a2019133504.amov_22_23.Data.Cell
-import pt.isec.a2019133504.amov_22_23.Data.MathGame
 import kotlin.math.abs
-import kotlin.random.Random
 
 
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),

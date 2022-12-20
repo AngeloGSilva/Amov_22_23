@@ -21,6 +21,8 @@ class Board(val size: Int, val level: Level) {
             }
         }
     }
+    var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
+    var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
 
     init {
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
@@ -43,9 +45,6 @@ class Board(val size: Int, val level: Level) {
 
 
     }
-
-    val colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
-    val linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
 
 /*    fun updateValor(){
         maioresValores.postValue(Pair(maiorRow,maiorCol))
