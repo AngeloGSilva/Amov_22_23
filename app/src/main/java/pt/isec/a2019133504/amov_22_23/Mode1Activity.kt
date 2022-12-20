@@ -1,5 +1,6 @@
 package pt.isec.a2019133504.amov_22_23
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import pt.isec.a2019133504.amov_22_23.Data.Cell
 import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.MathGame
+import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.View.MyViewModel
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
@@ -25,26 +27,31 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     private lateinit var binding: ActivityMode1Binding
     //private var cells =viewModel.mathGame.getContent()
     private lateinit var timerObject : CountDownTimer
+    private  lateinit var singlePlayer: SinglePlayer
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        singlePlayer = SinglePlayer()
+        viewModel.mathGame.boards = singlePlayer.boards
         binding.boardGame.registerListener(this)
 
         binding.imageView.setImageURI(ProfileActivity.imgdata)
 
-        binding.boardGame.updateCells(viewModel.mathGame.board.cells)
+        //binding.boardGame.updateCells(viewModel.mathGame.board.cells)
 
         viewModel.mathGame.cellsLiveData.observe(this) { updateCells(it) }
         viewModel.mathGame.maioresValores.observe(this) { updateValores(it) }
         viewModel.mathGame.vitoriaLiveData.observe(this) { updateVitoria(it) }
         viewModel.mathGame.pontosLiveData.observe(this) { updatePontos(it) }
+        viewModel.mathGame.timerCount.observe(this){updateTimer(it)}
 
-        startTimer(MathGame.level.maxTime)
+        //startTimer(MathGame.level.maxTime)
     }
 
+/*
     private fun startTimer(totalTime : Int){
         timerObject = object : CountDownTimer((totalTime*1000).toLong(), 1000) {
             // Callback function, fired on regular interval
@@ -60,9 +67,10 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         }.start()
     }
 
+*/
 
     private fun updateVitoria(estado : Boolean){
-        if (estado) {
+/*        if (estado) {
             viewModel.mathGame.resetBoardAtributos()
             timerObject.cancel()
             if (paused + MathGame.level.winTime < MathGame.level.maxTime)
@@ -71,7 +79,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
                 startTimer(MathGame.level.maxTime)
 
             //runBlocking { launch { delay(5000) } }
-        }
+        }*/
     }
 
     private fun updateValores(valores: Pair<Int, Int>){
@@ -80,6 +88,10 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     private fun updateCells(cells: Array<Array<Cell>>?) = cells?.let {
         binding.boardGame.updateCells(cells)
+    }
+
+    private fun updateTimer(timer : Long){
+        binding.viewTimer.text = "seconds remaining: $timer"
     }
 
     private fun updatePontos(pontos : Int){

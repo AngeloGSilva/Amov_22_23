@@ -12,18 +12,14 @@ class MathGame {
 
     lateinit var boardsLevel : Array<Board>
 
-    companion object{
-        var level: Level = Level.level1
-    }
-
     //para atualizar dados na view
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
     var maioresValores = MutableLiveData<Pair<Int,Int>>()
     var pontosLiveData = MutableLiveData<Int>()
     var cellsLiveData = MutableLiveData< Array<Array<Cell>>>()
     var vitoriaLiveData = MutableLiveData<Boolean>()
+    var timerCount = MutableLiveData<Long>()
 
-    lateinit var boards : Array<Board>
 
     private var selectedRow = -1
     private var selectedCol = -1
@@ -35,7 +31,7 @@ class MathGame {
 
     private var numeroAcertos = 0
 
-    var board: Board
+    //var board: Board
 
     //TODO Init apenas para criar boards
     //TODO objeto singlePlayer onde sao criadas boards e passadas para o MathGame
@@ -54,46 +50,48 @@ class MathGame {
             override fun onTick(millisUntilFinished: Long) {
                 //binding.viewTimer.text = "seconds remaining: " + millisUntilFinished / 1000
                 //TODO Usar livedata para atualizar a textview do counter
+                timerCount.postValue(millisUntilFinished/1000)
                 //paused = millisUntilFinished / 1000
             }
             override fun onFinish() {
-                resetBoardAtributos()
+                //resetBoardAtributos()
                 //binding.viewTimer.text = "Done!"
                 //boardGame.visibility = View.INVISIBLE
             }
         }.start()
     }
 
-
+    var level : Level
+    lateinit var  boards : Array<Array<Board>>
+    var board: Board = boards[0][0]
 
     init {
+        startTimer(30)
+        level = Level.array[0]
 
         //startTimer(30)
         //TODO ver quantas boards criar para level (5 por agora) e se pode ser assim
-        boards = Array(5){Board(5, level)}
+        //boards = Array(5){Board(5, level)}
 
-        level = Level.level1
         //board = Board(5, level)
-        board = boards[0]
+        //board = boards[0]
         cellsLiveData.postValue(board.cells)
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
-        getMaiorCalculo()
-        vitoriaLiveData.postValue(false)
+        //vitoriaLiveData.postValue(false)
         pontosLiveData.postValue(pontos)
-        vitoria = false
+        //vitoria = false
     }
 
-    fun resetBoardAtributos(){
+/*    fun resetBoardAtributos(){
         board = Board(5, level)
         //board = boards[++]
         cellsLiveData.postValue(board.cells)
         selectedRow = -1
         selectedCol = -1
-        getMaiorCalculo()
         vitoriaLiveData.postValue(false)
         pontosLiveData.postValue(pontos)
         vitoria = false
-    }
+    }*/
 
 
 
@@ -110,13 +108,17 @@ class MathGame {
 
 
     fun checkVitoria(){
-        if (selectedRow == maiorRow && selectedCol == -1 || selectedCol == maiorCol && selectedRow == -1) {
-            vitoria = true
+
+        //TODO ver a linha ou coluna e ver onde o resultado da linha ou coluna selecionada se encontra(soma mais alta ou segunda mais alta)
+        //TODO somar os pontos e continuar para a proxima board do msm niver ou proxima board do nivel seguinte
+
+
+        if (selectedCol == -1 ||selectedRow == -1) {
             pontos += 1
             pontosLiveData.postValue(pontos)
             vitoriaLiveData.postValue(true)
             numeroAcertos++
-            changeLevel(level.ident)
+            //changeLevel(level.ident)
 
 /*
             timerObject.cancel()
@@ -125,19 +127,20 @@ class MathGame {
             else
                 startTimer(MathGame.level.maxTime)
 
-*/
+*//*
 
-        }
+        }*/
     }
 
     //TODO ALTERAR O LEVEL APENAS QUANTO ACERTOU EM X CALCULOS
     fun changeLevel(levelAtual : Int){
         numeroAcertos = 0
         when(levelAtual){
-            1 -> level = Level.level2
-            2 -> level = Level.level3
-            3 -> level = Level.level4
-            else -> level = Level.level4
+            1 -> level = Level.array[1]
+            2 -> level = Level.array[2]
+            3 -> level = Level.array[3]
+            else -> level = Level.array[4]
         }
     }
+}
 }

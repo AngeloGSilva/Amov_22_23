@@ -10,8 +10,8 @@ class Board(val size: Int, val level: Level) {
 
     //TODO getmaiorresultado e segundo maior Guardar os resultados das linhas e colunas em arrays
 
-    var cells: Array<Array<Cell>> = Array(5) { linha ->
-        Array(5) { coluna ->
+    var cells: Array<Array<Cell>> = Array(size) { linha ->
+        Array(size) { coluna ->
             if (linha % 2 == 0 && coluna % 2 == 0) {
                 Cell((Random.nextInt(level.range) * 1.0).toString())
             } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
@@ -23,8 +23,8 @@ class Board(val size: Int, val level: Level) {
     }
 
     init {
-        val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(1) , getResultadoColuna(2))
-        val linhasResult : List<Double> = listOf(getResultadoLinha(0) ,getResultadoLinha(1) , getResultadoLinha(2))
+        val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
+        val linhasResult : List<Double> = listOf(getResultadoLinha(0) ,getResultadoLinha(2) , getResultadoLinha(4))
         val resultados = (colunasResult + linhasResult).sortedDescending()
 
         colunasResult.forEachIndexed { index, element ->
@@ -36,9 +36,9 @@ class Board(val size: Int, val level: Level) {
 
         linhasResult.forEachIndexed { index, element ->
             if (element == resultados[0])
-                this.colunas[index] = 2
+                this.linhas[index] = 2
             else if (element == resultados[1])
-                this.colunas[index] = 1
+                this.linhas[index] = 1
         }
 
 
@@ -56,11 +56,11 @@ class Board(val size: Int, val level: Level) {
     fun getResultadoLinha(linha: Int): Double {
         var result = 0.0
 
-        var operator = board.cells[linha][1].value
-        var operator2 = board.cells[linha][3].value
-        var num1 = board.cells[linha][0].value.toDouble()
-        var num3 = board.cells[linha][2].value.toDouble()
-        var num5 = board.cells[linha][4].value.toDouble()
+        var operator = cells[linha][1].value
+        var operator2 = cells[linha][3].value
+        var num1 = cells[linha][0].value.toDouble()
+        var num3 = cells[linha][2].value.toDouble()
+        var num5 = cells[linha][4].value.toDouble()
 
         when (operator) {
             "*" -> {
@@ -135,11 +135,11 @@ class Board(val size: Int, val level: Level) {
 
     fun getResultadoColuna(coluna: Int): Double {
         var result = 0.0
-        var operator = board.cells[1][coluna].value
-        var operator2 = board.cells[3][coluna].value
-        var num1 = board.cells[0][coluna].value.toDouble()
-        var num3 = board.cells[2][coluna].value.toDouble()
-        var num5 = board.cells[4][coluna].value.toDouble()
+        var operator = cells[1][coluna].value
+        var operator2 = cells[3][coluna].value
+        var num1 = cells[0][coluna].value.toDouble()
+        var num3 = cells[2][coluna].value.toDouble()
+        var num5 = cells[4][coluna].value.toDouble()
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
