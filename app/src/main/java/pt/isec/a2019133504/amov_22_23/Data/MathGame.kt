@@ -28,10 +28,6 @@ class MathGame {
     private var selectedRow = -1
     private var selectedCol = -1
 
-    private var maiorRow = 0
-        get() = field
-    private var maiorCol = 0
-        get() = field
 
     private var vitoria = false
 
@@ -50,12 +46,14 @@ class MathGame {
 
     private lateinit var textTimer : TextView
     //buscar a textView??
+
     private lateinit var timerObject : CountDownTimer
     private fun startTimer(totalTime : Int){
         timerObject = object : CountDownTimer((totalTime*1000).toLong(), 1000) {
             // Callback function, fired on regular interval
             override fun onTick(millisUntilFinished: Long) {
                 //binding.viewTimer.text = "seconds remaining: " + millisUntilFinished / 1000
+                //TODO Usar livedata para atualizar a textview do counter
                 //paused = millisUntilFinished / 1000
             }
             override fun onFinish() {
@@ -98,9 +96,7 @@ class MathGame {
     }
 
 
-    fun updateValor(){
-        maioresValores.postValue(Pair(maiorRow,maiorCol))
-    }
+
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
@@ -110,196 +106,8 @@ class MathGame {
         checkVitoria()
     }
 
-    //TODO Falta tratar do caso de dividir por zero
-    //FIXME
-    fun getResultadoLinha(linha: Int): Double {
-        var result = 0.0
-
-        var operator = board.cells[linha][1].value
-        var operator2 = board.cells[linha][3].value
-        var num1 = board.cells[linha][0].value.toDouble()
-        var num3 = board.cells[linha][2].value.toDouble()
-        var num5 = board.cells[linha][4].value.toDouble()
-
-        when (operator) {
-            "*" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = (num1 * num3) + num5
-                        //result = ((num1.times(num3)).plus(num5))
-                    }
-                    "-" -> {
-                        result = (num1.times(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.times(num3).times(num5)
-                    }
-                    "/"->{
-                        result = (num1 * num3)/num5
-                        //result = num1.times(num3).div(num5)
-                    }
-                }
-            }
-            "/" ->{
-                when (operator2) {
-                    "+" -> {
-                        result = (num1.div(num3)).plus(num5)
-                    }
-                    "-" -> {
-                        result = (num1.div(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.div(num3).times(num5)
-                    }
-                    "/"->{
-                        result = num1.div(num3).div(num5)
-                    }
-                }
-            }
-            "+" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = num1.plus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.plus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.plus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.plus(num3.div(num5))
-                    }
-                }
-            }
-            "-"->{
-                when (operator2) {
-                    "+" -> {
-                        result = num1.minus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.minus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.minus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.minus(num3.div(num5))
-                    }
-                }
-            }
-        }
-        return result
-    }
-
-    fun getResultadoColuna(coluna: Int): Double {
-        var result = 0.0
-        var operator = board.cells[1][coluna].value
-        var operator2 = board.cells[3][coluna].value
-        var num1 = board.cells[0][coluna].value.toDouble()
-        var num3 = board.cells[2][coluna].value.toDouble()
-        var num5 = board.cells[4][coluna].value.toDouble()
-        //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
-        when (operator) {
-            "*" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = ((num1.times(num3)).plus(num5))
-                    }
-                    "-" -> {
-                        result = (num1.times(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.times(num3).times(num5)
-                    }
-                    "/"->{
-                        result = num1.times(num3).div(num5)
-                    }
-                }
-            }
-            "/" ->{
-                when (operator2) {
-                    "+" -> {
-                        result = (num1.div(num3)).plus(num5)
-                    }
-                    "-" -> {
-                        result = (num1.div(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.div(num3).times(num5)
-                    }
-                    "/"->{
-                        result = num1.div(num3).div(num5)
-                    }
-                }
-            }
-            "+" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = num1.plus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.plus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.plus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.plus(num3.div(num5))
-                    }
-                }
-            }
-            "-"->{
-                when (operator2) {
-                    "+" -> {
-                        result = num1.minus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.minus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.minus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.minus(num3.div(num5))
-                    }
-                }
-            }
-        }
-        return result
-    }
 
 
-    fun getMaiorCalculo(){
-        getMaiorCol()
-        getMaiorRow()
-        if (getResultadoLinha(maiorRow) >= getResultadoColuna(maiorCol))
-            maiorCol = -1
-        else
-            maiorRow = -1
-
-        updateValor()
-    }
-
-    fun getMaiorCol(){
-        var max = getResultadoColuna(0)
-        for (i in 0 until board.size){
-            if (i % 2 == 0 && getResultadoColuna(i) >= max){
-                max = getResultadoColuna(i)
-                maiorCol = i
-            }
-        }
-    }
-
-    fun getMaiorRow(){
-        var max = getResultadoLinha(0)
-        for (i in 0 until board.size){
-            if (i % 2 == 0 && getResultadoLinha(i) >= max){ //i%2 linhas validas
-                max = getResultadoLinha(i)
-                maiorRow = i
-            }
-        }
-    }
 
     fun checkVitoria(){
         if (selectedRow == maiorRow && selectedCol == -1 || selectedCol == maiorCol && selectedRow == -1) {
