@@ -23,6 +23,8 @@ class Board(val size: Int, val level: Level) {
     }
     var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
     var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
+    var maior : Double = 0.0
+    var segundoMaior : Double = 0.0
 
     init {
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
@@ -43,12 +45,21 @@ class Board(val size: Int, val level: Level) {
                 this.linhas[index] = 1
         }
 
+        colunas.forEachIndexed{ index, element ->
+            if (element == 1)
+                segundoMaior = getResultadoColuna(index*2)
+            if (element == 2)
+                maior = getResultadoColuna(index*2)
+        }
 
+        linhas.forEachIndexed{ index, element ->
+            if (element == 1)
+                segundoMaior = getResultadoLinha(index*2)
+            if (element == 2)
+                maior = getResultadoLinha(index*2)
+        }
     }
 
-/*    fun updateValor(){
-        maioresValores.postValue(Pair(maiorRow,maiorCol))
-    }*/
 
     //TODO Falta tratar do caso de dividir por zero
     //FIXME

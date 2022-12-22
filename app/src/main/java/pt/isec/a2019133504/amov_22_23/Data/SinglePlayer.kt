@@ -1,38 +1,32 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
 import android.os.CountDownTimer
-import android.widget.TextView
+import android.os.Handler
 import androidx.lifecycle.MutableLiveData
-import pt.isec.a2019133504.amov_22_23.View.BoardView
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 class SinglePlayer() {
-
     val boards : Array<Array<Board>> = Array(Level.array.size) { level ->
         Array(10) { board ->
                 Board(5,Level.array[level])
             }
         }
-    var BoardAtual : Int = 0
-    var NivelAtual : Int = 0
 
-    //para atualizar dados na view
-    var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
-    var maioresValores = MutableLiveData<Pair<Int,Int>>()
-    var pontosLiveData = MutableLiveData<Int>()
-    var cellsLiveData = MutableLiveData< Array<Array<Cell>>>()
-    var vitoriaLiveData = MutableLiveData<Boolean>()
-    var timerCount = MutableLiveData<Long>()
+    var pontos = 0
+    private var BoardAtual : Int = 0
+    private var NivelAtual : Int = 0
+    var pause : Long = 0
 
     private var selectedRow = -1
     private var selectedCol = -1
 
-    private var vitoria = false
-
-    private var pontos = 0
-
-    private var numeroAcertos = 0
+    //para atualizar dados na view
+    var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
+    //var maioresValores = MutableLiveData<Pair<Double,Double>>()
+    var pontosLiveData = MutableLiveData<Int>()
+    var cellsLiveData = MutableLiveData< Array<Array<Cell>>>()
+    var fimLiveData = MutableLiveData<Boolean>()
+    var timerCount = MutableLiveData<Long>()
+    var nextLevel = MutableLiveData<Boolean>()
 
     //TODO Init apenas para criar boards
     //TODO objeto singlePlayer onde sao criadas boards e passadas para o MathGame
@@ -41,54 +35,39 @@ class SinglePlayer() {
     //TODO fling no single vai incaminhr para o mathgame no multiplayer envia em json para o server
     //TODO apagar a cena da vitoria
 
-    private lateinit var textTimer : TextView
-
     private lateinit var timerObject : CountDownTimer
-    private fun startTimer(totalTime : Int){
+    fun startTimer(totalTime : Long){
         timerObject = object : CountDownTimer((totalTime*1000).toLong(), 1000) {
-            // Callback function, fired on regular interval
             override fun onTick(millisUntilFinished: Long) {
-                //binding.viewTimer.text = "seconds remaining: " + millisUntilFinished / 1000
-                //TODO Usar livedata para atualizar a textview do counter
                 timerCount.postValue(millisUntilFinished/1000)
-                //paused = millisUntilFinished / 1000
+                pause = millisUntilFinished / 1000
             }
             override fun onFinish() {
-                //resetBoardAtributos()
-                //binding.viewTimer.text = "Done!"
-                //boardGame.visibility = View.INVISIBLE
+                //TODO para acabar
+                fimLiveData.postValue(true)
+                pontosLiveData.postValue(pontos)
             }
         }.start()
     }
 
-    //var level : Level
+
+
+    fun returnboard(): Board {
+        return boards[NivelAtual][BoardAtual]
+    }
+
+    fun returnboardcells(): Array<Array<Cell>> {
+        return boards[NivelAtual][BoardAtual].cells
+    }
 
     init {
         startTimer(30)
-        //level = Level.array[0]
-
         cellsLiveData.postValue(boards[NivelAtual][BoardAtual].cells)
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
-        //vitoriaLiveData.postValue(false)
         pontosLiveData.postValue(pontos)
-        //vitoria = false
     }
 
-/*    fun resetBoardAtributos(){
-        board = Board(5, level)
-        //board = boards[++]
-        cellsLiveData.postValue(board.cells)
-        selectedRow = -1
-        selectedCol = -1
-        vitoriaLiveData.postValue(false)
-        pontosLiveData.postValue(pontos)
-        vitoria = false
-    }*/
 
-
-    fun returnboardcells(): Array<Array<Cell>> {
-        return boards[NivelAtual][BoardAtual].cells;
-    }
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
@@ -103,35 +82,45 @@ class SinglePlayer() {
         //TODO ver a linha ou coluna e ver onde o resultado da linha ou coluna selecionada se encontra(soma mais alta ou segunda mais alta)
         //TODO somar os pontos e continuar para a proxima board do msm niver ou proxima board do nivel seguinte
 
-
-        if (selectedCol == -1 ||selectedRow == -1) {
-            pontos += 1
-            pontosLiveData.postValue(pontos)
-            vitoriaLiveData.postValue(true)
-            numeroAcertos++
-            //changeLevel(level.ident)
-
-/*
-            timerObject.cancel()
-            if (paused + MathGame.level.winTime < MathGame.level.maxTime)
-                startTimer(paused.toInt() + MathGame.level.winTime)
-            else
-                startTimer(MathGame.level.maxTime)
-
-*//*
-
-        }*/
+        if (selectedCol == -1 && selectedRow != -1) {
+            if(returnboard().getResultadoLinha(selectedRow) == returnboard().maior){
+                pontos += 2
+                timerObject.cancel()
+                startTimer(pause+returnboard().level.winTime)
+            }else if (returnboard().getResultadoLinha(selectedRow) == returnboard().segundoMaior) {
+                pontos += 1
+                timerObject.cancel()
+                startTimer(pause+returnboard().level.winTime)
+            }
+        }else if (selectedRow == -1 && selectedCol != -1){
+            if(returnboard().getResultadoColuna(selectedCol) == returnboard().maior){
+                pontos += 2
+                timerObject.cancel()
+                startTimer(pause+returnboard().level.winTime)
+            }else if (returnboard().getResultadoColuna(selectedCol) == returnboard().segundoMaior) {
+                pontos += 1
+                timerObject.cancel()
+                startTimer(pause+returnboard().level.winTime)
+            }
         }
 
-        //TODO ALTERAR O LEVEL APENAS QUANTO ACERTOU EM X CALCULOS
-        /*fun changeLevel(levelAtual : Int){
-            numeroAcertos = 0
-            when(levelAtual){
-                1 -> level = Level.array[1]
-                2 -> level = Level.array[2]
-                3 -> level = Level.array[3]
-                else -> level = Level.array[4]
-            }
-        }*/
+
+        if (NivelAtual == 3 && BoardAtual==9){
+            //TODO para acabar
+            fimLiveData.postValue(true)
+            pontosLiveData.postValue(pontos)
+        }else{
+            if (BoardAtual == 9) {
+                BoardAtual = 0
+                NivelAtual++
+                timerObject.cancel()
+                nextLevel.postValue(true)
+                //TODO aletar o nextLevel para os 5 segundos de pausa de forma mais correta
+            } else
+                BoardAtual++
+            pontosLiveData.postValue(pontos)
+            cellsLiveData.postValue(returnboardcells())
+        }
     }
+
 }
