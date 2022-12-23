@@ -23,4 +23,7 @@
     <string name="btn_remove_data">Remove data</string>
     <string name="App_Title">Cerbrus</string>
     <string name="AppInfoTakes">Got what it takes?</string>
+    <string name="GameNextLevel">Próximo nivel em:</string>
+    <string name="GameNextLevelTimer">5</string>
+    <string name="Pontos">Pontos:</string>
 </resources>
