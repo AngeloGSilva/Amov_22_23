@@ -17,6 +17,20 @@
         android:theme="@style/Theme.Amov_22_23"
         tools:targetApi="30">
         <activity
+            android:name=".GameActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".Modo2Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".SignInActivity"
             android:exported="false">
             <meta-data
