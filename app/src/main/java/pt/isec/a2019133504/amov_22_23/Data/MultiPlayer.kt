@@ -1,7 +1,7 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
-import java.io.InputStream
-import java.io.OutputStream
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
@@ -14,22 +14,30 @@ class MultiPlayer() {
         const val MOVE_C = -1
     }
 
+    enum class State {
+        STARTING, PLAYING_BOTH, PLAYING_ME, PLAYING_OTHER, ROUND_ENDED, GAME_OVER
+    }
+
     enum class ConnectionState {
         SETTING_PARAMETERS, SERVER_CONNECTING, CLIENT_CONNECTING, CONNECTION_ESTABLISHED,
         CONNECTION_ERROR, CONNECTION_ENDED
     }
 
-    private var socket: Socket? = null
-    private val socketI: InputStream?
-        get() = socket?.getInputStream()
-    private val socketO: OutputStream?
-        get() = socket?.getOutputStream()
+    private val _state = MutableLiveData(State.STARTING)
+    val state : LiveData<State>
+        get() = _state
+
+    private val _connectionState = MutableLiveData(ConnectionState.SETTING_PARAMETERS)
+
+    val connectionState : LiveData<ConnectionState>
+        get() = _connectionState
+
 
     private var serverSocket: ServerSocket? = null
 
     private var threadComm: Thread? = null
 
-
+    private lateinit var players : Array<Player>
 
     fun startServer() {
         if (serverSocket != null || socket != null ||
@@ -40,10 +48,11 @@ class MultiPlayer() {
 
         thread {
             serverSocket = ServerSocket(SERVER_PORT)
+
             serverSocket?.run {
                 try {
                     val socketClient = serverSocket!!.accept()
-                    startComm(socketClient)
+                    startServerComm(socketClient)
                 } catch (_: Exception) {
                     _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 } finally {
@@ -52,21 +61,69 @@ class MultiPlayer() {
                 }
             }
         }
+        startClient("localhost")
     }
 
     fun startClient(serverIP: String,serverPort: Int = SERVER_PORT) {
         if (socket != null || _connectionState.value != ConnectionState.SETTING_PARAMETERS)
             return
 
-        thread {
             _connectionState.postValue(ConnectionState.CLIENT_CONNECTING)
             try {
                 //val newsocket = Socket(serverIP, serverPort)
                 val newsocket = Socket()
                 newsocket.connect(InetSocketAddress(serverIP,serverPort),5000)
-                startComm(newsocket)
+                //TODO IMAGEM e Username
+                startJogadorComm(newsocket)
             } catch (_: Exception) {
                 _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
+                stopGame()
+            }
+    }
+
+    private fun startJogadorComm(newSocket: Socket) {
+        if (threadComm != null)
+            return
+
+        threadComm = thread {
+            try {
+                if (socketI == null)
+                    return@thread
+
+                _connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
+                val bufI = socketI!!.bufferedReader()
+
+                while (_state.value != State.GAME_OVER) {
+                    val message = bufI.readLine()
+                    val move = message.toIntOrNull() ?: MOVE_NONE
+                    changeOtherMove(move)
+                }
+            } catch (_: Exception) {
+            } finally {
+                stopGame()
+            }
+        }
+    }
+
+    private fun startServerComm(newSocket: Socket) {
+        if (threadComm != null)
+            return
+
+        threadComm = thread {
+            try {
+                if (socketI == null)
+                    return@thread
+
+                _connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
+                val bufI = socketI!!.bufferedReader()
+
+                while (_state.value != State.GAME_OVER) {
+                    val message = bufI.readLine()
+                    val move = message.toIntOrNull() ?: MOVE_NONE
+                    changeOtherMove(move)
+                }
+            } catch (_: Exception) {
+            } finally {
                 stopGame()
             }
         }
