@@ -67,7 +67,7 @@ class SignInActivity : AppCompatActivity() {
                 //TODO USERNAME
                 perfil = Perfil("Eu",email)
                 val photoUser = hashMapOf(
-                    "Photo" to null,
+                    "UserName" to null,
                 )
                 db.collection("UserData").document(email).set(photoUser)
                 val intent = Intent(this,MainActivity::class.java)
