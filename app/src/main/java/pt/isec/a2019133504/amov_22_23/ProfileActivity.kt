@@ -1,12 +1,15 @@
 package pt.isec.a2019133504.amov_22_23
 
+import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -37,24 +40,14 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
     private var imagePath : String? = null
-    private lateinit var imageName : String
 
     private var permissionsGranted = false
 
     private lateinit var auth : FirebaseAuth
-    private lateinit var databaseReference : DatabaseReference
-    private lateinit var storageReference:StorageReference
-    private lateinit var imgUri : Uri
-
-
-
-
-    //tentativa 4
     private lateinit var storage: FirebaseStorage
     private lateinit var storageRef :StorageReference
     private lateinit var mountainsRef :StorageReference
-    private lateinit var mountainImagesRef :StorageReference
-
+    lateinit var uid : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,21 +55,15 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
         imageView = findViewById(R.id.profilephoto)
         auth = FirebaseAuth.getInstance()
-        val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-
+        uid = auth.currentUser?.uid!!
         db = Firebase.firestore
 
-        checkUserPhoto()
-
-
-        //tentativa
         storage = Firebase.storage
         storageRef = storage.reference
 
+        checkUserPhoto()
+
         binding.btnCapture.setOnClickListener {
-            /*val intent = Intent(this,CameraActivity::class.java)
-            startActivity(intent)*/
             takePhoto()
         }
 
@@ -177,11 +164,10 @@ class ProfileActivity : AppCompatActivity() {
 
 
     //update imageview after taking an photo
-    override fun onResume() {
-        //binding.profilephoto.setImageURI(imgdata)
-        imageView.setImageURI(imgdata)
+    /*override fun onResume() {
+       // imageView.setImageURI(imgdata)
         super.onResume()
-    }
+    }*/
 
     /*fun addUserToFirestore() {
 
@@ -199,20 +185,32 @@ class ProfileActivity : AppCompatActivity() {
     }*/
 
     fun checkUserPhoto(){
-        var img = db.collection("UsersData").document(SignInActivity.perfil.emailstr).get()
+        val progressdialog = ProgressDialog(this)
+        progressdialog.setMessage("Fetching Data..")
+        progressdialog.setCancelable(false)
+        progressdialog.show()
 
-        if(img !=null){
-            imageView.setImageURI(imgdata)
+        val storageref = FirebaseStorage.getInstance().reference.child("images/$uid")
+        val localfile = File.createTempFile("tempfile","jpg")
+        storageref.getFile(localfile).addOnSuccessListener {
+            if(progressdialog.isShowing)
+                progressdialog.dismiss()
+            val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
+            imageView.setImageBitmap(bitmap)
+        }.addOnFailureListener{
+            if(progressdialog.isShowing)
+                progressdialog.dismiss()
+            Toast.makeText(this,"FAILIURE",Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == pickImage) {
             imageView.setImageURI(data?.data)
             //binding.profilephoto.setImageURI(data?.data)
             //imgdata = data?.data
         }
-    }
+    }*/
 
 }
