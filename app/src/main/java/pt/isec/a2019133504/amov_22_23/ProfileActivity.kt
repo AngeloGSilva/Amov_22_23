@@ -1,6 +1,7 @@
 package pt.isec.a2019133504.amov_22_23
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.FirebaseFirestoreKtxRegistrar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import createFileFromUri
 import getTempFilename
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityProfileBinding
@@ -53,6 +55,11 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)*/
             takePhoto()
         }
+
+        binding.btnGaleria?.setOnClickListener {
+            escolhePhoto()
+        }
+
         binding.editprofile.setOnClickListener {
 
         }
@@ -67,6 +74,27 @@ class ProfileActivity : AppCompatActivity() {
         updatePreview()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun escolhePhoto() {
+        Log.i(TAG, "chooseImage_v3: ")
+        startActivityForContentResult.launch("image/*")
+    }
+
+    // para a v3
+    var startActivityForContentResult = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        Log.i(TAG, "startActivityForContentResult: ")
+        /*uri?.apply {
+                val cursor = contentResolver.query(this,
+                    arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null)
+                if (cursor !=null && cursor.moveToFirst())
+                    imagePath = cursor.getString(0)
+                updatePreview()
+        }*/
+        imagePath = uri?.let { createFileFromUri(this, it) }
+        updatePreview()
     }
 
     private fun verify_permissions() {
