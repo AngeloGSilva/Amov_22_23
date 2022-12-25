@@ -39,7 +39,7 @@ class MultiPlayer() {
 
     private lateinit var players : Array<Player>
 
-    fun startServer() {
+    /*fun startServer() {
         if (serverSocket != null || socket != null ||
             _connectionState.value != ConnectionState.SETTING_PARAMETERS)
             return
@@ -57,7 +57,7 @@ class MultiPlayer() {
                     _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 } finally {
                     serverSocket?.close()
-                    serverSocket = null
+                    serverSocket = nulls
                 }
             }
         }
@@ -127,6 +127,6 @@ class MultiPlayer() {
                 stopGame()
             }
         }
-    }
+    }*/
 
 }

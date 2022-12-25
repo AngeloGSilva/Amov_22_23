@@ -32,8 +32,6 @@
     <string name="error_address">Address not recognized</string>
     <string name="button_connect">Connect</string>
     <string name="ask_ip">Server IP address:</string>
-    <string name="client_mode">Client mode</string>
-    <string name="server_mode">Server mode</string>
     <string name="button_cancel">Cancel</string>
     <string name="my_wins">My wins:</string>
     <string name="other_wins">Other wins:</string>

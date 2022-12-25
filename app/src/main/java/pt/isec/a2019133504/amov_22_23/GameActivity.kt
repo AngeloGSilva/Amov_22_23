@@ -101,7 +101,7 @@ class GameActivity : AppCompatActivity() {
             })
         }
 
-        dlg = AlertDialog.Builder(this)
+        /*dlg = AlertDialog.Builder(this)
             .setTitle(R.string.server_mode)
             .setView(ll)
             .setOnCancelListener {
@@ -112,7 +112,7 @@ class GameActivity : AppCompatActivity() {
 
         model.startServer()
 
-        dlg?.show()
+        dlg?.show()*/
     }
 
     private fun startAsClient() {
@@ -140,7 +140,7 @@ class GameActivity : AppCompatActivity() {
 
             })
         }
-        val dlg = AlertDialog.Builder(this)
+        /*val dlg = AlertDialog.Builder(this)
             .setTitle(R.string.client_mode)
             .setMessage(R.string.ask_ip)
             .setPositiveButton(R.string.button_connect) { _: DialogInterface, _: Int ->
@@ -166,6 +166,6 @@ class GameActivity : AppCompatActivity() {
             .setView(edtBox)
             .create()
 
-        dlg.show()
+        dlg.show()*/
     }
 }

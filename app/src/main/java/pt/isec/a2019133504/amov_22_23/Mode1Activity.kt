@@ -151,9 +151,12 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         val db = Firebase.firestore
 
         val scores = hashMapOf(
-            "Pontuacao" to singlePlayer.pontos
+            "Email" to "tttt",
+            "Pontuacao" to singlePlayer.pontos,
+            "Time" to 69
         )
-        db.collection("Top5").document("singleplayer").set(scores)
+
+        db.collection("Top5Scores").document("Top1").set(scores)
             .addOnSuccessListener {
                 Log.i(TAG, "addDataToFirestore: Success")
             }
