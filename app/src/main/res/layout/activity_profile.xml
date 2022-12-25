@@ -55,12 +55,21 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/Username"
-                android:text="Player"
+            <TextView
+                android:id="@+id/UsernameView"
+                android:text="UserName"
+                android:textSize="25dp"
+                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                 />
+
+            <EditText
+                android:id="@+id/UsernameEdit"
+                android:text="New Username"
+                android:textColor="@color/grey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:inputType="textEmailAddress" />
 
 

@@ -8,15 +8,19 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.text.set
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -34,7 +38,6 @@ import java.util.UUID
 class ProfileActivity : AppCompatActivity() {
 
     lateinit var imageView: ImageView
-    lateinit var db : FirebaseFirestore
     private val pickImage = 100
     companion object {
         var imgdata : Uri? = null
@@ -45,6 +48,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private var permissionsGranted = false
 
+    lateinit var db : FirebaseFirestore
     private lateinit var auth : FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var storageRef :StorageReference
@@ -64,6 +68,10 @@ class ProfileActivity : AppCompatActivity() {
         storageRef = storage.reference
 
         checkUserPhoto()
+
+        binding.UsernameEdit?.setOnClickListener{
+            binding.UsernameEdit!!.text.clear()
+        }
 
         binding.btnCapture.setOnClickListener {
             takePhoto()
@@ -146,6 +154,7 @@ class ProfileActivity : AppCompatActivity() {
     fun updatePreview(){
         if(imagePath != null)
             setPic(binding.profilephoto,imagePath!!)
+
         /*else*/
 /*
             binding.frPreview.background = ResourcesCompat.getDrawable(resources,android.R.drawable.ic_menu_report_image,null)
@@ -177,11 +186,12 @@ class ProfileActivity : AppCompatActivity() {
     fun setUserName() {
         var email = auth.currentUser?.email.toString()
         val userName = hashMapOf(
-            "UserName" to binding.Username!!.text.toString()
+            "UserName" to binding.UsernameEdit!!.text.toString()
         )
 
         db.collection("UserData").document(email).set(userName)
             .addOnSuccessListener {
+                binding.UsernameView?.text = userName.get("UserName")
                 Log.i(ContentValues.TAG, "addDataToFirestore: Success")
             }
             .addOnFailureListener { e->
@@ -207,11 +217,21 @@ class ProfileActivity : AppCompatActivity() {
                 progressdialog.dismiss()
             Toast.makeText(this,"FAILIURE",Toast.LENGTH_SHORT).show()
         }
-        var email = auth.currentUser!!.email.toString()
 
-        db.collection("UserData").document(email).get().addOnSuccessListener { result ->
-            binding.Username!!.text = result.data?.values
+        //val Username :String = binding.Username?.text.toString()
+        var email = auth.currentUser!!.email.toString()
+        db.collection("UserData").document(email).get()
+            .addOnSuccessListener {result ->
+                binding.UsernameView?.text = result.get("UserName").toString()
+                }
+            .addOnFailureListener{
+
         }
+
+
+        /*db.collection("UserData").document(email).get().addOnSuccessListener { result ->
+            binding.Username!!.text = result.data?.values
+        }*/
 /*
         db.collection("users")
         .get()
@@ -235,5 +255,6 @@ class ProfileActivity : AppCompatActivity() {
             //imgdata = data?.data
         }
     }*/
+
 
 }

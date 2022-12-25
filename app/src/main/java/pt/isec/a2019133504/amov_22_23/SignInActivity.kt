@@ -66,10 +66,10 @@ class SignInActivity : AppCompatActivity() {
             .addOnSuccessListener(this) { result ->
                 //TODO USERNAME
                 perfil = Perfil("Eu",email)
-                val photoUser = hashMapOf(
+                val username = hashMapOf(
                     "UserName" to null,
                 )
-                db.collection("UserData").document(email).set(photoUser)
+                db.collection("UserData").document(email).set(username)
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
             }
