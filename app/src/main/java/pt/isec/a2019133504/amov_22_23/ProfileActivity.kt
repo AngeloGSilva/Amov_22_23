@@ -1,29 +1,30 @@
 package pt.isec.a2019133504.amov_22_23
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
-import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.FirebaseFirestoreKtxRegistrar
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import createFileFromUri
 import getTempFilename
-import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityProfileBinding
 import setPic
 import java.io.File
+import java.io.FileInputStream
+import java.util.UUID
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -36,8 +37,23 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
     private var imagePath : String? = null
+    private lateinit var imageName : String
 
     private var permissionsGranted = false
+
+    private lateinit var auth : FirebaseAuth
+    private lateinit var databaseReference : DatabaseReference
+    private lateinit var storageReference:StorageReference
+    private lateinit var imgUri : Uri
+
+
+
+
+    //tentativa 4
+    private lateinit var storage: FirebaseStorage
+    private lateinit var storageRef :StorageReference
+    private lateinit var mountainsRef :StorageReference
+    private lateinit var mountainImagesRef :StorageReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,10 +61,18 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         imageView = findViewById(R.id.profilephoto)
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.currentUser?.uid
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
         db = Firebase.firestore
 
         checkUserPhoto()
+
+
+        //tentativa
+        storage = Firebase.storage
+        storageRef = storage.reference
 
         binding.btnCapture.setOnClickListener {
             /*val intent = Intent(this,CameraActivity::class.java)
@@ -63,18 +87,21 @@ class ProfileActivity : AppCompatActivity() {
         binding.editprofile.setOnClickListener {
 
         }
-        //TODO alterar para o player mesmo (apenas teste)
-       /* binding.realizaLogin.setOnClickListener {
-            var perfil = Perfil("Angelo","angelo@emial", imgdata.toString())
-            var intent = Intent(this,MainActivity::class.java)
-            intent.putExtra("profileUser",perfil as java.io.Serializable)
-            startActivity(intent)
-        }*/
+
+        binding.saveData?.setOnClickListener {
+            //tentativa
+            System.out.println("Path da foto:" + imagePath+ "\nUID:"+uid )
+            mountainsRef = storageRef.child("images/"+uid+"/")
+            val stream = FileInputStream(File(imagePath))
+            var uploadTask = mountainsRef.putStream(stream)
+        }
+
         verify_permissions()
         updatePreview()
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
 
     private fun escolhePhoto() {
         Log.i(TAG, "chooseImage_v3: ")
@@ -86,13 +113,6 @@ class ProfileActivity : AppCompatActivity() {
         ActivityResultContracts.GetContent()
     ) { uri ->
         Log.i(TAG, "startActivityForContentResult: ")
-        /*uri?.apply {
-                val cursor = contentResolver.query(this,
-                    arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null)
-                if (cursor !=null && cursor.moveToFirst())
-                    imagePath = cursor.getString(0)
-                updatePreview()
-        }*/
         imagePath = uri?.let { createFileFromUri(this, it) }
         updatePreview()
     }

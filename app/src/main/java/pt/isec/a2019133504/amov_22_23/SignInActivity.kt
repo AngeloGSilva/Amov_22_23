@@ -19,10 +19,11 @@ class SignInActivity : AppCompatActivity() {
     companion object{
         private var TAG = ""
         lateinit var perfil : Perfil
+        lateinit var auth: FirebaseAuth
     }
     lateinit var db : FirebaseFirestore
     private lateinit var binding: ActivitySignInBinding
-    private lateinit var auth: FirebaseAuth
+    //private lateinit var auth: FirebaseAuth
     private val strEmail get() = binding.edEmail.text.toString()
     private val strPass get() = binding.edPassword.text.toString()
 

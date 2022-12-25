@@ -37,13 +37,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/namePlayer"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/EmailAddress"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:ems="10"
+                android:inputType="textEmailAddress" />
 
         </LinearLayout>
 
@@ -56,13 +55,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/emailPlayer"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/Username"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:ems="10"
+                android:inputType="textEmailAddress" />
 
 
         </LinearLayout>
@@ -83,7 +81,7 @@
                 android:textSize="10dp" />
 
             <Button
-                android:id="@+id/realizaLogin"
+                android:id="@+id/saveData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -119,6 +117,10 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/btn_take_photo"
             android:textSize="10sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
