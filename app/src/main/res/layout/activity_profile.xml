@@ -18,33 +18,14 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilephoto">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/EmailAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textEmailAddress" />
-
-        </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,21 +37,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:textAlignment="center"
                 android:id="@+id/UsernameView"
-                android:text="UserName"
-                android:textSize="25dp"
-                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                 />
+                android:text="UserName"
+                android:textColor="@color/black"
+                android:textSize="25dp" />
 
             <EditText
                 android:id="@+id/UsernameEdit"
-                android:text="New Username"
-                android:textColor="@color/grey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:text="New Username"
+                android:textColor="@color/grey" />
 
 
         </LinearLayout>
@@ -80,15 +61,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="25dp"
             android:layout_marginTop="25dp">
-
-            <Button
-                android:id="@+id/editprofile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:text="editar"
-                android:textSize="10dp" />
 
             <Button
                 android:id="@+id/saveData"
@@ -105,20 +77,21 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="114dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profilephoto">
 
         <Button
             android:id="@+id/btn_galeria"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
-            android:textSize="10sp"
-            android:text="Galeria" />
+            android:text="Galeria"
+            android:textSize="10sp" />
 
         <Button
             android:id="@+id/btn_capture"
@@ -128,9 +101,6 @@
             android:text="@string/btn_take_photo"
             android:textSize="10sp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

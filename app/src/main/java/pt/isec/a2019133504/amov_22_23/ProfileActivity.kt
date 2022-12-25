@@ -81,11 +81,7 @@ class ProfileActivity : AppCompatActivity() {
             escolhePhoto()
         }
 
-        binding.editprofile.setOnClickListener {
-
-        }
-
-        binding.saveData?.setOnClickListener {
+        binding.saveData.setOnClickListener {
             //tentativa
             setUserName()
             if (imagePath!=null){
@@ -186,12 +182,12 @@ class ProfileActivity : AppCompatActivity() {
     fun setUserName() {
         var email = auth.currentUser?.email.toString()
         val userName = hashMapOf(
-            "UserName" to binding.UsernameEdit!!.text.toString()
+            "UserName" to binding.UsernameEdit.text.toString()
         )
 
         db.collection("UserData").document(email).set(userName)
             .addOnSuccessListener {
-                binding.UsernameView?.text = userName.get("UserName")
+                binding.UsernameView.text = userName.get("UserName")
                 Log.i(ContentValues.TAG, "addDataToFirestore: Success")
             }
             .addOnFailureListener { e->
@@ -222,7 +218,7 @@ class ProfileActivity : AppCompatActivity() {
         var email = auth.currentUser!!.email.toString()
         db.collection("UserData").document(email).get()
             .addOnSuccessListener {result ->
-                binding.UsernameView?.text = result.get("UserName").toString()
+                binding.UsernameView.text = result.get("UserName").toString()
                 }
             .addOnFailureListener{
 
