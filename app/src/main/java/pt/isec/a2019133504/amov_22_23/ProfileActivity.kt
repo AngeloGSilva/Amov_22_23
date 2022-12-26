@@ -42,6 +42,7 @@ class ProfileActivity : AppCompatActivity() {
     private val pickImage = 100
     companion object {
         var imgdata : Uri? = null
+        lateinit var username : String
     }
 
     private lateinit var binding: ActivityProfileBinding
@@ -193,6 +194,7 @@ class ProfileActivity : AppCompatActivity() {
 
         db.collection("UserData").document(email).set(userName)
             .addOnSuccessListener {
+                username = userName.get("UserName").toString()
                 binding.UsernameView.text = userName.get("UserName")
                 Log.i(ContentValues.TAG, "addDataToFirestore: Success")
             }
@@ -224,6 +226,7 @@ class ProfileActivity : AppCompatActivity() {
         var email = auth.currentUser!!.email.toString()
         db.collection("UserData").document(email).get()
             .addOnSuccessListener {result ->
+                username = result.get("UserName").toString()
                 binding.UsernameView.text = result.get("UserName").toString()
                 }
             .addOnFailureListener{

@@ -51,6 +51,17 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    fun checkUsernameexists(){
+        var email = auth.currentUser!!.email.toString()
+        db.collection("UserData").document(email).get()
+            .addOnSuccessListener {result ->
+                ProfileActivity.username = result.get("UserName").toString()
+            }
+            .addOnFailureListener{
+
+            }
+    }
+
     fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
@@ -83,6 +94,7 @@ class SignInActivity : AppCompatActivity() {
             .addOnSuccessListener(this) { result ->
                 perfil = Perfil(email)
                 checkphotoexists()
+                checkUsernameexists()
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
             }
@@ -101,6 +113,7 @@ class SignInActivity : AppCompatActivity() {
                 )
                 db.collection("UserData").document(email).set(username)
                 checkphotoexists()
+                checkUsernameexists()
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
             }

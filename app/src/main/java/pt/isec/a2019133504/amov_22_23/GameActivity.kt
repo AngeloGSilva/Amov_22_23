@@ -19,6 +19,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.postDelayed
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
+import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer.Companion.SERVER_PORT
 
 class GameActivity : AppCompatActivity() {
     companion object {
@@ -112,7 +113,7 @@ class GameActivity : AppCompatActivity() {
             }
             .create()
 
-        //model.startServer()
+        model.startServer()
 
         dlg?.show()
     }
@@ -142,7 +143,7 @@ class GameActivity : AppCompatActivity() {
 
             })
         }
-        /*val dlg = AlertDialog.Builder(this)
+        val dlg = AlertDialog.Builder(this)
             .setTitle(R.string.client_mode)
             .setMessage(R.string.ask_ip)
             .setPositiveButton(R.string.button_connect) { _: DialogInterface, _: Int ->
@@ -154,13 +155,6 @@ class GameActivity : AppCompatActivity() {
                     model.startClient(strIP)
                 }
             }
-            .setNeutralButton(R.string.btn_emulator) { _: DialogInterface, _: Int ->
-                model.startClient("10.0.2.2", SERVER_PORT-1)
-                // Configure port redirect on the Server Emulator:
-                // telnet localhost <5554|5556|5558|...>
-                // auth <key>
-                // redir add tcp:9998:9999
-            }
             .setNegativeButton(R.string.button_cancel) { _: DialogInterface, _: Int ->
                 finish()
             }
@@ -168,6 +162,6 @@ class GameActivity : AppCompatActivity() {
             .setView(edtBox)
             .create()
 
-        dlg.show()*/
+        dlg.show()
     }
 }
