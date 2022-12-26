@@ -16,6 +16,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.NonCancellable.cancel
 import kotlinx.coroutines.channels.ticker
 import pt.isec.a2019133504.amov_22_23.Data.Cell
+import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
@@ -88,12 +89,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     private fun updateFim(estado : Boolean){
         //TODO melhorar mensagem de fim e guardar pontos etc
-        /*val builder = AlertDialog.Builder(this)
-        builder.setTitle("Fim Jogo")
-        builder.setMessage(singlePlayer.pontos.toString())
-        builder.setCancelable(false)
-        val caixaAlerta = builder.create()
-        caixaAlerta.show()*/
         binding.boardGame.isVisible = false
         binding.NextLevelTimer.isVisible = false
         binding.timertitle.isVisible = false
@@ -155,11 +150,11 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     fun addDataToFirestore() {
         val db = Firebase.firestore
-
+        var email = SignInActivity.perfil.emailstr
         val scores = hashMapOf(
-            "Email" to "tttt",
+            "Email" to email,
             "Pontuacao" to singlePlayer.pontos,
-            "Time" to 69
+            "Time" to singlePlayer.timerCount
         )
 
         db.collection("Top5Scores").document("Top1").set(scores)
