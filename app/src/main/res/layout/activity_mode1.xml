@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Add Score to firebase"
-            android:visibility="invisible"></Button>
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/tryAgain"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Play Again"
-            android:visibility="invisible"></Button>
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/btn_MenuInicial"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Menu Inicial"
-            android:visibility="invisible"></Button>
+            android:visibility="invisible" />
     </LinearLayout>
 
     <TextView
@@ -62,7 +62,7 @@
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></TextView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/NextLevelTimer"
@@ -73,7 +73,7 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timertitle"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/timertitle" />
 
     <pt.isec.a2019133504.amov_22_23.View.BoardView
         android:id="@+id/boardGame"

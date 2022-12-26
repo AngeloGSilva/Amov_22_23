@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -134,6 +135,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     override fun onBackPressed() {
+        //addDataToFirestore()
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Alerta de Jogo")
         builder.setMessage("Se saires agora, o jogo nao será salvo!")
@@ -156,14 +158,31 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             "Pontuacao" to singlePlayer.pontos,
             "Time" to singlePlayer.timerCount
         )
-
-        db.collection("Top5Scores").document("Top1").set(scores)
-            .addOnSuccessListener {
-                Log.i(TAG, "addDataToFirestore: Success")
+        var topScore = false
+        db.collection("Top5Scores").get().addOnSuccessListener {
+                result ->
+            for (document in result) {
+                Log.d(TAG, "${document.id} => ${document.data}")
+                if ((document.data["Pontuacao"].toString()).toInt() < scores["Pontuacao"].toString().toInt() && !topScore) {
+                    topScore = true
+                    db.collection("Top5Scores").document(document.id).set(scores)
+                        .addOnSuccessListener {
+                            Log.d(TAG, "${document.id} => ${document.data}")
+                            Log.i(TAG, "addDataToFirestore: Success")
+                            Toast.makeText(this, "add score to leaderBoard ", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.i(TAG, "addDataToFirestore: ${e.message}")
+                        }
+                    break
+                }
             }
-            .addOnFailureListener { e->
-                Log.i(TAG, "addDataToFirestore: ${e.message}")
-            }
+        }.addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents.", exception)
+        }
+        if (!topScore)
+            Toast.makeText(this,"Es uma merda", Toast.LENGTH_SHORT).show()
+        topScore = false
     }
 }
 
