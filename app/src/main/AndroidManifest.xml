@@ -17,6 +17,13 @@
         android:theme="@style/Theme.Amov_22_23"
         tools:targetApi="30">
         <activity
+            android:name=".ScoreActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".GameActivity"
             android:exported="false">
             <meta-data
@@ -68,7 +75,8 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="pt.isec.a2019133504.amov_22_23.android.fileprovider"
-            android:exported="false" android:grantUriPermissions="true">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
