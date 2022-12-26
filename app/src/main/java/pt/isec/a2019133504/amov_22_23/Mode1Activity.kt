@@ -100,9 +100,15 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.timer.isVisible = false
         binding.btnAddFirestore.isVisible = true
         binding.btnMenuInicial.isVisible = true
+        binding.tryAgain.isVisible = true
 
         binding.btnAddFirestore.setOnClickListener(){
             addDataToFirestore()
+        }
+
+        binding.tryAgain.setOnClickListener(){
+            finish()
+            startActivity(intent)
         }
 
         binding.btnMenuInicial.setOnClickListener(){

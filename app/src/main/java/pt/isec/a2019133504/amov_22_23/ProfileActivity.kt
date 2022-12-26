@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.text.set
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -83,7 +84,12 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.saveData.setOnClickListener {
             //tentativa
-            setUserName()
+            if(imagePath!=null)
+            imgdata = Uri.parse(imagePath)
+            var texto = binding.UsernameEdit.text
+            if(!texto.isNullOrEmpty())
+                if(!texto.toString().equals("New Username"))
+                    setUserName()
             if (imagePath!=null){
                 System.out.println("Path da foto:" + imagePath + "\nUID:" + uid)
                 mountainsRef = storageRef.child("images/" + uid + "/")
@@ -97,7 +103,6 @@ class ProfileActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
 
     private fun escolhePhoto() {
         Log.i(TAG, "chooseImage_v3: ")
@@ -136,7 +141,8 @@ class ProfileActivity : AppCompatActivity() {
         requestPermissionLauncher.launch(
             arrayOf(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.CAMERA
             )
         )
     }
@@ -148,9 +154,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun updatePreview(){
-        if(imagePath != null)
-            setPic(binding.profilephoto,imagePath!!)
-
+        if(imagePath != null) {
+            setPic(binding.profilephoto, imagePath!!)
+        }
         /*else*/
 /*
             binding.frPreview.background = ResourcesCompat.getDrawable(resources,android.R.drawable.ic_menu_report_image,null)

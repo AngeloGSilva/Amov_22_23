@@ -6,6 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".Mode1Activity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timer">
+
+        <Button
+            android:id="@+id/btn_addFirestore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Add Score to firebase"
+            android:visibility="invisible"></Button>
+
+        <Button
+            android:id="@+id/tryAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Play Again"
+            android:visibility="invisible"></Button>
+
+        <Button
+            android:id="@+id/btn_MenuInicial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Menu Inicial"
+            android:visibility="invisible"></Button>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/timer"
         android:layout_width="wrap_content"
@@ -27,28 +63,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></TextView>
-
-    <Button
-        android:id="@+id/btn_addFirestore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:text="Add Firestore"
-        app:layout_constraintBottom_toTopOf="@+id/btn_MenuInicial"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></Button>
-
-    <Button
-        android:id="@+id/btn_MenuInicial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Menu Inicial"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_addFirestore"></Button>
 
     <TextView
         android:id="@+id/NextLevelTimer"

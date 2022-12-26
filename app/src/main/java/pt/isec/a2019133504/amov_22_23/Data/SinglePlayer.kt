@@ -50,8 +50,6 @@ class SinglePlayer() {
         }.start()
     }
 
-
-
     fun returnboard(): Board {
         return boards[NivelAtual][BoardAtual]
     }
@@ -66,8 +64,6 @@ class SinglePlayer() {
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         pontosLiveData.postValue(pontos)
     }
-
-
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
