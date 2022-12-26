@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.ConnectivityManager.NetworkCallback
 import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -71,6 +72,7 @@ class GameActivity : AppCompatActivity() {
     private fun startAsServer() {
         val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
         val ip = wifiManager.connectionInfo.ipAddress // Deprecated in API Level 31. Suggestion NetworkCallback
+        //val ip = NetworkCallback.FLAG_INCLUDE_LOCATION_INFO
         val strIPAddress = String.format("%d.%d.%d.%d",
             ip and 0xff,
             (ip shr 8) and 0xff,
@@ -101,18 +103,18 @@ class GameActivity : AppCompatActivity() {
             })
         }
 
-        /*dlg = AlertDialog.Builder(this)
-            .setTitle(R.string.server_mode)
+        dlg = AlertDialog.Builder(this)
+            .setTitle("Server Mode")
             .setView(ll)
             .setOnCancelListener {
-                model.stopServer()
+                //model.stopServer()
                 finish()
             }
             .create()
 
-        model.startServer()
+        //model.startServer()
 
-        dlg?.show()*/
+        dlg?.show()
     }
 
     private fun startAsClient() {

@@ -32,6 +32,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        binding.btnMode2.setOnClickListener {
+            val intent = Intent(this,Modo2Activity::class.java)
+            startActivity(intent)
+        }
+
         binding.btnScores.setOnClickListener {
             val intent = Intent(this,ScoreActivity::class.java)
             startActivity(intent)
