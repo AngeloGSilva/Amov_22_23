@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -47,7 +48,8 @@ class SignInActivity : AppCompatActivity() {
         storageref.getFile(localfile).addOnSuccessListener {
 
             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
-            ProfileActivity.imgdata = getImageUri(this,bitmap)
+            //ProfileActivity.imgdata = getImageUri(this,bitmap)
+            ProfileActivity.imgdata = localfile.toUri()
         }
     }
 

@@ -1,5 +1,6 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -35,32 +36,34 @@ class MultiPlayer() {
         get() = _connectionState
 
 
-    private var serverSocket: ServerSocket? = null
+    private lateinit var serverSocket: ServerSocket
 
     private var threadComm: Thread? = null
 
     private lateinit var players : Array<Player>
 
     fun startServer() {
-        if (serverSocket != null || _connectionState.value != ConnectionState.SETTING_PARAMETERS)
+        if ( _connectionState.value != ConnectionState.SETTING_PARAMETERS)
             return
 
         _connectionState.postValue(ConnectionState.SERVER_CONNECTING)
 
         thread {
             serverSocket = ServerSocket(SERVER_PORT)
-
+            System.out.println(serverSocket)
             serverSocket?.run {
+                System.out.println("IP:")
+               System.out.println("THREAD RUNNING")
                 try {
                     val socketClient = serverSocket!!.accept()
-                    Log.i("Conectado ao socket",socketClient.toString())
+                    System.out.println("Conectado ao socket" + socketClient.toString())
                 //startServerComm(socketClient)
                 } catch (_: Exception) {
                     _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 } finally {
                     //Acabar o jogo para todos
                     serverSocket?.close()
-                    serverSocket = null
+
                     //stopGame()
                 }
             }
@@ -70,18 +73,20 @@ class MultiPlayer() {
 
     //players[players.size] = Player(ProfileActivity.imgdata,ProfileActivity.username,socketClient)
 
-    fun startClient(serverIP: String,serverPort: Int = SERVER_PORT) {
+    @SuppressLint("SuspiciousIndentation")
+    fun startClient(serverIP: String, serverPort: Int = SERVER_PORT) {
         if (_connectionState.value != ConnectionState.SETTING_PARAMETERS)
             return
             _connectionState.postValue(ConnectionState.CLIENT_CONNECTING)
             try {
                 //val newsocket = Socket(serverIP, serverPort)
                 val newsocket = Socket()
-                newsocket.connect(InetSocketAddress(serverIP,serverPort),5000)
+                newsocket.connect(InetSocketAddress("10.0.2.16",serverPort),5000)
                 //var playeratual = Player(ProfileActivity.imgdata,ProfileActivity.username,newsocket)
                 //TODO IMAGEM e Username
                 //startJogadorComm(playeratual)
             } catch (_: Exception) {
+                System.out.println("ERRO AO CONECTAR AO SERVIDOR")
                 _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 //stopGame()
             }

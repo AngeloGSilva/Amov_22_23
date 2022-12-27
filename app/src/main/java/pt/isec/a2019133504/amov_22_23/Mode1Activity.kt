@@ -1,6 +1,7 @@
 package pt.isec.a2019133504.amov_22_23
 
 import android.app.AlertDialog
+import android.app.DownloadManager.Query
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +14,9 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.Query.Direction
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.NonCancellable.cancel
 import kotlinx.coroutines.channels.ticker
@@ -99,7 +103,9 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.tryAgain.isVisible = true
 
         binding.btnAddFirestore.setOnClickListener(){
+            //TODO binding de status Message
             addDataToFirestore()
+            binding.btnAddFirestore.isEnabled = false
         }
 
         binding.tryAgain.setOnClickListener(){
@@ -158,32 +164,16 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             "Pontuacao" to singlePlayer.pontos,
             "Time" to singlePlayer.timerCount
         )
-        var topScore = false
-        db.collection("Top5Scores").get().addOnSuccessListener {
-                result ->
-            for (document in result) {
-                Log.d(TAG, "${document.id} => ${document.data}")
-                if ((document.data["Pontuacao"].toString()).toInt() < scores["Pontuacao"].toString().toInt() && !topScore) {
-                    topScore = true
+        var foundscore = false
+        db.collection("Top5Scores").orderBy("Pontuacao", Direction.ASCENDING).limit(1).get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
                     db.collection("Top5Scores").document(document.id).set(scores)
-                        .addOnSuccessListener {
-                            Log.d(TAG, "${document.id} => ${document.data}")
-                            Log.i(TAG, "addDataToFirestore: Success")
-                            Toast.makeText(this, "add score to leaderBoard ", Toast.LENGTH_SHORT).show()
-                        }
-                        .addOnFailureListener { e ->
-                            Log.i(TAG, "addDataToFirestore: ${e.message}")
-                        }
-                    break
                 }
             }
-        }.addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-        }
-        if (!topScore)
-            Toast.makeText(this,"Es uma merda", Toast.LENGTH_SHORT).show()
-        topScore = false
     }
+
+
 }
 
 
