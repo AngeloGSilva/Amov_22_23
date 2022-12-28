@@ -63,7 +63,14 @@ class GameActivity : AppCompatActivity() {
                 finish()
             }
         }
-        model.foto.observe(this) {
+        model.testeusers.observe(this) {
+            var imageview = findViewById<ImageView>(R.id.imagejson)
+            imageview.setImageBitmap(it[0].Imagem)
+            var userview = findViewById<TextView>(R.id.userjson)
+            userview.setText(it[0].nome)
+        }
+
+        model.usersinfo.observe(this){
             var imageview = findViewById<ImageView>(R.id.imagejson)
             imageview.setImageBitmap(it)
         }
@@ -103,17 +110,30 @@ class GameActivity : AppCompatActivity() {
                 indeterminateTintList = ColorStateList.valueOf(Color.rgb(96, 96, 32))
             })
             addView(TextView(context).apply {
-                val paramsTV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                val paramsTV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 layoutParams = paramsTV
-                text = String.format(getString(R.string.msg_ip_address),strIPAddress)
+                text = String.format(getString(R.string.msg_ip_address))
                 textSize = 20f
                 setTextColor(Color.rgb(96, 96, 32))
-                textAlignment = View.TEXT_ALIGNMENT_CENTER
+            })
+            addView(Button(context).apply {
+                val paramsbt = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams = paramsbt
+                text = "Start"
+                textSize = 10f
+                setOnClickListener {
+                    //Notificar o jogo de que o server começou
+                    //Notifica os clientes que vai começar
+                    dlg?.dismiss()
+                }
             })
         }
 
         dlg = AlertDialog.Builder(this)
-            .setTitle("Server Mode")
+            .setTitle("Server Mode - " + strIPAddress)
             .setView(ll)
             .setOnCancelListener {
                 //model.stopServer()

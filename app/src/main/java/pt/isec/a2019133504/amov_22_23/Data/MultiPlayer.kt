@@ -24,6 +24,8 @@ import java.net.Socket
 import java.nio.CharBuffer
 import java.nio.charset.StandardCharsets
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 
 
@@ -57,9 +59,12 @@ class MultiPlayer() {
 
     private var threadComm: Thread? = null
 
-    private lateinit var players : Array<Player>
+    private lateinit var players : ArrayList<Player>
 
-    var foto = MutableLiveData<Bitmap>()
+    var usersinfo = MutableLiveData<Bitmap>()
+
+    var testeusers = MutableLiveData<ArrayList<Player>>()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startServer() {
@@ -105,10 +110,10 @@ class MultiPlayer() {
                 newsocket.connect(InetSocketAddress(serverIP, serverPort), 5000)
                 //TODO IMAGEM e Username
                 val bitmap : Bitmap = MediaStore.Images.Media.getBitmap(c.contentResolver,ProfileActivity.imgdata)
-
                 var baos = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
                 val json = JSONObject()
+                //json.put("Pontos",0)
                 json.put("Username", ProfileActivity.username)
                 json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
                 System.out.println(json.toString())
@@ -134,28 +139,28 @@ class MultiPlayer() {
             try {
                 if (newSocket.getInputStream() == null)
                     return@thread
-
                 //_connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
                 val bufI = newSocket.getInputStream()
                 var s : String
                 bufI.bufferedReader().use { s = it.readText() }
-
                 var json = JSONObject(s)
-                //DESCODIFICAR O JSON
-                var bais : ByteArrayInputStream
                 var foto2 = json.get("UserPhoto")
+                var usernameholder = json.get("Username")
                 val decoder = Base64.getDecoder().decode(foto2.toString())
-                //val decodedString = String(decoder)
                 var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
-                foto.postValue(bitmap)
+                
+                players.add(Player(bitmap,"tt",newSocket))
+                testeusers.postValue(players)
+                usersinfo.postValue(bitmap)
                 //var decodedbitmap = BitmapFactory.decodeByteArray(decoded,0,decoded.size)
 
-                while (_state.value != State.GAME_OVER) {
+                //while (_state.value != State.GAME_OVER) {
                     //val message = bufI.
 
                 //
-                }
-            } catch (_: Exception) {
+                //}
+            } catch (x: Exception) {
+                System.err.println(x.message)
             } finally {
                 //stopGame()
             }

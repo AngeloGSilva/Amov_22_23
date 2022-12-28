@@ -41,6 +41,13 @@ class SignInActivity : AppCompatActivity() {
         db = Firebase.firestore
         setContentView(binding.root)
 
+        binding.btndebug1.setOnClickListener {
+            signInWithEmail("eueu@gmail.com","eueueu")
+        }
+        binding.btndebug2.setOnClickListener {
+            signInWithEmail("adeusadeus@gmail.com","adeusadeus")
+        }
+
 
     }
 
