@@ -59,7 +59,7 @@ class MultiPlayer() {
 
     private var threadComm: Thread? = null
 
-    private lateinit var players : ArrayList<Player>
+    private var players : ArrayList<Player> = ArrayList()
 
     var usersinfo = MutableLiveData<Bitmap>()
 
@@ -148,10 +148,11 @@ class MultiPlayer() {
                 var usernameholder = json.get("Username")
                 val decoder = Base64.getDecoder().decode(foto2.toString())
                 var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
-                
-                players.add(Player(bitmap,"tt",newSocket))
+                var new = Player(bitmap,"tt",newSocket)
+
+                players.add(new)
                 testeusers.postValue(players)
-                usersinfo.postValue(bitmap)
+                usersinfo.postValue(players[0].Imagem)
                 //var decodedbitmap = BitmapFactory.decodeByteArray(decoded,0,decoded.size)
 
                 //while (_state.value != State.GAME_OVER) {
