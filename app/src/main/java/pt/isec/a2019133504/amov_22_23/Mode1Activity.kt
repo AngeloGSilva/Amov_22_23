@@ -141,7 +141,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     override fun onBackPressed() {
-        //addDataToFirestore()
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Alerta de Jogo")
         builder.setMessage("Se saires agora, o jogo nao será salvo!")
@@ -164,11 +163,11 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
             "Pontuacao" to singlePlayer.pontos,
             "Time" to singlePlayer.timerCount
         )
-        var foundscore = false
         db.collection("Top5Scores").orderBy("Pontuacao", Direction.ASCENDING).limit(1).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    db.collection("Top5Scores").document(document.id).set(scores)
+                    if(document.data["Pontuacao"].toString().toInt() < singlePlayer.pontos)
+                        db.collection("Top5Scores").document(document.id).set(scores)
                 }
             }
     }

@@ -86,7 +86,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.saveData.setOnClickListener {
             //tentativa
             if(imagePath!=null)
-            imgdata = Uri.parse(imagePath)
+                imgdata = Uri.parse(imagePath)
             var texto = binding.UsernameEdit.text
             if(!texto.isNullOrEmpty())
                 if(!texto.toString().equals("New Username"))
@@ -106,7 +106,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun escolhePhoto() {
-        Log.i(TAG, "chooseImage_v3: ")
+        //Log.i(TAG, "chooseImage_v3: ")
         startActivityForContentResult.launch("image/*")
     }
 
@@ -191,7 +191,7 @@ class ProfileActivity : AppCompatActivity() {
         val userName = hashMapOf(
             "UserName" to binding.UsernameEdit.text.toString()
         )
-
+        //TODO CHECK IF USERNAME ALREADY USED, addd number of games played
         db.collection("UserData").document(email).set(userName)
             .addOnSuccessListener {
                 username = userName.get("UserName").toString()

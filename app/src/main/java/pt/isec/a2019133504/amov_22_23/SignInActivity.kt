@@ -20,12 +20,14 @@ import pt.isec.a2019133504.amov_22_23.databinding.ActivitySignInBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
 
+
 class SignInActivity : AppCompatActivity() {
     companion object{
         private var TAG = ""
         lateinit var perfil : Perfil
         lateinit var auth: FirebaseAuth
     }
+    val STRING_LENGTH = 10
     lateinit var db : FirebaseFirestore
     private lateinit var binding: ActivitySignInBinding
     //private lateinit var auth: FirebaseAuth
@@ -44,9 +46,8 @@ class SignInActivity : AppCompatActivity() {
 
     fun checkphotoexists(){
         val storageref = FirebaseStorage.getInstance().reference.child("images/${auth.currentUser?.uid}")
-        val localfile = File.createTempFile("tempfile","jpg")
+        val localfile = File.createTempFile("tempfile",".jpg",this.cacheDir)
         storageref.getFile(localfile).addOnSuccessListener {
-
             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
             //ProfileActivity.imgdata = getImageUri(this,bitmap)
             ProfileActivity.imgdata = localfile.toUri()
@@ -105,13 +106,14 @@ class SignInActivity : AppCompatActivity() {
                 showStatus()
             }
     }
+
     fun createUserWithEmail(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
                 //TODO USERNAME
                 perfil = Perfil(email)
                 val username = hashMapOf(
-                    "UserName" to null,
+                    "UserName" to "User_" + getRandomString(STRING_LENGTH),
                 )
                 db.collection("UserData").document(email).set(username)
                 checkphotoexists()
@@ -140,5 +142,12 @@ class SignInActivity : AppCompatActivity() {
             return
         }
         createUserWithEmail(strEmail,strPass)
+    }
+
+    fun getRandomString(length: Int) : String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..length)
+            .map { allowedChars.random() }
+            .joinToString("")
     }
 }

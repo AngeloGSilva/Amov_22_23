@@ -7,6 +7,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.wifi.WifiManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputFilter
@@ -16,6 +17,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.postDelayed
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
@@ -42,6 +44,7 @@ class GameActivity : AppCompatActivity() {
     private val model: MultiPlayer = MultiPlayer()
     private var dlg: AlertDialog? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -60,6 +63,10 @@ class GameActivity : AppCompatActivity() {
                 finish()
             }
         }
+        model.foto.observe(this) {
+            var imageview = findViewById<ImageView>(R.id.imagejson)
+            imageview.setImageBitmap(it)
+        }
 
         when (intent.getIntExtra("mode", SERVER_MODE)) {
             SERVER_MODE -> startAsServer()
@@ -70,6 +77,7 @@ class GameActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startAsServer() {
         val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
         val ip = wifiManager.connectionInfo.ipAddress // Deprecated in API Level 31. Suggestion NetworkCallback
@@ -118,6 +126,7 @@ class GameActivity : AppCompatActivity() {
         dlg?.show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startAsClient() {
         val edtBox = EditText(this).apply {
             maxLines = 1
@@ -152,10 +161,11 @@ class GameActivity : AppCompatActivity() {
                     Toast.makeText(this@GameActivity, R.string.error_address, Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    model.startClient(strIP)
+                    model.startClient(this,strIP)
                 }
-            }
-            .setNegativeButton(R.string.button_cancel) { _: DialogInterface, _: Int ->
+            }.setNeutralButton(R.string.btn_emulator) { _: DialogInterface, _: Int ->
+                model.startClient(this,"10.0.2.2", SERVER_PORT - 1)
+            }.setNegativeButton(R.string.button_cancel) { _: DialogInterface, _: Int ->
                 finish()
             }
             .setCancelable(false)
