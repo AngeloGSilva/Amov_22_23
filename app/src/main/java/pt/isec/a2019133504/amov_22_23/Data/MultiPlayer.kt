@@ -89,7 +89,7 @@ class MultiPlayer() : ViewModel() {
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = SERVER_PORT) {
 
-        thread {
+        threadComm = thread {
             try {
                 val newsocket = Socket()
                 newsocket.connect(InetSocketAddress(serverIP, serverPort), 5000)
@@ -116,8 +116,8 @@ class MultiPlayer() : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startServerComm(newSocket: Socket) {
-        if (threadComm != null)
-            return
+        /*if (threadComm != null)
+            return*/
 
         threadComm = thread {
             try {
@@ -135,10 +135,14 @@ class MultiPlayer() : ViewModel() {
                 var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
 
                 players.add(Player(bitmap, usernameholder as String,newSocket))
-                testeusers.postValue(players)
+                //testeusers.postValue(players)
 
-
-                //usersinfo.postValue(players[0].Imagem)
+                var coisas = toJson(players)
+                OutputStreamWriter(
+                    newSocket.getOutputStream(),
+                    StandardCharsets.UTF_8
+                ).use { out -> out.write(toJson(players)) }
+        //usersinfo.postValue(players[0].Imagem)
 
             } catch (x: Exception) {
                 System.err.println(x.message)
@@ -146,6 +150,23 @@ class MultiPlayer() : ViewModel() {
                 //stopGame()
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun toJson(rails: ArrayList<Player>): String {
+        val sb = StringBuilder().clear()
+        rails.forEachIndexed { index, railPoint ->
+            var bitmap : Bitmap = railPoint.Imagem
+            var baos = ByteArrayOutputStream()
+            bitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
+            //val json = JSONObject()
+            //json.put("Username", ProfileActivity.username)
+            //json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
+            sb.append("UserName: \"${railPoint.nome}\",")
+            sb.append("Imagem: ${Base64.getEncoder().encodeToString(baos.toByteArray())}")
+        }
+        return "{ $sb }"
     }
 
     fun StartGame() : Boolean {
@@ -162,19 +183,30 @@ class MultiPlayer() : ViewModel() {
         return true
      }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startJogadorComm(p :Player) {
-        if (threadComm != null)
-            return
+/*        if (threadComm != null)
+            return*/
 
-        threadComm = thread {
+        thread {
             try {
                 if (p.socket == null)
                     return@thread
 
-                val bufI = p.inputstream!!.bufferedReader()
+                val bufI = p.inputstream
+                var s : String
+                bufI?.bufferedReader().use { s = it!!.readText()}
+                var json = JSONObject(s)
+                var foto2 = json.get("Imagem")
+                //json.getJSONArray("UserPhoto")
+                var usernameholder = json.get("UserName")
+                val decoder = Base64.getDecoder().decode(foto2.toString())
+                var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
 
+                players.add(Player(bitmap, usernameholder as String,p.socket))
+                testeusers.postValue(players)
 
-                    val message = bufI.readLine()
+                //val message = bufI.readLine()
 
 
             } catch (_: Exception) {
