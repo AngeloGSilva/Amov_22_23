@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import org.checkerframework.checker.units.qual.s
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
@@ -29,7 +30,7 @@ import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 
 
-class MultiPlayer() {
+class MultiPlayer() : ViewModel() {
     companion object {
         const val SERVER_PORT = 9999
         const val MOVE_L = -1
@@ -37,55 +38,43 @@ class MultiPlayer() {
     }
 
     enum class State {
-        STARTING, PLAYING_BOTH, PLAYING_ME, PLAYING_OTHER, ROUND_ENDED, GAME_OVER
+        WAITING_CONNECTIONS,PLAYING,INTERVAL,GAMEOVER
     }
 
-    enum class ConnectionState {
-        SETTING_PARAMETERS, SERVER_CONNECTING, CLIENT_CONNECTING, CONNECTION_ESTABLISHED,
-        CONNECTION_ERROR, CONNECTION_ENDED
-    }
-
-    private val _state = MutableLiveData(State.STARTING)
+    private val _state = MutableLiveData(State.WAITING_CONNECTIONS)
     val state : LiveData<State>
         get() = _state
-
-    private val _connectionState = MutableLiveData(ConnectionState.SETTING_PARAMETERS)
-
-    val connectionState : LiveData<ConnectionState>
-        get() = _connectionState
-
 
     private lateinit var serverSocket: ServerSocket
 
     private var threadComm: Thread? = null
 
-    private var players : ArrayList<Player> = ArrayList()
+    var players : ArrayList<Player> = ArrayList()
+        get() = field
 
-    var usersinfo = MutableLiveData<Bitmap>()
+    //var usersinfo = MutableLiveData<Bitmap>()
 
     var testeusers = MutableLiveData<ArrayList<Player>>()
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startServer() {
-        if ( _connectionState.value != ConnectionState.SETTING_PARAMETERS)
-            return
 
-        _connectionState.postValue(ConnectionState.SERVER_CONNECTING)
+        serverSocket = ServerSocket(SERVER_PORT)
 
         thread {
-            serverSocket = ServerSocket(SERVER_PORT)
             System.out.println(serverSocket)
             serverSocket?.run {
                System.out.println("THREAD RUNNING")
                 try {
-                    val socketClient = serverSocket!!.accept()
-                    startServerComm(socketClient)
-                    //System.out.println("Conectado ao socket" + socketClient.toString())
-                    //players[players.size] = Player(Recebido por JSON,socketClient)
-
+                    while(state.value == State.WAITING_CONNECTIONS) {
+                        val socketClient = serverSocket!!.accept()
+                        startServerComm(socketClient)
+                        //System.out.println("Conectado ao socket" + socketClient.toString())
+                        //players[players.size] = Player(Recebido por JSON,socketClient)
+                    }
                 } catch (_: Exception) {
-                    _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
+                    //_connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 } finally {
                     //Acabar o jogo para todos
                     //serverSocket?.close()
@@ -94,26 +83,21 @@ class MultiPlayer() {
                 }
             }
         }
-        //startClient("localhost")
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = SERVER_PORT) {
-        if (_connectionState.value != ConnectionState.SETTING_PARAMETERS)
-            return
+
         thread {
-            _connectionState.postValue(ConnectionState.CLIENT_CONNECTING)
             try {
-                //val newsocket = Socket(serverIP, serverPort)
                 val newsocket = Socket()
                 newsocket.connect(InetSocketAddress(serverIP, serverPort), 5000)
-                //TODO IMAGEM e Username
-                val bitmap : Bitmap = MediaStore.Images.Media.getBitmap(c.contentResolver,ProfileActivity.imgdata)
+                var bitmap : Bitmap = MediaStore.Images.Media.getBitmap(c.contentResolver,ProfileActivity.imgdata)
                 var baos = ByteArrayOutputStream()
+                bitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
                 val json = JSONObject()
-                //json.put("Pontos",0)
                 json.put("Username", ProfileActivity.username)
                 json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
                 System.out.println(json.toString())
@@ -121,10 +105,10 @@ class MultiPlayer() {
                     newsocket.getOutputStream(),
                     StandardCharsets.UTF_8
                 ).use { out -> out.write(json.toString()) }
-                //startJogadorComm()
+
+                startJogadorComm(Player(bitmap,ProfileActivity.username,newsocket))
             } catch (_: Exception) {
                 System.out.println("ERRO AO CONECTAR AO SERVIDOR")
-                _connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 //stopGame()
             }
         }
@@ -145,21 +129,17 @@ class MultiPlayer() {
                 bufI.bufferedReader().use { s = it.readText() }
                 var json = JSONObject(s)
                 var foto2 = json.get("UserPhoto")
+                //json.getJSONArray("UserPhoto")
                 var usernameholder = json.get("Username")
                 val decoder = Base64.getDecoder().decode(foto2.toString())
                 var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
-                var new = Player(bitmap,"tt",newSocket)
 
-                players.add(new)
+                players.add(Player(bitmap, usernameholder as String,newSocket))
                 testeusers.postValue(players)
-                usersinfo.postValue(players[0].Imagem)
-                //var decodedbitmap = BitmapFactory.decodeByteArray(decoded,0,decoded.size)
 
-                //while (_state.value != State.GAME_OVER) {
-                    //val message = bufI.
 
-                //
-                //}
+                //usersinfo.postValue(players[0].Imagem)
+
             } catch (x: Exception) {
                 System.err.println(x.message)
             } finally {
@@ -167,6 +147,21 @@ class MultiPlayer() {
             }
         }
     }
+
+    fun StartGame() : Boolean {
+        if(players.size <=1)
+            return false
+       _state.postValue(State.PLAYING)
+        var json : JSONObject = JSONObject()
+        json.put("type","GAMESTART")
+
+        for(p in players){
+            p.sendJson(json)
+        }
+
+        return true
+     }
+
     private fun startJogadorComm(p :Player) {
         if (threadComm != null)
             return
@@ -176,14 +171,12 @@ class MultiPlayer() {
                 if (p.socket == null)
                     return@thread
 
-                _connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
                 val bufI = p.inputstream!!.bufferedReader()
 
-                while (_state.value != State.GAME_OVER) {
+
                     val message = bufI.readLine()
-                    //val move = message.toIntOrNull() ?: MOVE_NONE
-                    //changeOtherMove(move)
-                }
+
+
             } catch (_: Exception) {
             } finally {
                 //stopGame()

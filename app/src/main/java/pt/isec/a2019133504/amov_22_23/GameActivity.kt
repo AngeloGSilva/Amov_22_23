@@ -20,8 +20,11 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.postDelayed
+import androidx.lifecycle.ViewModel
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer.Companion.SERVER_PORT
+import pt.isec.a2019133504.amov_22_23.Data.Perfil
+
 
 class GameActivity : AppCompatActivity() {
     companion object {
@@ -41,7 +44,8 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private val model: MultiPlayer = MultiPlayer()
+    private val model: MultiPlayer by viewModels()
+
     private var dlg: AlertDialog? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -49,39 +53,32 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        model.connectionState.observe(this) { state ->
-            updateUI()
-            if (state != MultiPlayer.ConnectionState.SETTING_PARAMETERS &&
-                state != MultiPlayer.ConnectionState.SERVER_CONNECTING &&
-                dlg?.isShowing == true) {
-                dlg?.dismiss()
-                dlg = null
-            }
+        //TODO class
+        var arids = ArrayList<Perfil>()
+        arids.add(Perfil(R.id.userjson1,R.id.imagejson1))
+        arids.add(Perfil(R.id.userjson2,R.id.imagejson2))
+        arids.add(Perfil(R.id.userjson3,R.id.imagejson3))
+        arids.add(Perfil(R.id.userjson4,R.id.imagejson4))
+        arids.add(Perfil(R.id.userjson5,R.id.imagejson5))
 
-            if (state == MultiPlayer.ConnectionState.CONNECTION_ERROR ||
-                state == MultiPlayer.ConnectionState.CONNECTION_ENDED ) {
-                finish()
-            }
-        }
         model.testeusers.observe(this) {
-            var imageview = findViewById<ImageView>(R.id.imagejson)
+            /*var imageview = findViewById<ImageView>(R.id.imagejson1)
             imageview.setImageBitmap(it[0].Imagem)
-            var userview = findViewById<TextView>(R.id.userjson)
-            userview.setText(it[0].nome)
-        }
+            var userview = findViewById<TextView>(R.id.userjson1)
+            userview.setText(it[0].nome)*/
+            it.forEachIndexed{ index, element ->
+                var imageview = findViewById<ImageView>(arids[index].iid)
+                imageview.setImageBitmap(element.Imagem)
+                var userview = findViewById<TextView>(arids[index].uid)
+                userview.setText(element.nome)
+            }
 
-        model.usersinfo.observe(this){
-            var imageview = findViewById<ImageView>(R.id.imagejson)
-            imageview.setImageBitmap(it)
         }
 
         when (intent.getIntExtra("mode", SERVER_MODE)) {
             SERVER_MODE -> startAsServer()
             CLIENT_MODE -> startAsClient()
         }
-    }
-    private fun updateUI() {
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -125,7 +122,10 @@ class GameActivity : AppCompatActivity() {
                 text = "Start"
                 textSize = 10f
                 setOnClickListener {
-                    //Notificar o jogo de que o server começou
+                    if(!model.StartGame())
+                        return@setOnClickListener
+
+                    //Notificar o server de que o jogo começou
                     //Notifica os clientes que vai começar
                     dlg?.dismiss()
                 }
@@ -141,8 +141,13 @@ class GameActivity : AppCompatActivity() {
             }
             .create()
 
-        model.startServer()
+        val window = dlg!!.window
+        val windowParam = window?.attributes
+        windowParam?.gravity = Gravity.TOP
+        window?.attributes = windowParam
 
+        model.startServer()
+        model.startClient(this,"localhost")
         dlg?.show()
     }
 

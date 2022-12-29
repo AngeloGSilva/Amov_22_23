@@ -157,7 +157,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     fun addDataToFirestore() {
         val db = Firebase.firestore
-        var email = SignInActivity.perfil.emailstr
+        var email = SignInActivity.email
         val scores = hashMapOf(
             "Email" to email,
             "Pontuacao" to singlePlayer.pontos,
