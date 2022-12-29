@@ -78,7 +78,6 @@ class MultiPlayer() : ViewModel() {
                 } finally {
                     //Acabar o jogo para todos
                     //serverSocket?.close()
-
                     //stopGame()
                 }
             }
@@ -101,10 +100,13 @@ class MultiPlayer() : ViewModel() {
                 json.put("Username", ProfileActivity.username)
                 json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
                 System.out.println(json.toString())
-                OutputStreamWriter(
+               /* var osw = OutputStreamWriter(
                     newsocket.getOutputStream(),
                     StandardCharsets.UTF_8
-                ).use { out -> out.write(json.toString()) }
+                )
+                osw.use { it -> it.write(json.toString()) }*/
+                var bufO = newsocket.getOutputStream().bufferedWriter()
+                bufO.write(json.toString())
 
                 startJogadorComm(Player(bitmap,ProfileActivity.username,newsocket))
             } catch (_: Exception) {
@@ -120,32 +122,38 @@ class MultiPlayer() : ViewModel() {
             return*/
 
         threadComm = thread {
+
             try {
-                if (newSocket.getInputStream() == null)
-                    return@thread
-                //_connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
-                val bufI = newSocket.getInputStream()
-                var s : String
-                bufI.bufferedReader().use { s = it.readText() }
-                var json = JSONObject(s)
-                var foto2 = json.get("UserPhoto")
-                //json.getJSONArray("UserPhoto")
-                var usernameholder = json.get("Username")
-                val decoder = Base64.getDecoder().decode(foto2.toString())
-                var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
+                while(true) {
+                    if (newSocket.getInputStream() == null)
+                        return@thread
+                    //_connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
+                    val bufI = newSocket.getInputStream()
+                    var s: String
+                    bufI.bufferedReader().use { s = it.readText() }
+                    var json = JSONObject(s)
+                    var foto2 = json.get("UserPhoto")
+                    //json.getJSONArray("UserPhoto")
+                    var usernameholder = json.get("Username")
+                    val decoder = Base64.getDecoder().decode(foto2.toString())
+                    var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
 
-                players.add(Player(bitmap, usernameholder as String,newSocket))
-                //testeusers.postValue(players)
+                    players.add(Player(bitmap, usernameholder as String, newSocket))
+                    //testeusers.postValue(players)
 
-                var coisas = toJson(players)
-                OutputStreamWriter(
-                    newSocket.getOutputStream(),
-                    StandardCharsets.UTF_8
-                ).use { out -> out.write(toJson(players)) }
+                    var coisas = toJson(players)
+                    var osw = OutputStreamWriter(
+                        newSocket.getOutputStream(),
+                        StandardCharsets.UTF_8
+                    ).use { it.write(coisas) }
+
+                    //osw.write(toJson(players))
+                }
         //usersinfo.postValue(players[0].Imagem)
 
             } catch (x: Exception) {
                 System.err.println(x.message)
+
             } finally {
                 //stopGame()
             }
@@ -190,25 +198,25 @@ class MultiPlayer() : ViewModel() {
 
         thread {
             try {
-                if (p.socket == null)
-                    return@thread
-
-                val bufI = p.inputstream
-                var s : String
-                bufI?.bufferedReader().use { s = it!!.readText()}
-                var json = JSONObject(s)
-                var foto2 = json.get("Imagem")
-                //json.getJSONArray("UserPhoto")
-                var usernameholder = json.get("UserName")
-                val decoder = Base64.getDecoder().decode(foto2.toString())
-                var bitmap = BitmapFactory.decodeByteArray(decoder,0,decoder.size)
-
-                players.add(Player(bitmap, usernameholder as String,p.socket))
-                testeusers.postValue(players)
-
-                //val message = bufI.readLine()
+                while(true) {
+                    if (p.socket == null)
+                        return@thread
 
 
+                    var s: String
+                    /*bufI?.bufferedReader().use { s = it!!.readText() }*/
+                    var bufI = p.socket.getInputStream().bufferedReader()
+                    s = bufI.read().toString()
+                    var json = JSONObject(s)
+                    var foto2 = json.get("Imagem")
+                    var usernameholder = json.get("UserName")
+                    val decoder = Base64.getDecoder().decode(foto2.toString())
+                    var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
+
+                    players.add(Player(bitmap, usernameholder as String, p.socket))
+                    testeusers.postValue(players)
+
+                }
             } catch (_: Exception) {
             } finally {
                 //stopGame()

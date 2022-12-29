@@ -62,10 +62,6 @@ class GameActivity : AppCompatActivity() {
         arids.add(Perfil(R.id.userjson5,R.id.imagejson5))
 
         model.testeusers.observe(this) {
-            /*var imageview = findViewById<ImageView>(R.id.imagejson1)
-            imageview.setImageBitmap(it[0].Imagem)
-            var userview = findViewById<TextView>(R.id.userjson1)
-            userview.setText(it[0].nome)*/
             it.forEachIndexed{ index, element ->
                 var imageview = findViewById<ImageView>(arids[index].iid)
                 imageview.setImageBitmap(element.Imagem)
