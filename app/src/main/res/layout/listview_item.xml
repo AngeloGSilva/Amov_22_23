@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:background="#800000">
+        <ImageView
+            android:id="@+id/ivImg"
+            android:src="@android:drawable/ic_dialog_map"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
+        <TextView
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:textSize="20sp"
+            android:text="text1"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv1"
+            android:textColor="#000000"
+            android:background="#f0d080"/>
+        <TextView
+            android:padding="4dp"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            android:maxLines="1"
+            android:gravity="right"
+            android:text="text2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/tv2"
+            android:background="#80d0f0"/>
+    </LinearLayout>
+</FrameLayout>

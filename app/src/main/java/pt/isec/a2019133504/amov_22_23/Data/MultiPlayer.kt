@@ -11,7 +11,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.checkerframework.checker.units.qual.s
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import pt.isec.a2019133504.amov_22_23.R
@@ -44,8 +43,6 @@ class MultiPlayer() : ViewModel() {
 
     private lateinit var serverSocket: ServerSocket
 
-    private var threadComm: Thread? = null
-
     var players : ArrayList<Player> = ArrayList()
         get() = field
 
@@ -66,7 +63,24 @@ class MultiPlayer() : ViewModel() {
                 try {
                     while(state.value == State.WAITING_CONNECTIONS) {
                         val socketClient = serverSocket!!.accept()
-                        startServerComm(socketClient)
+
+                        thread {
+                            try {
+                                val bufI = socketClient.getInputStream()
+                                var s = bufI.bufferedReader().readLine()
+                                var json = JSONObject(s)
+                                var foto2 = json.get("UserPhoto")
+                                var usernameholder = json.get("Username")
+                                val decoder = Base64.getDecoder().decode(foto2.toString())
+                                var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
+                                val player: Player = Player(bitmap, usernameholder as String, socketClient)
+                                players.add(player)
+                                testeusers.postValue(players)
+                                startServerComm(player)
+                            } catch (_: Exception) {
+
+                            }
+                        }
                         //System.out.println("Conectado ao socket" + socketClient.toString())
                         //players[players.size] = Player(Recebido por JSON,socketClient)
                     }
@@ -85,7 +99,7 @@ class MultiPlayer() : ViewModel() {
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = SERVER_PORT) {
 
-        threadComm = thread {
+        thread {
             try {
                 val newsocket = Socket()
                 newsocket.connect(InetSocketAddress(serverIP, serverPort), 5000)
@@ -133,64 +147,18 @@ class MultiPlayer() : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun startServerComm(newSocket: Socket) {
-        /*if (threadComm != null)
-            return*/
+    private fun startServerComm(player: Player) {
+        try {
+            while (true) {
+                var _json: JSONObject? = player.receiveJson()
 
-        threadComm = thread {
-
-            try {
-                while(true) {
-                    if (newSocket.getInputStream() == null)
-                        return@thread
-                    //_connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
-                    val bufI = newSocket.getInputStream()
-                    //var s: String = ""
-                    var s = bufI.bufferedReader().readLine()
-                    var json = JSONObject(s)
-                    var foto2 = json.get("UserPhoto")
-                    //json.getJSONArray("UserPhoto")
-                    var usernameholder = json.get("Username")
-                    val decoder = Base64.getDecoder().decode(foto2.toString())
-                    var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
-
-                    players.add(Player(bitmap, usernameholder as String, newSocket))
-                    testeusers.postValue(players)
-
-                    /*var coisas = toJson(players)
-                    var osw = OutputStreamWriter(
-                        newSocket.getOutputStream(),
-                        StandardCharsets.UTF_8
-                    ).use { it.write(coisas) }*/
-
-                    //osw.write(toJson(players))
-                }
-        //usersinfo.postValue(players[0].Imagem)
-
-            } catch (x: Exception) {
-                System.err.println(x.message)
-
-            } finally {
-                //stopGame()
             }
-        }
-    }
+        } catch (x: Exception) {
+            System.err.println(x.message)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun toJson(rails: ArrayList<Player>): String {
-        val sb = StringBuilder().clear()
-        rails.forEachIndexed { index, railPoint ->
-            var bitmap : Bitmap = railPoint.Imagem
-            var baos = ByteArrayOutputStream()
-            bitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
-            //val json = JSONObject()
-            //json.put("Username", ProfileActivity.username)
-            //json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
-            sb.append("UserName: \"${railPoint.nome}\",")
-            sb.append("Imagem: ${Base64.getEncoder().encodeToString(baos.toByteArray())}")
+        } finally {
+            //stopGame()
         }
-        return "{ $sb }"
     }
 
     fun StartGame() : Boolean {

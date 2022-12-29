@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.net.ConnectivityManager.NetworkCallback
 import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -14,16 +13,16 @@ import android.text.InputFilter
 import android.text.Spanned
 import android.util.Patterns
 import android.view.Gravity
-import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.postDelayed
-import androidx.lifecycle.ViewModel
+import androidx.core.graphics.drawable.toDrawable
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer.Companion.SERVER_PORT
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
+import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
+import kotlin.random.Random
 
 
 class GameActivity : AppCompatActivity() {
@@ -47,6 +46,7 @@ class GameActivity : AppCompatActivity() {
     private val model: MultiPlayer by viewModels()
 
     private var dlg: AlertDialog? = null
+    private var ConnectedPlayerListView : ListView? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +62,7 @@ class GameActivity : AppCompatActivity() {
         arids.add(Perfil(R.id.userjson5,R.id.imagejson5))
 
         model.testeusers.observe(this) {
-            it.forEachIndexed{ index, element ->
-                var imageview = findViewById<ImageView>(arids[index].iid)
-                imageview.setImageBitmap(element.Imagem)
-                var userview = findViewById<TextView>(arids[index].uid)
-                userview.setText(element.nome)
-            }
-
+            ConnectedPlayerListView!!.adapter = ConnectedPlayersAdapter(model.players, this)
         }
 
         when (intent.getIntExtra("mode", SERVER_MODE)) {
@@ -89,48 +83,65 @@ class GameActivity : AppCompatActivity() {
             (ip shr 24) and 0xff
         )
 
-        val ll = LinearLayout(this).apply {
+
+        val llh = LinearLayout(this).apply {
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             this.setPadding(50, 50, 50, 50)
             layoutParams = params
             setBackgroundColor(Color.rgb(240, 224, 208))
-            orientation = LinearLayout.HORIZONTAL
-            addView(ProgressBar(context).apply {
-                isIndeterminate = true
-                val paramsPB = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                paramsPB.gravity = Gravity.CENTER_VERTICAL
-                layoutParams = paramsPB
-                indeterminateTintList = ColorStateList.valueOf(Color.rgb(96, 96, 32))
-            })
-            addView(TextView(context).apply {
-                val paramsTV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                layoutParams = paramsTV
-                text = String.format(getString(R.string.msg_ip_address))
-                textSize = 20f
-                setTextColor(Color.rgb(96, 96, 32))
-            })
-            addView(Button(context).apply {
-                val paramsbt = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                layoutParams = paramsbt
-                text = "Start"
-                textSize = 10f
-                setOnClickListener {
-                    if(!model.StartGame())
-                        return@setOnClickListener
+            orientation = LinearLayout.VERTICAL
+            addView(LinearLayout(context).apply {
+                val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                this.setPadding(50, 50, 50, 50)
+                layoutParams = params
+                setBackgroundColor(Color.rgb(240, 224, 208))
+                orientation = LinearLayout.HORIZONTAL
+                addView(ProgressBar(context).apply {
+                    isIndeterminate = true
+                    val paramsPB = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    paramsPB.gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = paramsPB
+                    indeterminateTintList = ColorStateList.valueOf(Color.rgb(96, 96, 32))
+                })
+                addView(TextView(context).apply {
+                    val paramsTV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    layoutParams = paramsTV
+                    text = String.format(getString(R.string.msg_ip_address))
+                    textSize = 20f
+                    setTextColor(Color.rgb(96, 96, 32))
+                })
+                addView(Button(context).apply {
+                    val paramsbt = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams = paramsbt
+                    text = "Start"
+                    textSize = 10f
+                    setOnClickListener {
+                        if(!model.StartGame())
+                            return@setOnClickListener
 
-                    //Notificar o server de que o jogo começou
-                    //Notifica os clientes que vai começar
-                    dlg?.dismiss()
+                        //Notificar o server de que o jogo começou
+                        //Notifica os clientes que vai começar
+                        dlg?.dismiss()
+                    }
+                })
+            })
+            addView(ScrollView(context).apply {
+                val paramsSV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
+                layoutParams = paramsSV
+                ConnectedPlayerListView = ListView(context).apply {
+                    val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
+                    layoutParams = paramsSV
                 }
+                addView(ConnectedPlayerListView)
             })
         }
 
         dlg = AlertDialog.Builder(this)
             .setTitle("Server Mode - " + strIPAddress)
-            .setView(ll)
+            .setView(llh)
             .setOnCancelListener {
                 //model.stopServer()
                 finish()

@@ -29,5 +29,13 @@ data class Player(val Imagem:Bitmap,val nome:String,val socket: Socket){
             }
         }
     }
+
+    fun receiveJson() : JSONObject? {
+        val bufferedReader = inputstream?.bufferedReader()
+        if (bufferedReader != null) {
+            return JSONObject(bufferedReader.readLine())
+        }
+        return null;
+    }
 }
 
