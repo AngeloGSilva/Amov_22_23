@@ -3,12 +3,10 @@ package pt.isec.a2019133504.amov_22_23.Data
 import android.graphics.Bitmap
 import android.net.Uri
 import org.json.JSONObject
-import java.io.InputStream
-import java.io.ObjectOutputStream
-import java.io.OutputStream
-import java.io.OutputStreamWriter
+import java.io.*
 import java.net.Socket
 import java.nio.charset.StandardCharsets
+import kotlin.concurrent.thread
 
 data class Player(val Imagem:Bitmap,val nome:String,val socket: Socket){
     var Pontos:Int = 0
@@ -21,10 +19,15 @@ data class Player(val Imagem:Bitmap,val nome:String,val socket: Socket){
         get() = socket?.getOutputStream()
 
     fun sendJson(json: JSONObject){
-        OutputStreamWriter(
-            socket.getOutputStream(),
-            StandardCharsets.UTF_8
-        ).use { out -> out.write(json.toString()) }
+        thread {
+            try {
+                val printStream = PrintStream(outputstream)
+                printStream.println(json.toString())
+                printStream.flush()
+            } catch (_: Exception) {
+                //stopGame()
+            }
+        }
     }
 }
 

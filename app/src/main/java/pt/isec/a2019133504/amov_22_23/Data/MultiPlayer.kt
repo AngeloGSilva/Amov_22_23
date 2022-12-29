@@ -15,10 +15,7 @@ import org.checkerframework.checker.units.qual.s
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import pt.isec.a2019133504.amov_22_23.R
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
+import java.io.*
 import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
@@ -96,17 +93,36 @@ class MultiPlayer() : ViewModel() {
                 var baos = ByteArrayOutputStream()
                 bitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
-                val json = JSONObject()
+                var json = JSONObject()
                 json.put("Username", ProfileActivity.username)
                 json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
                 System.out.println(json.toString())
+
                /* var osw = OutputStreamWriter(
                     newsocket.getOutputStream(),
                     StandardCharsets.UTF_8
-                )
-                osw.use { it -> it.write(json.toString()) }*/
-                var bufO = newsocket.getOutputStream().bufferedWriter()
-                bufO.write(json.toString())
+                )*/
+                //osw.use {it.write(json.toString()) }
+                //osw.write(json.toString())
+                newsocket.getOutputStream().run {
+                    thread {
+                        try {
+                            val printStream = PrintStream(this)
+                            printStream.println(json.toString())
+                            printStream.flush()
+                        } catch (_: Exception) {
+                            //stopGame()
+                        }
+                    }
+                }
+                /*val writer = someStream.bufferedReader()
+                val iterator = reader.linesSequences().iterator()
+                while(iterator.hasNext()) {
+                    val line = iterator.next()     // do something with line... } reader.close()
+                }*/
+
+                //var bufO = newsocket.getOutputStream().bufferedWriter()
+                //bufO.write(json.toString())
 
                 startJogadorComm(Player(bitmap,ProfileActivity.username,newsocket))
             } catch (_: Exception) {
@@ -129,8 +145,8 @@ class MultiPlayer() : ViewModel() {
                         return@thread
                     //_connectionState.postValue(ConnectionState.CONNECTION_ESTABLISHED)
                     val bufI = newSocket.getInputStream()
-                    var s: String
-                    bufI.bufferedReader().use { s = it.readText() }
+                    //var s: String = ""
+                    var s = bufI.bufferedReader().readLine()
                     var json = JSONObject(s)
                     var foto2 = json.get("UserPhoto")
                     //json.getJSONArray("UserPhoto")
@@ -139,13 +155,13 @@ class MultiPlayer() : ViewModel() {
                     var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
 
                     players.add(Player(bitmap, usernameholder as String, newSocket))
-                    //testeusers.postValue(players)
+                    testeusers.postValue(players)
 
-                    var coisas = toJson(players)
+                    /*var coisas = toJson(players)
                     var osw = OutputStreamWriter(
                         newSocket.getOutputStream(),
                         StandardCharsets.UTF_8
-                    ).use { it.write(coisas) }
+                    ).use { it.write(coisas) }*/
 
                     //osw.write(toJson(players))
                 }
@@ -201,7 +217,6 @@ class MultiPlayer() : ViewModel() {
                 while(true) {
                     if (p.socket == null)
                         return@thread
-
 
                     var s: String
                     /*bufI?.bufferedReader().use { s = it!!.readText() }*/
