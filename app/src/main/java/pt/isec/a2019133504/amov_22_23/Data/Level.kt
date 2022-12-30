@@ -1,20 +1,38 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
-class Level(val ident : Int,
-            val opLevel: ArrayList<String>,
+import org.json.JSONArray
+import org.json.JSONObject
+import kotlin.collections.ArrayList
+
+class Level(val ops: Array<String>,
             val maxTime : Int,
             val winTime : Int,
             val range: IntRange) {
 
+    fun getJsonObject() : JSONObject {
+        var json = JSONObject()
+        json.put("maxTime", maxTime)
+        json.put("winTime", winTime)
+        json.put("rangeStart", range.start)
+        json.put("rangeLast", range.last)
+        json.put("ops", JSONArray().run { for (op in ops)put(op) })
+        return json
+    }
+
     companion object{
         val array = arrayOf<Level>(
-            Level(1,arrayListOf("+"),30,3,1..9),
-            Level(2,arrayListOf("+","-"),40,4,1..99),
-            Level(3,arrayListOf("+","-","*"),50,5,1..999),
-            Level(4,arrayListOf("+","-","*","/"),60,6,1..999))
+            Level(arrayOf("+"),30,3,1..9),
+            Level(arrayOf("+","-"),40,4,1..99),
+            Level(arrayOf("+","-","*"),50,5,1..999),
+            Level(arrayOf("+","-","*","/"),60,6,1..999))
 
         fun get(n : Int) : Level {
             return array.get(n)
+        }
+
+        fun fromJsonObject(_j : JSONObject) : Level {
+            val ops = _j.getJSONArray("ops")
+            return Level(Array<String>(ops.length()) { op -> ops.getString(op) } , _j.getInt("maxTime"), _j.getInt("winTime"), IntRange(_j.getInt("rangeStart"), _j.getInt("rangeLast")))
         }
 
         fun isLast(n : Int) : Boolean {

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.json.JSONArray
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import pt.isec.a2019133504.amov_22_23.R
@@ -46,16 +47,17 @@ class MultiPlayer() : ViewModel() {
     var players : ArrayList<Player> = ArrayList()
         get() = field
 
+    var NivelAtual : Int = 0
+    lateinit var level : Level
+    lateinit var boards : Array<Board>
+
     //var usersinfo = MutableLiveData<Bitmap>()
 
     var testeusers = MutableLiveData<ArrayList<Player>>()
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun startServer() {
-
         serverSocket = ServerSocket(SERVER_PORT)
-
         thread {
             System.out.println(serverSocket)
             serverSocket?.run {
@@ -98,7 +100,6 @@ class MultiPlayer() : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = SERVER_PORT) {
-
         thread {
             try {
                 val newsocket = Socket()
@@ -110,13 +111,6 @@ class MultiPlayer() : ViewModel() {
                 json.put("Username", ProfileActivity.username)
                 json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
                 System.out.println(json.toString())
-
-               /* var osw = OutputStreamWriter(
-                    newsocket.getOutputStream(),
-                    StandardCharsets.UTF_8
-                )*/
-                //osw.use {it.write(json.toString()) }
-                //osw.write(json.toString())
                 newsocket.getOutputStream().run {
                     thread {
                         try {
@@ -128,15 +122,6 @@ class MultiPlayer() : ViewModel() {
                         }
                     }
                 }
-                /*val writer = someStream.bufferedReader()
-                val iterator = reader.linesSequences().iterator()
-                while(iterator.hasNext()) {
-                    val line = iterator.next()     // do something with line... } reader.close()
-                }*/
-
-                //var bufO = newsocket.getOutputStream().bufferedWriter()
-                //bufO.write(json.toString())
-
                 startJogadorComm(Player(bitmap,ProfileActivity.username,newsocket))
             } catch (_: Exception) {
                 System.out.println("ERRO AO CONECTAR AO SERVIDOR")
@@ -160,43 +145,46 @@ class MultiPlayer() : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun StartGame() : Boolean {
         if(players.size <=1)
             return false
+        boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
        _state.postValue(State.PLAYING)
         var json : JSONObject = JSONObject()
         json.put("type","GAMESTART")
+        json.put("players", JSONArray().run{ for (_player in players) this.put(_player.getJsonObject()) })
+        json.put("boards", JSONArray().run{ for (_board in boards) this.put(_board.getJsonArray()) })
+        json.put("level", Level.get(NivelAtual).getJsonObject())
 
-        for(p in players){
+        for(p in players)
             p.sendJson(json)
-        }
 
         return true
      }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startJogadorComm(p :Player) {
-/*        if (threadComm != null)
-            return*/
-
         thread {
             try {
                 while(true) {
                     if (p.socket == null)
                         return@thread
 
-                    var s: String
-                    /*bufI?.bufferedReader().use { s = it!!.readText() }*/
-                    var bufI = p.socket.getInputStream().bufferedReader()
-                    s = bufI.read().toString()
-                    var json = JSONObject(s)
-                    var foto2 = json.get("Imagem")
-                    var usernameholder = json.get("UserName")
-                    val decoder = Base64.getDecoder().decode(foto2.toString())
-                    var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
-
-                    players.add(Player(bitmap, usernameholder as String, p.socket))
-                    testeusers.postValue(players)
+                    val bufferedReader = p.inputstream!!.bufferedReader()
+                    var jsonObject = JSONObject(bufferedReader.readLine())
+                    when (jsonObject.get("type")) {
+                        "GAMESTART" -> {
+                            val _players : JSONArray = jsonObject.get("players") as JSONArray
+                            for (i in 0 until _players.length()) {
+                                val item = _players.getJSONObject(i)
+                                players.add(Player.fromJsonObject(item))
+                            }
+                            val _boards : JSONArray = jsonObject.get("boards") as JSONArray
+                            boards = Array (_boards.length()){board -> Board.fromJson(_boards.getJSONArray(board))}
+                            level = Level.fromJsonObject(jsonObject.getJSONObject("level"))
+                        }
+                    }
 
                 }
             } catch (_: Exception) {

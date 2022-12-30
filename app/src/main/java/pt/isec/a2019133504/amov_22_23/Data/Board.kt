@@ -1,9 +1,12 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import kotlinx.serialization.Serializable
 import org.json.JSONArray
+import org.json.JSONTokener
 import kotlin.random.Random
 import kotlin.random.nextInt
 
+@Serializable
 class Board(cellsArray: Array<Array<Cell>>) {
 
     //TODO calcular resultados das colunas/linhas...
@@ -245,7 +248,7 @@ class Board(cellsArray: Array<Array<Cell>>) {
                     } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
                         Cell( " ")
                     } else {
-                        Cell(level.opLevel.random())
+                        Cell(level.ops.random())
                     }
                 }
             }
