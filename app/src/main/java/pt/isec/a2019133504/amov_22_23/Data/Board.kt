@@ -1,6 +1,7 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.json.JSONArray
 import org.json.JSONTokener
 import kotlin.random.Random
@@ -15,10 +16,10 @@ class Board(val cells: Array<Array<String>>) {
 
     //TODO getmaiorresultado e segundo maior Guardar os resultados das linhas e colunas em arrays
 
-    var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
-    var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
-    var maior : Double = 0.0
-    var segundoMaior : Double = 0.0
+    @Transient var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
+    @Transient var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
+    @Transient var maior : Double = 0.0
+    @Transient var segundoMaior : Double = 0.0
 
     init {
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
