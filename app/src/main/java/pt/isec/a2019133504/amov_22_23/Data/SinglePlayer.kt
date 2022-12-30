@@ -19,7 +19,7 @@ class SinglePlayer() {
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
     //var maioresValores = MutableLiveData<Pair<Double,Double>>()
     var pontosLiveData = MutableLiveData<Int>()
-    var cellsLiveData = MutableLiveData< Array<Array<Cell>>>()
+    var cellsLiveData = MutableLiveData< Array<Array<String>>>()
     var fimLiveData = MutableLiveData<Boolean>()
     var timerCount = MutableLiveData<Long>()
     var nextLevel = MutableLiveData<Boolean>()
@@ -50,7 +50,7 @@ class SinglePlayer() {
         return boards[BoardAtual]
     }
 
-    fun returnboardcells(): Array<Array<Cell>> {
+    fun returnboardcells(): Array<Array<String>> {
         return boards[BoardAtual].cells
     }
 

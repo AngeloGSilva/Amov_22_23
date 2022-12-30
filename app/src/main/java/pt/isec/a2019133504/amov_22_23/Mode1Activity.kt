@@ -20,7 +20,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.NonCancellable.cancel
 import kotlinx.coroutines.channels.ticker
-import pt.isec.a2019133504.amov_22_23.Data.Cell
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
@@ -124,7 +123,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.InfoPontos.text = "Linha: " + (valores.first).toString()+ " Coluna: " +(valores.second).toString()
     }
 
-    private fun updateCells(cells: Array<Array<Cell>>?) = cells?.let {
+    private fun updateCells(cells: Array<Array<String>>?) = cells?.let {
         binding.boardGame.updateCells(cells)
     }
 

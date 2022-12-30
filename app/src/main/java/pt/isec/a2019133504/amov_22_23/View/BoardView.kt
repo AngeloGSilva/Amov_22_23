@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import pt.isec.a2019133504.amov_22_23.Data.Cell
 import kotlin.math.abs
 
 
@@ -17,7 +16,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private var size = 5
 
-    private lateinit var cells : Array<Array<Cell>>
+    private lateinit var cells : Array<Array<String>>
 
     // these are set in onDraw
     private var cellSizePixels = 0F
@@ -177,7 +176,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         System.out.println("onLongPress:")
     }
 
-    fun updateCells(cells:  Array<Array<Cell>>) {
+    fun updateCells(cells:  Array<Array<String>>) {
         this.cells = cells
         invalidate()
     }
