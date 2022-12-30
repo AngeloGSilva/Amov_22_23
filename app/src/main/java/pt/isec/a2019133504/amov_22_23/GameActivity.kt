@@ -18,6 +18,8 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.ViewCompat.NestedScrollType
+import androidx.core.widget.NestedScrollView
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer.Companion.SERVER_PORT
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
@@ -47,7 +49,7 @@ class GameActivity : AppCompatActivity() {
 
     private var dlg: AlertDialog? = null
     private var ConnectedPlayerListView : ListView? = null
-
+    private var connectedPlayersAdapter : ConnectedPlayersAdapter? = null
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +64,7 @@ class GameActivity : AppCompatActivity() {
         arids.add(Perfil(R.id.userjson5,R.id.imagejson5))
 
         model.testeusers.observe(this) {
-            ConnectedPlayerListView!!.adapter = ConnectedPlayersAdapter(model.players, this)
+            connectedPlayersAdapter!!.notifyDataSetInvalidated()
         }
 
         when (intent.getIntExtra("mode", SERVER_MODE)) {
@@ -128,15 +130,13 @@ class GameActivity : AppCompatActivity() {
                     }
                 })
             })
-            addView(ScrollView(context).apply {
-                val paramsSV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
-                layoutParams = paramsSV
                 ConnectedPlayerListView = ListView(context).apply {
                     val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
-                    layoutParams = paramsSV
+                    layoutParams = paramsLV
+                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.players, context)
+                    adapter = connectedPlayersAdapter
                 }
                 addView(ConnectedPlayerListView)
-            })
         }
 
         dlg = AlertDialog.Builder(this)
