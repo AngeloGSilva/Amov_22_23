@@ -58,7 +58,7 @@ class SignInActivity : AppCompatActivity() {
         storageref.getFile(localfile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
             //ProfileActivity.imgdata = getImageUri(this,bitmap)
-            ProfileActivity.imgdata = localfile.toUri()
+            ProfileActivity.imgdata = bitmap
         }
     }
 

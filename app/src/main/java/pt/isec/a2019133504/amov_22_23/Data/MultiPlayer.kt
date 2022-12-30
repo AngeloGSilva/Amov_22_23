@@ -103,9 +103,8 @@ class MultiPlayer() : ViewModel() {
             try {
                 val newsocket = Socket()
                 newsocket.connect(InetSocketAddress(serverIP, serverPort), 5000)
-                var bitmap : Bitmap = MediaStore.Images.Media.getBitmap(c.contentResolver,ProfileActivity.imgdata)
                 var baos = ByteArrayOutputStream()
-                bitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
+                val bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
                 var json = JSONObject()
                 json.put("Username", ProfileActivity.username)

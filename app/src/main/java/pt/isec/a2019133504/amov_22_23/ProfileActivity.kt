@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +42,7 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var imageView: ImageView
     private val pickImage = 100
     companion object {
-        var imgdata : Uri? = null
+        var imgdata : Bitmap? = null
         lateinit var username : String
     }
 
@@ -86,7 +87,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.saveData.setOnClickListener {
             //tentativa
             if(imagePath!=null)
-                imgdata = Uri.parse(imagePath)
+                imgdata = BitmapFactory.decodeFile(imagePath)
             var texto = binding.UsernameEdit.text
             if(!texto.isNullOrEmpty())
                 if(!texto.toString().equals("New Username"))

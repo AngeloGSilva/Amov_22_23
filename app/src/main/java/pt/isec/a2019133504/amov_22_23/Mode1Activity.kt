@@ -39,7 +39,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         setContentView(binding.root)
         binding.boardGame.registerListener(this)
 
-        binding.imageView.setImageURI(ProfileActivity.imgdata)
+        binding.imageView.setImageBitmap(ProfileActivity.imgdata)
 
         binding.boardGame.updateCells(singlePlayer.returnboardcells())
 
