@@ -1,9 +1,11 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import kotlinx.serialization.Serializable
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 
+@Serializable
 class Level(val ops: Array<String>,
             val maxTime : Int,
             val winTime : Int,

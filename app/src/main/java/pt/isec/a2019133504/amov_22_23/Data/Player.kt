@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import kotlinx.serialization.Serializable
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.concurrent.thread
 
+@Serializable
 data class Player(val Imagem:Bitmap,val nome:String,val socket: Socket?){
     var Pontos:Int = 0
     var NrBoard:Int = 0
