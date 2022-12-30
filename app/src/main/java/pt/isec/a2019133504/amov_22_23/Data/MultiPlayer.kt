@@ -4,26 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.json.JSONArray
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
-import pt.isec.a2019133504.amov_22_23.R
 import java.io.*
 import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.net.Socket
-import java.nio.CharBuffer
-import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 
 
@@ -153,9 +149,9 @@ class MultiPlayer() : ViewModel() {
        _state.postValue(State.PLAYING)
         var json : JSONObject = JSONObject()
         json.put("type","GAMESTART")
-        json.put("players", JSONArray().run{ for (_player in players) this.put(_player.getJsonObject()) })
-        json.put("boards", JSONArray().run{ for (_board in boards) this.put(_board.getJsonArray()) })
-        json.put("level", Level.get(NivelAtual).getJsonObject())
+        json.put("players", Json.encodeToString(players))
+        json.put("boards", Json.encodeToString(boards))
+        json.put("level", Json.encodeToString(Level.get(NivelAtual)))
 
         for(p in players)
             p.sendJson(json)
@@ -164,28 +160,23 @@ class MultiPlayer() : ViewModel() {
      }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun startJogadorComm(p :Player) {
+    private fun startJogadorComm(player :Player) {
         thread {
             try {
                 while(true) {
-                    if (p.socket == null)
+                    if (player.socket == null)
                         return@thread
 
-                    val bufferedReader = p.inputstream!!.bufferedReader()
+                    val bufferedReader = player.inputstream!!.bufferedReader()
                     var jsonObject = JSONObject(bufferedReader.readLine())
                     when (jsonObject.get("type")) {
                         "GAMESTART" -> {
-                            val _players : JSONArray = jsonObject.get("players") as JSONArray
-                            for (i in 0 until _players.length()) {
-                                val item = _players.getJSONObject(i)
-                                players.add(Player.fromJsonObject(item))
-                            }
-                            val _boards : JSONArray = jsonObject.get("boards") as JSONArray
-                            boards = Array (_boards.length()){board -> Board.fromJson(_boards.getJSONArray(board))}
-                            level = Level.fromJsonObject(jsonObject.getJSONObject("level"))
+                            for (_p in Json.decodeFromString<List<Player>>(jsonObject.getString("players")))
+                                players.add(_p)
+                            boards = Json.decodeFromString(jsonObject.getString("boards"))
+                            level = Json.decodeFromString(jsonObject.getString("level"))
                         }
                     }
-
                 }
             } catch (_: Exception) {
             } finally {
