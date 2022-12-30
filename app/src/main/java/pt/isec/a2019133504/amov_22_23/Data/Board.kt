@@ -4,33 +4,26 @@ import org.json.JSONArray
 import kotlin.random.Random
 import kotlin.random.nextInt
 
-class Board(val size: Int, val level: Level) {
+class Board(cellsArray: Array<Array<Cell>>) {
+
     //TODO calcular resultados das colunas/linhas...
     // guardar em array e criar gets e ter o segundo melhor e o melhor guardado
     // metodo para comprar o maior ou o segundo para os pontos return os pontos (1 ou 2)
 
     //TODO getmaiorresultado e segundo maior Guardar os resultados das linhas e colunas em arrays
 
-    var cells: Array<Array<Cell>> = Array(size) { linha ->
-        Array(size) { coluna ->
-            if (linha % 2 == 0 && coluna % 2 == 0) {
-                Cell((Random.nextInt(level.range) * 1.0).toString())
-            } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
-                Cell( " ")
-            } else {
-                Cell(level.opLevel.random())
-            }
-        }
-    }
+    val cells: Array<Array<Cell>>
     var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
     var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
     var maior : Double = 0.0
     var segundoMaior : Double = 0.0
 
     init {
+        cells = cellsArray
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
         val linhasResult : List<Double> = listOf(getResultadoLinha(0) ,getResultadoLinha(2) , getResultadoLinha(4))
         val resultados = (colunasResult + linhasResult).sortedDescending()
+
 
         colunasResult.forEachIndexed { index, element ->
            if (element == resultados[0])
@@ -234,8 +227,29 @@ class Board(val size: Int, val level: Level) {
     }
 
     companion object{
-        fun fromJson(){
+        val sz : Int = 5;
+        fun fromJson(jsonA : JSONArray) : Board {
+            val cells: Array<Array<Cell>> = Array(sz) { linha ->
+                Array(sz) { coluna ->
+                    Cell(jsonA.getJSONArray(linha).getString(coluna))
+                }
+            }
+            return Board(cells)
+        }
 
+        fun fromLevel(level: Level) : Board {
+            val cells: Array<Array<Cell>> = Array(sz) { linha ->
+                Array(sz) { coluna ->
+                    if (linha % 2 == 0 && coluna % 2 == 0) {
+                        Cell((Random.nextInt(level.range) * 1.0).toString())
+                    } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
+                        Cell( " ")
+                    } else {
+                        Cell(level.opLevel.random())
+                    }
+                }
+            }
+            return Board(cells)
         }
     }
 
