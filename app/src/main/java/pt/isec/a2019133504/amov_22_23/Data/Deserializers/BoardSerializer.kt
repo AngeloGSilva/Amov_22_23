@@ -15,11 +15,10 @@ object BoardSerializer: KSerializer<Board> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IntRange", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Board) {
-        encoder.encodeString(Json.encodeToString(listOf<Int>(value.start, value.last)))
+        TODO()
     }
 
     override fun deserialize(decoder: Decoder): Board {
-        val list = Json.decodeFromString<List<Int>>(decoder.decodeString())
-        return IntRange(list[0],list[1])
+        TODO()
     }
 }

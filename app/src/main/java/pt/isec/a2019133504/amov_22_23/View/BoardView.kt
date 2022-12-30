@@ -97,7 +97,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             for (c in 0 until size) {
                 if (r % 2 == 0 && c % 2 == 0) {
                     canvas?.drawText(
-                        (cells!![r][c].value.toDouble().toInt().toString()),//TODO MELHORAR ESTA LINHA
+                        (cells!![r][c].toDouble().toInt().toString()),//TODO MELHORAR ESTA LINHA
                         (c + 0.5f) * cellSizePixels,
                         (r + 0.5f) * cellSizePixels,
                         textPaint
@@ -107,7 +107,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
                 }else {
                     fillCell(canvas,r,c,startingCellPaint)
                     canvas?.drawText(
-                        cells!![r][c].value,
+                        cells!![r][c],
                         (c + 0.5f) * cellSizePixels,
                         (r + 0.55f) * cellSizePixels,
                         textPaint
