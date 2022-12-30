@@ -1,5 +1,6 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import org.json.JSONArray
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -218,6 +219,24 @@ class Board(val size: Int, val level: Level) {
             }
         }
         return result
+    }
+
+    fun getJsonArray() : JSONArray{
+        val jsonArray = JSONArray()
+        for (line in cells){
+            val jsonarray2 =JSONArray()
+            for(column in line){
+                jsonarray2.put(column)
+            }
+            jsonArray.put(jsonarray2)
+        }
+        return jsonArray
+    }
+
+    companion object{
+        fun fromJson(){
+
+        }
     }
 
 }
