@@ -7,7 +7,7 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Serializable
-class Board(val cells: Array<Array<Cell>>) {
+class Board(val cells: Array<Array<String>>) {
 
     //TODO calcular resultados das colunas/linhas...
     // guardar em array e criar gets e ter o segundo melhor e o melhor guardado
@@ -61,11 +61,11 @@ class Board(val cells: Array<Array<Cell>>) {
     fun getResultadoLinha(linha: Int): Double {
         var result = 0.0
 
-        var operator = cells[linha][1].value
-        var operator2 = cells[linha][3].value
-        var num1 = cells[linha][0].value.toDouble()
-        var num3 = cells[linha][2].value.toDouble()
-        var num5 = cells[linha][4].value.toDouble()
+        var operator = cells[linha][1]
+        var operator2 = cells[linha][3]
+        var num1 = cells[linha][0].toDouble()
+        var num3 = cells[linha][2].toDouble()
+        var num5 = cells[linha][4].toDouble()
 
         when (operator) {
             "*" -> {
@@ -140,11 +140,11 @@ class Board(val cells: Array<Array<Cell>>) {
 
     fun getResultadoColuna(coluna: Int): Double {
         var result = 0.0
-        var operator = cells[1][coluna].value
-        var operator2 = cells[3][coluna].value
-        var num1 = cells[0][coluna].value.toDouble()
-        var num3 = cells[2][coluna].value.toDouble()
-        var num5 = cells[4][coluna].value.toDouble()
+        var operator = cells[1][coluna]
+        var operator2 = cells[3][coluna]
+        var num1 = cells[0][coluna].toDouble()
+        var num3 = cells[2][coluna].toDouble()
+        var num5 = cells[4][coluna].toDouble()
         //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
         when (operator) {
             "*" -> {
@@ -230,23 +230,23 @@ class Board(val cells: Array<Array<Cell>>) {
     companion object{
         val sz : Int = 5;
         fun fromJson(jsonA : JSONArray) : Board {
-            val cells: Array<Array<Cell>> = Array(sz) { linha ->
+            val cells: Array<Array<String>> = Array(sz) { linha ->
                 Array(sz) { coluna ->
-                    Cell(jsonA.getJSONArray(linha).getString(coluna))
+                    jsonA.getJSONArray(linha).getString(coluna)
                 }
             }
             return Board(cells)
         }
 
         fun fromLevel(level: Level) : Board {
-            val cells: Array<Array<Cell>> = Array(sz) { linha ->
+            val cells: Array<Array<String>> = Array(sz) { linha ->
                 Array(sz) { coluna ->
                     if (linha % 2 == 0 && coluna % 2 == 0) {
-                        Cell((Random.nextInt(level.range) * 1.0).toString())
+                        (Random.nextInt(level.range) * 1.0).toString()
                     } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
-                        Cell( " ")
+                        " "
                     } else {
-                        Cell(level.ops.random())
+                        level.ops.random()
                     }
                 }
             }
