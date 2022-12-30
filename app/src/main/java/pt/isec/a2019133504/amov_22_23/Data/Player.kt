@@ -6,16 +6,21 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.json.JSONArray
 import org.json.JSONObject
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers.IntRangeSerializer
 import java.io.*
 import java.net.Socket
 import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.concurrent.thread
 
+typealias _Bitmap = @Serializable(BitmapSerializer::class) Bitmap
+
 @Serializable
-data class Player(val Imagem:Bitmap,val nome:String,val socket: Socket?){
+class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? = null){
     var Pontos:Int = 0
     var NrBoard:Int = 0
     var Timestamp:Long = 0

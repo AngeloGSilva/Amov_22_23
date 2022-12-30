@@ -7,7 +7,7 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Serializable
-class Board(cellsArray: Array<Array<Cell>>) {
+class Board(val cells: Array<Array<Cell>>) {
 
     //TODO calcular resultados das colunas/linhas...
     // guardar em array e criar gets e ter o segundo melhor e o melhor guardado
@@ -15,14 +15,12 @@ class Board(cellsArray: Array<Array<Cell>>) {
 
     //TODO getmaiorresultado e segundo maior Guardar os resultados das linhas e colunas em arrays
 
-    val cells: Array<Array<Cell>>
     var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
     var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
     var maior : Double = 0.0
     var segundoMaior : Double = 0.0
 
     init {
-        cells = cellsArray
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
         val linhasResult : List<Double> = listOf(getResultadoLinha(0) ,getResultadoLinha(2) , getResultadoLinha(4))
         val resultados = (colunasResult + linhasResult).sortedDescending()
