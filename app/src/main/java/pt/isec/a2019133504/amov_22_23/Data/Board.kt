@@ -216,28 +216,8 @@ class Board(val cells: Array<Array<String>>) {
         return result
     }
 
-    fun getJsonArray() : JSONArray{
-        val jsonArray = JSONArray()
-        for (line in cells){
-            val jsonarray2 =JSONArray()
-            for(column in line){
-                jsonarray2.put(column)
-            }
-            jsonArray.put(jsonarray2)
-        }
-        return jsonArray
-    }
-
     companion object{
         val sz : Int = 5;
-        fun fromJson(jsonA : JSONArray) : Board {
-            val cells: Array<Array<String>> = Array(sz) { linha ->
-                Array(sz) { coluna ->
-                    jsonA.getJSONArray(linha).getString(coluna)
-                }
-            }
-            return Board(cells)
-        }
 
         fun fromLevel(level: Level) : Board {
             val cells: Array<Array<String>> = Array(sz) { linha ->

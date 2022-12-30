@@ -13,6 +13,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import java.io.*
 import java.net.InetSocketAddress
@@ -69,9 +70,7 @@ class MultiPlayer() : ViewModel() {
                                 var json = JSONObject(s)
                                 var foto2 = json.get("UserPhoto")
                                 var usernameholder = json.get("Username")
-                                val decoder = Base64.getDecoder().decode(foto2.toString())
-                                var bitmap = BitmapFactory.decodeByteArray(decoder, 0, decoder.size)
-                                val player: Player = Player(bitmap, usernameholder as String, socketClient)
+                                val player: Player = Player(Json.decodeFromString(BitmapSerializer, foto2.toString()), usernameholder as String, socketClient)
                                 players.add(player)
                                 testeusers.postValue(players)
                                 startServerComm(player)
@@ -100,12 +99,10 @@ class MultiPlayer() : ViewModel() {
             try {
                 val newsocket = Socket()
                 newsocket.connect(InetSocketAddress(serverIP, serverPort), 5000)
-                var baos = ByteArrayOutputStream()
                 val bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 90, baos)
                 var json = JSONObject()
                 json.put("Username", ProfileActivity.username)
-                json.put("UserPhoto", Base64.getEncoder().encodeToString(baos.toByteArray()))
+                json.put("UserPhoto",  Json.encodeToString(BitmapSerializer, bitmap))
                 System.out.println(json.toString())
                 newsocket.getOutputStream().run {
                     thread {

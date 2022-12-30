@@ -14,16 +14,6 @@ class Level(val ops: Array<String>,
             val winTime : Int,
             val range: _IntRange) {
 
-    fun getJsonObject() : JSONObject {
-        var json = JSONObject()
-        json.put("maxTime", maxTime)
-        json.put("winTime", winTime)
-        json.put("rangeStart", range.start)
-        json.put("rangeLast", range.last)
-        json.put("ops", JSONArray().run { for (op in ops)put(op) })
-        return json
-    }
-
     companion object{
         val array = arrayOf<Level>(
             Level(arrayOf("+"),30,3,1..9),
@@ -33,11 +23,6 @@ class Level(val ops: Array<String>,
 
         fun get(n : Int) : Level {
             return array.get(n)
-        }
-
-        fun fromJsonObject(_j : JSONObject) : Level {
-            val ops = _j.getJSONArray("ops")
-            return Level(Array<String>(ops.length()) { op -> ops.getString(op) } , _j.getInt("maxTime"), _j.getInt("winTime"), IntRange(_j.getInt("rangeStart"), _j.getInt("rangeLast")))
         }
 
         fun isLast(n : Int) : Boolean {

@@ -49,33 +49,5 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
         }
         return null;
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun getJsonObject() : JSONObject{
-        var json = JSONObject()
-        var baos = ByteArrayOutputStream()
-        Bitmap.createScaledBitmap(Imagem,64,64,false).compress(Bitmap.CompressFormat.PNG, 90, baos)
-        json.put("nome", nome)
-        json.put("Imagem", Base64.getEncoder().encodeToString(baos.toByteArray()))
-        return json
-    }
-
-    companion object {
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun getJsonArray(p : ArrayList<Player>) : JSONArray {
-            val jsonArray = JSONArray()
-            for(player in p){
-                jsonArray.put(player.getJsonObject())
-            }
-
-            return jsonArray
-        }
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun fromJsonObject(_j : JSONObject) : Player {
-            var baos = ByteArrayOutputStream()
-            val idk = Base64.getDecoder().decode(_j.getString("Imagem"))
-            return Player(BitmapFactory.decodeByteArray(idk, 0, idk.size), _j.getString("nome"), null)
-        }
-    }
 }
 
