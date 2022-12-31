@@ -141,7 +141,7 @@ class GameActivity : AppCompatActivity() {
                 ConnectedPlayerListView = ListView(context).apply {
                     val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
                     layoutParams = paramsLV
-                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.players, context)
+                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.server.players, context)
                     adapter = connectedPlayersAdapter
                 }
                 addView(ConnectedPlayerListView)
