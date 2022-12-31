@@ -14,9 +14,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
-import pt.isec.a2019133504.amov_22_23.Data.Messages.GameStart
-import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
-import pt.isec.a2019133504.amov_22_23.Data.Messages.MessageTypes
+import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import java.io.*
 import java.net.InetSocketAddress
@@ -93,6 +91,10 @@ class MultiPlayer() : ViewModel() {
                             boardLD.postValue(boards[player.NrBoard])
                         }
                         MessageTypes.RESULT -> {
+                            val result : pt.isec.a2019133504.amov_22_23.Data.Messages.Result = msg.getPayload()
+                            player.assignScore(result.res)
+                            boardLD.postValue(boards[player.NrBoard])
+                            pontosLD.postValue(player.Pontos)
                             /*val res : Int = jsonObject.getInt("res")
                             player.assignScore(res)
                             boardLD.postValue(boards[player.NrBoard])
@@ -110,16 +112,19 @@ class MultiPlayer() : ViewModel() {
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
+        val msg : String
         var jsonObject = JSONObject()
         if (row != -1) {
-            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_ROW))
-            jsonObject.put("val", row)
+/*            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_ROW))
+            jsonObject.put("val", row)*/
+            msg = Message.create(MessageTypes.MOVE_ROW, Move_Row(row)).toString()
         }
         else {
-            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_COL))
-            jsonObject.put("val", col)
+/*            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_COL))
+            jsonObject.put("val", col)*/
+            msg = Message.create(MessageTypes.MOVE_COL, Move_Col(col)).toString()
         }
-        Server.sendToServer(socket, jsonObject.toString())
+        Server.sendToServer(socket, msg)
     }
 
 }

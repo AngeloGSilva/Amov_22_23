@@ -9,6 +9,7 @@ import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
 import pt.isec.a2019133504.amov_22_23.Data.Messages.GameStart
 import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
 import pt.isec.a2019133504.amov_22_23.Data.Messages.MessageTypes
+import pt.isec.a2019133504.amov_22_23.Data.Messages.Move_Row
 import java.io.PrintStream
 import java.net.ServerSocket
 import java.net.Socket
@@ -94,9 +95,12 @@ class Server {
         try {
             while (true) {
                 var _json: JSONObject? = player.receiveJson()
-                when (Json.decodeFromString<MsgTypes>(_json!!.getString("type"))) {
-                    MsgTypes.MOVE_COL -> {
-                        val col : Int = _json.getInt("val")
+                val bufferedReader = player.inputstream!!.bufferedReader()
+                val line = bufferedReader.readLine()
+                val msg : Message = Json.decodeFromString(line)
+                when (msg.type) {
+                    MessageTypes.MOVE_COL -> {
+                        val col : Int = _json!!.getInt("val")
                         val res : Int = boards[player.NrBoard].getResColuna(col)
                         val json : JSONObject = JSONObject()
                         json.put("type", MsgTypes.RESULT)
@@ -104,14 +108,17 @@ class Server {
                         player.sendJson(json.toString())
                         player.assignScore(res)
                     }
-                    MsgTypes.MOVE_ROW -> {
-                        val row : Int = _json.getInt("val")
-                        val res : Int = boards[player.NrBoard].getResLinha(row)
-                        val json : JSONObject = JSONObject()
+                    MessageTypes.MOVE_ROW -> {
+                        val moveRow : Move_Row = msg.getPayload()
+                        //val row : Int = _json!!.getInt("val")
+                        val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
+/*                        val json : JSONObject = JSONObject()
                         json.put("type", MsgTypes.RESULT)
                         json.put("res", res)
                         player.sendJson(json.toString())
-                        player.assignScore(res)
+                        player.assignScore(res)*/
+                        val msg2 = Message.create(MessageTypes.RESULT, pt.isec.a2019133504.amov_22_23.Data.Messages.Result(res)).toString()
+                        player.sendJson(msg2)
                     }
                     else -> {}
                 }

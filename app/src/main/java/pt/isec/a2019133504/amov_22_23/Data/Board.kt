@@ -21,8 +21,8 @@ class Board(val cells: Array<Array<String>>) {
     @Transient var maior : Double = 0.0
     @Transient var segundoMaior : Double = 0.0
 
-    fun getResLinha(linha: Int): Int = linhas[linha]
-    fun getResColuna(coluna: Int): Int = colunas[coluna]
+    fun getResLinha(linha: Int): Int = linhas[linha/2]
+    fun getResColuna(coluna: Int): Int = colunas[coluna/2]
 
     init {
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
