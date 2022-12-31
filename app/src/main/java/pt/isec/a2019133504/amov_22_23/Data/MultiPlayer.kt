@@ -14,6 +14,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
+import pt.isec.a2019133504.amov_22_23.Data.Messages.GameStart
+import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
+import pt.isec.a2019133504.amov_22_23.Data.Messages.MessageTypes
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import java.io.*
 import java.net.InetSocketAddress
@@ -31,10 +34,9 @@ class MultiPlayer() : ViewModel() {
     lateinit var player : Player
 
 
-    var players : ArrayList<Player> = ArrayList()
-        get() = field
+    lateinit var players : Array<Player>
 
-    var playersLD = MutableLiveData<ArrayList<Player>>(players)
+    var playersLD = MutableLiveData<Array<Player>>()
     var boardLD = MutableLiveData<Board>()
     var pontosLD = MutableLiveData<Int>()
 
@@ -77,22 +79,23 @@ class MultiPlayer() : ViewModel() {
                         return@thread
 
                     val bufferedReader = socket.getInputStream().bufferedReader()
-                    var jsonObject = JSONObject(bufferedReader.readLine())
-                    when (Json.decodeFromString<Server.MsgTypes>(jsonObject!!.getString("type"))) {
-                        Server.MsgTypes.GAMESTART -> {
+                    val line = bufferedReader.readLine()
+                    val msg : Message = Json.decodeFromString(line)
+                    when (msg.type) {
+                        MessageTypes.GAMESTART -> {
+                            val gameStart : GameStart = Json.decodeFromString(line)
                             player.NrBoard = 0
-                            for (_p in Json.decodeFromString<List<Player>>(jsonObject.getString("players")))
-                                players.add(_p)
-                            boards = Json.decodeFromString(jsonObject.getString("boards"))
-                            level = Json.decodeFromString(jsonObject.getString("level"))
+                            players = gameStart.players.toTypedArray()
+                            boards = gameStart.board.toTypedArray()
+                            level = gameStart.level
                             playersLD.postValue(players)
                             boardLD.postValue(boards[player.NrBoard])
                         }
-                        Server.MsgTypes.RESULT -> {
-                            val res : Int = jsonObject.getInt("res")
+                        MessageTypes.RESULT -> {
+                            /*val res : Int = jsonObject.getInt("res")
                             player.assignScore(res)
                             boardLD.postValue(boards[player.NrBoard])
-                            pontosLD.postValue(player.Pontos)
+                            pontosLD.postValue(player.Pontos)*/
                         }
                         else -> {}
                     }

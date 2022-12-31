@@ -7,5 +7,5 @@ import pt.isec.a2019133504.amov_22_23.Data.Player
 
 @Serializable
 open class Message(val type : MessageTypes)
-
+@Serializable
 data class GameStart(val players : List<Player>, val board: List<Board>, val level: Level) : Message(MessageTypes.GAMESTART)
