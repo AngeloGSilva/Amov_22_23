@@ -35,7 +35,7 @@ class MultiPlayer() : ViewModel() {
     var boardLD = MutableLiveData<Board>()
 
 
-    lateinit var server : Server
+    var server : Server? = null
     private var BoardAtual : Int = 0
 
     @RequiresApi(Build.VERSION_CODES.O)
