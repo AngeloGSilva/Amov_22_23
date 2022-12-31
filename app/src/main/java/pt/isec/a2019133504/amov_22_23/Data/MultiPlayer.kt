@@ -50,9 +50,9 @@ class MultiPlayer() : ViewModel() {
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = Server.SERVER_PORT) {
         socket = Socket()
-        socket.connect(InetSocketAddress(serverIP, serverPort), 5000)
         thread {
             try {
+                socket.connect(InetSocketAddress(serverIP, serverPort), 5000)
                 val bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
                 var json = JSONObject()
                 json.put("Username", ProfileActivity.username)
@@ -76,9 +76,9 @@ class MultiPlayer() : ViewModel() {
                     if (socket == null)
                         return@thread
 
-                    val bufferedReader = player.inputstream!!.bufferedReader()
+                    val bufferedReader = socket.getInputStream().bufferedReader()
                     var jsonObject = JSONObject(bufferedReader.readLine())
-                    when (jsonObject.get("type")) {
+                    when (Json.decodeFromString<Server.MsgTypes>(jsonObject!!.getString("type"))) {
                         Server.MsgTypes.GAMESTART -> {
                             player.NrBoard = 0
                             for (_p in Json.decodeFromString<List<Player>>(jsonObject.getString("players")))
@@ -94,6 +94,7 @@ class MultiPlayer() : ViewModel() {
                             boardLD.postValue(boards[player.NrBoard])
                             pontosLD.postValue(player.Pontos)
                         }
+                        else -> {}
                     }
                 }
             } catch (_: Exception) {
@@ -107,11 +108,11 @@ class MultiPlayer() : ViewModel() {
         if (row == -1 && col == -1) return
         var jsonObject = JSONObject()
         if (row != -1) {
-            jsonObject.put("type", Server.MsgTypes.MOVE_ROW)
+            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_ROW))
             jsonObject.put("val", row)
         }
         else {
-            jsonObject.put("type", Server.MsgTypes.MOVE_COL)
+            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_COL))
             jsonObject.put("val", col)
         }
         Server.sendToServer(socket, jsonObject.toString())

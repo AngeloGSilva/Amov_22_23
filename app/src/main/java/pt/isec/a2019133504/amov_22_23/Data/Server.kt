@@ -2,6 +2,7 @@ package pt.isec.a2019133504.amov_22_23.Data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
@@ -91,7 +92,7 @@ class Server {
         try {
             while (true) {
                 var _json: JSONObject? = player.receiveJson()
-                when (_json?.get("type")) {
+                when (Json.decodeFromString<MsgTypes>(_json!!.getString("type"))) {
                     MsgTypes.MOVE_COL -> {
                         val col : Int = _json.getInt("val")
                         val res : Int = boards[player.NrBoard].getResColuna(col)
@@ -110,6 +111,7 @@ class Server {
                         player.sendJson(json)
                         player.assignScore(res)
                     }
+                    else -> {}
                 }
             }
         } catch (x: Exception) {
@@ -126,7 +128,7 @@ class Server {
         boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
         var json : JSONObject = JSONObject()
-        json.put("type", MsgTypes.GAMESTART)
+        json.put("type", Json.encodeToString(MsgTypes.GAMESTART))
         json.put("players", Json.encodeToString(players))
         json.put("boards", Json.encodeToString(boards))
         json.put("level", Json.encodeToString(Level.get(NivelAtual)))
