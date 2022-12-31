@@ -19,20 +19,20 @@ class Message(val type : MessageTypes, val payload : String) {
     }
 
     companion object {
-        inline fun <reified T : MessagePayload> create(type : MessageTypes, _payload: T) : Message {
-            return Message(type, Json.encodeToString(_payload))
+        inline fun <reified T : MessagePayload> create(_payload: T) : Message {
+            return Message(_payload.type, Json.encodeToString(_payload))
         }
     }
 }
 
 @Serializable
-open class MessagePayload()
-@Serializable
-data class GameStart(val players : List<Player>, val board: List<Board>, val level: Level) : MessagePayload()
-@Serializable
-data class Result(val res : Int) : MessagePayload()
-@Serializable
-data class Move_Row(val move : Int) : MessagePayload()
-@Serializable
-data class Move_Col(val move : Int) : MessagePayload()
+open class MessagePayload(@Transient val type : MessageTypes = MessageTypes.DEFAULT)
 
+@Serializable
+data class GameStart(val players : List<Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.GAMESTART)
+@Serializable
+data class Result(val res : Int) : MessagePayload(MessageTypes.RESULT)
+@Serializable
+data class Move_Row(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_ROW)
+@Serializable
+data class Move_Col(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_COL)

@@ -88,17 +88,13 @@ class MultiPlayer() : ViewModel() {
                             boards = gameStart.board.toTypedArray()
                             level = gameStart.level
                             playersLD.postValue(players)
-                            boardLD.postValue(boards[player.NrBoard])
+                            updateBoard()
                         }
                         MessageTypes.RESULT -> {
-                            val result : pt.isec.a2019133504.amov_22_23.Data.Messages.Result = msg.getPayload()
+                            val result : Result = msg.getPayload()
                             player.assignScore(result.res)
-                            boardLD.postValue(boards[player.NrBoard])
                             pontosLD.postValue(player.Pontos)
-                            /*val res : Int = jsonObject.getInt("res")
-                            player.assignScore(res)
-                            boardLD.postValue(boards[player.NrBoard])
-                            pontosLD.postValue(player.Pontos)*/
+                            updateBoard()
                         }
                         else -> {}
                     }
@@ -110,20 +106,19 @@ class MultiPlayer() : ViewModel() {
         }
     }
 
+    fun updateBoard() {
+        if (player.NrBoard > boards.size)
+            TODO("hide board, show bigger leaderboard? ")
+        boardLD.postValue(boards[player.NrBoard])
+    }
+
     fun updateSelectedCell(row: Int, col: Int) {
         if (row == -1 && col == -1) return
         val msg : String
-        var jsonObject = JSONObject()
-        if (row != -1) {
-/*            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_ROW))
-            jsonObject.put("val", row)*/
-            msg = Message.create(MessageTypes.MOVE_ROW, Move_Row(row)).toString()
-        }
-        else {
-/*            jsonObject.put("type", Json.encodeToString(Server.MsgTypes.MOVE_COL))
-            jsonObject.put("val", col)*/
-            msg = Message.create(MessageTypes.MOVE_COL, Move_Col(col)).toString()
-        }
+        if (row != -1)
+            msg = Message.create(Move_Row(row, player.NrBoard)).toString()
+        else
+            msg = Message.create(Move_Col(col, player.NrBoard)).toString()
         Server.sendToServer(socket, msg)
     }
 

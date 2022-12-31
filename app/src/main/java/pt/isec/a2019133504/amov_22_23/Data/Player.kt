@@ -35,7 +35,7 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
         NrBoard++
     }
 
-    fun sendJson(string: String){
+    fun sendLine(string: String){
         thread {
             try {
                 val printStream = PrintStream(outputstream)
@@ -47,12 +47,9 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
         }
     }
 
-    fun receiveJson() : JSONObject? {
-        val bufferedReader = inputstream?.bufferedReader()
-        if (bufferedReader != null) {
-            return JSONObject(bufferedReader.readLine())
-        }
-        return null;
+    fun receiveLine() : String {
+        val bufferedReader = inputstream?.bufferedReader() ?: return ""
+        return bufferedReader.readLine()
     }
 }
 

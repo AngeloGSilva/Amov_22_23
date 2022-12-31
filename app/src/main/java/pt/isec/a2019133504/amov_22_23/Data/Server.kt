@@ -6,10 +6,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
-import pt.isec.a2019133504.amov_22_23.Data.Messages.GameStart
-import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
-import pt.isec.a2019133504.amov_22_23.Data.Messages.MessageTypes
-import pt.isec.a2019133504.amov_22_23.Data.Messages.Move_Row
+import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import java.io.PrintStream
 import java.net.ServerSocket
 import java.net.Socket
@@ -94,31 +91,24 @@ class Server {
     private fun startServerComm(player: Player) {
         try {
             while (true) {
-                var _json: JSONObject? = player.receiveJson()
-                val bufferedReader = player.inputstream!!.bufferedReader()
-                val line = bufferedReader.readLine()
+                val line = player.receiveLine()
                 val msg : Message = Json.decodeFromString(line)
                 when (msg.type) {
                     MessageTypes.MOVE_COL -> {
-                        val col : Int = _json!!.getInt("val")
-                        val res : Int = boards[player.NrBoard].getResColuna(col)
-                        val json : JSONObject = JSONObject()
-                        json.put("type", MsgTypes.RESULT)
-                        json.put("res", res)
-                        player.sendJson(json.toString())
+                        val moveCol : Move_Col = msg.getPayload()
+                        val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
+                        if (moveCol.BoardN > boards.size) continue
+                        if (moveCol.BoardN != player.NrBoard) continue
                         player.assignScore(res)
+                        player.sendLine(Message.create(Result(res)).toString())
                     }
                     MessageTypes.MOVE_ROW -> {
                         val moveRow : Move_Row = msg.getPayload()
-                        //val row : Int = _json!!.getInt("val")
                         val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
-/*                        val json : JSONObject = JSONObject()
-                        json.put("type", MsgTypes.RESULT)
-                        json.put("res", res)
-                        player.sendJson(json.toString())
-                        player.assignScore(res)*/
-                        val msg2 = Message.create(MessageTypes.RESULT, pt.isec.a2019133504.amov_22_23.Data.Messages.Result(res)).toString()
-                        player.sendJson(msg2)
+                        if (moveRow.BoardN > boards.size) continue
+                        if (moveRow.BoardN != player.NrBoard) continue
+                        player.assignScore(res)
+                        player.sendLine(Message.create(Result(res)).toString())
                     }
                     else -> {}
                 }
@@ -132,13 +122,14 @@ class Server {
     }
 
     fun StartGame() : Boolean {
-        if(players.size <=1)
-            return false
+        //FIXME uncomment
+        /*if(players.size <=1)
+            return false*/
         boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
-        val msg = Message.create(MessageTypes.GAMESTART, GameStart(players, boards.toList(), Level.get(NivelAtual))).toString()
+        val msg = Message.create(GameStart(players, boards.toList(), Level.get(NivelAtual))).toString()
         for(p in players)
-            p.sendJson(msg)
+            p.sendLine(msg)
         return true
     }
 
