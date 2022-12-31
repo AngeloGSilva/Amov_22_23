@@ -19,7 +19,7 @@ class SinglePlayer() {
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
     //var maioresValores = MutableLiveData<Pair<Double,Double>>()
     var pontosLiveData = MutableLiveData<Int>()
-    var cellsLiveData = MutableLiveData< Array<Array<String>>>()
+    var cellsLiveData = MutableLiveData<Board>()
     var fimLiveData = MutableLiveData<Boolean>()
     var timerCount = MutableLiveData<Long>()
     var nextLevel = MutableLiveData<Boolean>()
@@ -50,13 +50,13 @@ class SinglePlayer() {
         return boards[BoardAtual]
     }
 
-    fun returnboardcells(): Array<Array<String>> {
-        return boards[BoardAtual].cells
+    fun returnboardcells(): Board {
+        return boards[BoardAtual]
     }
 
     init {
         startTimer(30)
-        cellsLiveData.postValue(boards[BoardAtual].cells)
+        cellsLiveData.postValue(boards[BoardAtual])
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         pontosLiveData.postValue(pontos)
     }
@@ -91,7 +91,6 @@ class SinglePlayer() {
             startTimer(time)
 
 
-
         if (Level.isLast(NivelAtual) && BoardAtual==9){
             //TODO para acabar
             fimLiveData.postValue(true)
@@ -105,7 +104,6 @@ class SinglePlayer() {
                 }
                 timerObject.cancel()
                 nextLevel.postValue(true)
-                //TODO aletar o nextLevel para os 5 segundos de pausa de forma mais correta
             } else
                 BoardAtual++
             pontosLiveData.postValue(pontos)

@@ -42,4 +42,6 @@
     <string name="scissors">Scissors</string>
     <string name="msg_ip_address">Waiting for all client...</string>
     <string name="btn_emulator">Connect to emulator</string>
+    <!--<string name="timeleaderboard">Time:%d</string>
+    <string name="pontosleaderboard">Pontos:%d</string>-->
 </resources>

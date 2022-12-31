@@ -25,7 +25,7 @@ class SignInActivity : AppCompatActivity() {
     companion object{
         private var TAG = ""
         //lateinit var perfil : Perfil
-        lateinit var email : String
+        lateinit var emailUser : String
         lateinit var auth: FirebaseAuth
     }
     val STRING_LENGTH = 10
@@ -103,7 +103,7 @@ class SignInActivity : AppCompatActivity() {
     fun signInWithEmail(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
-                //perfil = Perfil(email)
+                emailUser = email
                 checkphotoexists()
                 checkUsernameexists()
                 val intent = Intent(this,MainActivity::class.java)
@@ -119,7 +119,7 @@ class SignInActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
                 //TODO USERNAME
-                //perfil = Perfil(email)
+                emailUser = email
                 val username = hashMapOf(
                     "UserName" to "User_" + getRandomString(STRING_LENGTH),
                 )

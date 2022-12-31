@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import pt.isec.a2019133504.amov_22_23.Data.Board
 import kotlin.math.abs
 
 
@@ -176,8 +177,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         System.out.println("onLongPress:")
     }
 
-    fun updateCells(cells:  Array<Array<String>>) {
-        this.cells = cells
+    fun updateCells(cells:  Board) {
+        this.cells = cells.cells
         invalidate()
     }
 

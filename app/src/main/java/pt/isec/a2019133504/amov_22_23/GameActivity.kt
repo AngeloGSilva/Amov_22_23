@@ -17,14 +17,13 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.view.ViewCompat.NestedScrollType
-import androidx.core.widget.NestedScrollView
+import androidx.core.view.isVisible
+import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer.Companion.SERVER_PORT
-import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
-import kotlin.random.Random
+import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
+import pt.isec.a2019133504.amov_22_23.databinding.ActivityGameBinding
 
 
 class GameActivity : AppCompatActivity() {
@@ -45,26 +44,37 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private val model: MultiPlayer by viewModels()
+    private val multiPlayer: MultiPlayer by viewModels()
 
     private var dlg: AlertDialog? = null
     private var ConnectedPlayerListView : ListView? = null
     private var connectedPlayersAdapter : ConnectedPlayersAdapter? = null
+
+    private var LeaderBoardPlayerAdapter : LeaderboardAdapter? = null
+
+
     @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var binding: ActivityGameBinding
+    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        //TODO class
-        var arids = ArrayList<Perfil>()
-        arids.add(Perfil(R.id.userjson1,R.id.imagejson1))
-        arids.add(Perfil(R.id.userjson2,R.id.imagejson2))
-        arids.add(Perfil(R.id.userjson3,R.id.imagejson3))
-        arids.add(Perfil(R.id.userjson4,R.id.imagejson4))
-        arids.add(Perfil(R.id.userjson5,R.id.imagejson5))
 
-        model.testeusers.observe(this) {
+        multiPlayer.serverUsers.observe(this) {
             connectedPlayersAdapter!!.notifyDataSetInvalidated()
+        }
+
+        multiPlayer.usersPlayers.observe(this) {
+            //LeaderBoardPlayerAdapter = LeaderboardAdapter(it,this)
+            //LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()
+        }
+
+        multiPlayer.cellsLiveData.observe(this) {
+            updateCells(it)
         }
 
         when (intent.getIntExtra("mode", SERVER_MODE)) {
@@ -121,7 +131,7 @@ class GameActivity : AppCompatActivity() {
                     text = "Start"
                     textSize = 10f
                     setOnClickListener {
-                        if(!model.StartGame())
+                        if(!multiPlayer.StartGame())
                             return@setOnClickListener
 
                         //Notificar o server de que o jogo começou
@@ -133,7 +143,7 @@ class GameActivity : AppCompatActivity() {
                 ConnectedPlayerListView = ListView(context).apply {
                     val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
                     layoutParams = paramsLV
-                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.players, context)
+                    connectedPlayersAdapter = ConnectedPlayersAdapter(multiPlayer.players, context)
                     adapter = connectedPlayersAdapter
                 }
                 addView(ConnectedPlayerListView)
@@ -153,9 +163,18 @@ class GameActivity : AppCompatActivity() {
         windowParam?.gravity = Gravity.TOP
         window?.attributes = windowParam
 
-        model.startServer()
-        model.startClient(this,"localhost")
+        multiPlayer.startServer()
+        multiPlayer.startClient(this,"localhost")
         dlg?.show()
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateCells(cells: Board) = cells.let {
+        binding.boardGame.updateCells(cells)
+        binding.boardGame.isVisible = true
+        binding.WaitingforHost.isVisible = false
+        binding.progressBar.isVisible = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -193,10 +212,12 @@ class GameActivity : AppCompatActivity() {
                     Toast.makeText(this@GameActivity, R.string.error_address, Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    model.startClient(this,strIP)
+                    multiPlayer.startClient(this,strIP)
                 }
             }.setNeutralButton(R.string.btn_emulator) { _: DialogInterface, _: Int ->
-                model.startClient(this,"10.0.2.2", SERVER_PORT - 1)
+                multiPlayer.startClient(this,"10.0.2.2", SERVER_PORT - 1)
+                binding.WaitingforHost.isVisible = true
+                binding.progressBar.isVisible = true
             }.setNegativeButton(R.string.button_cancel) { _: DialogInterface, _: Int ->
                 finish()
             }

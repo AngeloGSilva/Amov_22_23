@@ -3,7 +3,6 @@ package pt.isec.a2019133504.amov_22_23.Data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
@@ -30,6 +29,7 @@ class MultiPlayer() : ViewModel() {
         const val MOVE_L = -1
         const val MOVE_C = -1
     }
+    var cellsLiveData = MutableLiveData<Board>()
 
     enum class State {
         WAITING_CONNECTIONS,PLAYING,INTERVAL,GAMEOVER
@@ -44,13 +44,18 @@ class MultiPlayer() : ViewModel() {
     var players : ArrayList<Player> = ArrayList()
         get() = field
 
+    var playersCliente : ArrayList<Player> = ArrayList()
+        get() = field
+
     var NivelAtual : Int = 0
     lateinit var level : Level
     lateinit var boards : Array<Board>
 
-    //var usersinfo = MutableLiveData<Bitmap>()
+    private var BoardAtual : Int = 0
 
-    var testeusers = MutableLiveData<ArrayList<Player>>()
+    var serverUsers = MutableLiveData<ArrayList<Player>>()
+
+    var usersPlayers = MutableLiveData<ArrayList<Player>>()
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startServer() {
@@ -72,19 +77,16 @@ class MultiPlayer() : ViewModel() {
                                 var usernameholder = json.get("Username")
                                 val player: Player = Player(Json.decodeFromString(BitmapSerializer, foto2.toString()), usernameholder as String, socketClient)
                                 players.add(player)
-                                testeusers.postValue(players)
+                                serverUsers.postValue(players)
                                 startServerComm(player)
                             } catch (_: Exception) {
 
                             }
                         }
-                        //System.out.println("Conectado ao socket" + socketClient.toString())
-                        //players[players.size] = Player(Recebido por JSON,socketClient)
+
                     }
                 } catch (_: Exception) {
-                    //_connectionState.postValue(ConnectionState.CONNECTION_ERROR)
                 } finally {
-                    //Acabar o jogo para todos
                     //serverSocket?.close()
                     //stopGame()
                 }
@@ -168,10 +170,13 @@ class MultiPlayer() : ViewModel() {
                     var jsonObject = JSONObject(bufferedReader.readLine())
                     when (jsonObject.get("type")) {
                         "GAMESTART" -> {
+                            BoardAtual = 0
                             for (_p in Json.decodeFromString<List<Player>>(jsonObject.getString("players")))
-                                players.add(_p)
+                                playersCliente.add(_p)
                             boards = Json.decodeFromString(jsonObject.getString("boards"))
                             level = Json.decodeFromString(jsonObject.getString("level"))
+                            cellsLiveData.postValue(boards[BoardAtual])
+                            usersPlayers.postValue(playersCliente)
                         }
                     }
                 }

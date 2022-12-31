@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:background="#FFFFFF">
+        <ImageView
+            android:id="@+id/leaderboardimg"
+            android:src="@android:drawable/ic_dialog_map"
+            android:layout_width="64dp"
+            android:layout_height="64dp" />
+        <TextView
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:textSize="20sp"
+            android:text="username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/leaderboardusername"
+            android:textColor="#000000"
+            android:background="#FFFFFF"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:textStyle="bold"
+                android:padding="4dp"
+                android:textSize="15sp"
+                android:text="Time:"
+                android:layout_width="wrap_content"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:id="@+id/leaderboardusertime"
+                android:textColor="#000000"
+                android:background="#FFFFFF"/>
+            <TextView
+                android:textStyle="bold"
+                android:padding="4dp"
+                android:textSize="15sp"
+                android:text="Pontos:"
+                android:layout_width="wrap_content"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:id="@+id/leaderboarduserpontos"
+                android:textColor="#000000"
+                android:background="#FFFFFF"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

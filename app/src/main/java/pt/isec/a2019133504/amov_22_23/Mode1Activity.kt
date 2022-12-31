@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.NonCancellable.cancel
 import kotlinx.coroutines.channels.ticker
+import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
@@ -34,6 +35,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.boardGame.registerListener(this)
@@ -103,8 +105,12 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
         binding.btnAddFirestore.setOnClickListener(){
             //TODO binding de status Message
-            addDataToFirestore()
-            binding.btnAddFirestore.isEnabled = false
+            if(addDataToFirestore()) {
+                //TODO binding de status Message
+                binding.btnAddFirestore.isEnabled = false
+            }else{
+                //TODO binding de status Message
+            }
         }
 
         binding.tryAgain.setOnClickListener(){
@@ -113,8 +119,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         }
 
         binding.btnMenuInicial.setOnClickListener(){
-            /*val intent = Intent(this,MainActivity::class.java)
-            startActivity(intent)*/
             finish()
         }
     }
@@ -123,7 +127,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.InfoPontos.text = "Linha: " + (valores.first).toString()+ " Coluna: " +(valores.second).toString()
     }
 
-    private fun updateCells(cells: Array<Array<String>>?) = cells?.let {
+    private fun updateCells(cells: Board) = cells.let {
         binding.boardGame.updateCells(cells)
     }
 
@@ -154,21 +158,28 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         builder.show()
     }
 
-    fun addDataToFirestore() {
+    fun addDataToFirestore() : Boolean{
         val db = Firebase.firestore
-        var email = SignInActivity.email
+        var email = SignInActivity.emailUser
         val scores = hashMapOf(
             "Email" to email,
             "Pontuacao" to singlePlayer.pontos,
             "Time" to singlePlayer.timerCount
         )
+        var TopScore : Boolean = false
         db.collection("Top5Scores").orderBy("Pontuacao", Direction.ASCENDING).limit(1).get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    if(document.data["Pontuacao"].toString().toInt() < singlePlayer.pontos)
+                    if(document.data["Pontuacao"].toString().toInt() < singlePlayer.pontos) {
                         db.collection("Top5Scores").document(document.id).set(scores)
+                        TopScore = true
+                    }
                 }
             }
+            .addOnFailureListener{result->
+                //TODO set e limite 5
+            }
+        return TopScore
     }
 
 
