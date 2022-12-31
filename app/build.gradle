@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'org.jetbrains.kotlin.plugin.serialization'
+
 }
 
 android {
@@ -65,4 +66,5 @@ dependencies {
 
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.0"
 }
