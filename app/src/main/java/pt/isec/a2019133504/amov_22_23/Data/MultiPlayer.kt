@@ -96,6 +96,12 @@ class MultiPlayer() : ViewModel() {
                             pontosLD.postValue(player.Pontos)
                             updateBoard()
                         }
+                        MessageTypes.PLAYERINFO -> {
+                            val playerInfo : PlayerInfo = msg.getPayload()
+                            players.clear()
+                            players.addAll(playerInfo.players)
+                            playersLD.postValue(players)
+                        }
                         else -> {}
                     }
                 }

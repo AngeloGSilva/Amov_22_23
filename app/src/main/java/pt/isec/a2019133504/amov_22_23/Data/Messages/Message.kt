@@ -36,3 +36,5 @@ data class Result(val res : Int) : MessagePayload(MessageTypes.RESULT)
 data class Move_Row(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_ROW)
 @Serializable
 data class Move_Col(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_COL)
+@Serializable
+data class PlayerInfo(val players : List<Player>) : MessagePayload(MessageTypes.PLAYERINFO)

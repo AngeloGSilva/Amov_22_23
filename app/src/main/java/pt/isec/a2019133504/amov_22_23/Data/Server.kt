@@ -101,6 +101,7 @@ class Server {
                         if (moveCol.BoardN != player.NrBoard) continue
                         player.assignScore(res)
                         player.sendLine(Message.create(Result(res)).toString())
+                        UpdateLeaderBoard()
                     }
                     MessageTypes.MOVE_ROW -> {
                         val moveRow : Move_Row = msg.getPayload()
@@ -109,6 +110,7 @@ class Server {
                         if (moveRow.BoardN != player.NrBoard) continue
                         player.assignScore(res)
                         player.sendLine(Message.create(Result(res)).toString())
+                        UpdateLeaderBoard()
                     }
                     else -> {}
                 }
@@ -119,6 +121,12 @@ class Server {
         } finally {
             //stopGame()
         }
+    }
+
+    fun UpdateLeaderBoard(){
+        val msg = Message.create(PlayerInfo(players)).toString()
+        for(p in players)
+            p.sendLine(msg)
     }
 
     fun StartGame() : Boolean {
