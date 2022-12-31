@@ -27,7 +27,7 @@ class Server {
     var NivelAtual : Int = 0
     lateinit var level : Level
     lateinit var boards : Array<Board>
-    private lateinit var socket: ServerSocket
+    private var socket: ServerSocket = ServerSocket(SERVER_PORT)
 
     var players : ArrayList<Player> = ArrayList()
         get() = field
@@ -35,21 +35,20 @@ class Server {
     var playersLD = MutableLiveData<ArrayList<Player>>(players)
 
     init {
-        socket = ServerSocket(SERVER_PORT)
         thread {
-            socket?.run {
+            socket.run {
                 System.out.println("THREAD RUNNING")
                 try {
                     while(state.value == State.WAITING_CONNECTIONS) {
-                        val socketClient = socket!!.accept()
+                        val socketClient = socket.accept()
 
                         thread {
                             try {
                                 val bufI = socketClient.getInputStream()
-                                var s = bufI.bufferedReader().readLine()
-                                var json = JSONObject(s)
-                                var foto2 = json.get("UserPhoto")
-                                var usernameholder = json.get("Username")
+                                val s = bufI.bufferedReader().readLine()
+                                val json = JSONObject(s)
+                                val foto2 = json.get("UserPhoto")
+                                val usernameholder = json.get("Username")
                                 val player: Player = Player(Json.decodeFromString(BitmapSerializer, foto2.toString()), usernameholder as String, socketClient)
                                 players.add(player)
                                 playersLD.postValue(players)

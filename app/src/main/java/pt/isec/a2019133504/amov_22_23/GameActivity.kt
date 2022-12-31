@@ -66,23 +66,27 @@ class GameActivity : AppCompatActivity() {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        model.playersLD.observe(this) {
-            //LeaderBoardPlayerAdapter = LeaderboardAdapter(it,this)
-            //LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()
-        }
-
-        model.boardLD.observe(this) {
-            updateCells(it)
-        }
 
         when (intent.getIntExtra("mode", SERVER_MODE)) {
             SERVER_MODE -> startAsServer()
             CLIENT_MODE -> startAsClient()
         }
+
+        LeaderBoardPlayerAdapter = LeaderboardAdapter(model.players,this)
+        binding.leaderboard.adapter = LeaderBoardPlayerAdapter
+
+        model.playersLD.observe(this) {
+            LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()
+        }
+
+        model.boardLD.observe(this) {
+            updateCells(it)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startAsServer() {
+        model.startServer()
         val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
         val ip = wifiManager.connectionInfo.ipAddress // Deprecated in API Level 31. Suggestion NetworkCallback
         //val ip = NetworkCallback.FLAG_INCLUDE_LOCATION_INFO
@@ -129,7 +133,7 @@ class GameActivity : AppCompatActivity() {
                     text = "Start"
                     textSize = 10f
                     setOnClickListener {
-                        if(!model.server.StartGame())
+                        if(!model.server!!.StartGame())
                             return@setOnClickListener
 
                         //Notificar o server de que o jogo começou
@@ -141,7 +145,7 @@ class GameActivity : AppCompatActivity() {
                 ConnectedPlayerListView = ListView(context).apply {
                     val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
                     layoutParams = paramsLV
-                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.server.players, context)
+                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.server!!.players, context)
                     adapter = connectedPlayersAdapter
                 }
                 addView(ConnectedPlayerListView)
@@ -161,11 +165,10 @@ class GameActivity : AppCompatActivity() {
         windowParam?.gravity = Gravity.TOP
         window?.attributes = windowParam
 
-        model.startServer()
         model.startClient(this,"localhost")
         dlg?.show()
 
-        model.server.playersLD.observe(this) {
+        model.server!!.playersLD.observe(this) {
             connectedPlayersAdapter!!.notifyDataSetInvalidated()
         }
 
