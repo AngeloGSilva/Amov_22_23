@@ -20,7 +20,7 @@ class Message(val type : MessageTypes, val payload : String) {
     }
 
     companion object {
-        fun create(type : MessageTypes, _payload: MessagePayload = MessagePayload()) : Message {
+        inline fun <reified T : MessagePayload> create(type : MessageTypes, _payload: T) : Message {
             return Message(type, Json.encodeToString(_payload))
         }
     }
