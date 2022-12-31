@@ -35,11 +35,11 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
         NrBoard++
     }
 
-    fun sendJson(json: JSONObject){
+    fun sendJson(string: String){
         thread {
             try {
                 val printStream = PrintStream(outputstream)
-                printStream.println(json.toString())
+                printStream.println(string)
                 printStream.flush()
             } catch (_: Exception) {
                 //stopGame()

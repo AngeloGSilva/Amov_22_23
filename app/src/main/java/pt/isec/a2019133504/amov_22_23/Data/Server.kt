@@ -7,6 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
+import pt.isec.a2019133504.amov_22_23.Data.Messages.GameStart
 import java.io.PrintStream
 import java.net.ServerSocket
 import java.net.Socket
@@ -127,15 +128,9 @@ class Server {
             return false
         boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
-        var json : JSONObject = JSONObject()
-        json.put("type", Json.encodeToString(MsgTypes.GAMESTART))
-        json.put("players", Json.encodeToString(players))
-        json.put("boards", Json.encodeToString(boards))
-        json.put("level", Json.encodeToString(Level.get(NivelAtual)))
-
+        val msg = Json.encodeToString(GameStart(players, boards.toList(), Level.get(NivelAtual)))
         for(p in players)
-            p.sendJson(json)
-
+            p.sendJson(msg)
         return true
     }
 
