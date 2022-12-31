@@ -27,7 +27,6 @@ class Message(val type : MessageTypes, val payload : String) {
 
 @Serializable
 open class MessagePayload(@Transient val type : MessageTypes = MessageTypes.DEFAULT)
-
 @Serializable
 data class GameStart(val players : List<Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.GAMESTART)
 @Serializable

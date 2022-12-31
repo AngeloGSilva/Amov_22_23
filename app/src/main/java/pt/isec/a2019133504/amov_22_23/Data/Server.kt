@@ -96,18 +96,18 @@ class Server {
                 when (msg.type) {
                     MessageTypes.MOVE_COL -> {
                         val moveCol : Move_Col = msg.getPayload()
-                        val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
                         if (moveCol.BoardN > boards.size) continue
                         if (moveCol.BoardN != player.NrBoard) continue
+                        val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
                         player.assignScore(res)
                         player.sendLine(Message.create(Result(res)).toString())
                         UpdateLeaderBoard()
                     }
                     MessageTypes.MOVE_ROW -> {
                         val moveRow : Move_Row = msg.getPayload()
-                        val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
                         if (moveRow.BoardN > boards.size) continue
                         if (moveRow.BoardN != player.NrBoard) continue
+                        val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
                         player.assignScore(res)
                         player.sendLine(Message.create(Result(res)).toString())
                         UpdateLeaderBoard()
@@ -124,6 +124,7 @@ class Server {
     }
 
     fun UpdateLeaderBoard(){
+        //TODO erro Stack size 1024 KB, muitos pedidos, tem de se testar devagar
         val msg = Message.create(PlayerInfo(players)).toString()
         for(p in players)
             p.sendLine(msg)
