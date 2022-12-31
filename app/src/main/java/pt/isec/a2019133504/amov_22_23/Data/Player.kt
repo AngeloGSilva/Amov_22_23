@@ -30,6 +30,11 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
      val outputstream: OutputStream?
         get() = socket?.getOutputStream()
 
+    fun assignScore(res : Int) {
+        Pontos += res
+        NrBoard++
+    }
+
     fun sendJson(json: JSONObject){
         thread {
             try {

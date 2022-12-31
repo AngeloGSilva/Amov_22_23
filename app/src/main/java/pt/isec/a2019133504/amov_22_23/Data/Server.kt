@@ -6,12 +6,17 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
+import java.io.PrintStream
 import java.net.ServerSocket
+import java.net.Socket
 import kotlin.concurrent.thread
 
 class Server {
     enum class State {
         WAITING_CONNECTIONS,PLAYING,INTERVAL,GAMEOVER
+    }
+    enum class MsgTypes {
+        MOVE_ROW, MOVE_COL, PLAYERINFO, GAMESTART, RESULT
     }
 
     private val _state = MutableLiveData(State.WAITING_CONNECTIONS)
@@ -22,6 +27,17 @@ class Server {
         const val SERVER_PORT = 9999
         const val MOVE_L = -1
         const val MOVE_C = -1
+
+        fun sendToServer(socket : Socket, msg: String) {
+            thread {
+                try {
+                    val printStream = PrintStream(socket.getOutputStream())
+                    printStream.println(msg)
+                    printStream.flush()
+                } catch (_: Exception) {
+                }
+            }
+        }
     }
 
     var NivelAtual : Int = 0
@@ -75,7 +91,26 @@ class Server {
         try {
             while (true) {
                 var _json: JSONObject? = player.receiveJson()
-
+                when (_json?.get("type")) {
+                    MsgTypes.MOVE_COL -> {
+                        val col : Int = _json.getInt("val")
+                        val res : Int = boards[player.NrBoard].getResColuna(col)
+                        val json : JSONObject = JSONObject()
+                        json.put("type", MsgTypes.RESULT)
+                        json.put("res", res)
+                        player.sendJson(json)
+                        player.assignScore(res)
+                    }
+                    MsgTypes.MOVE_ROW -> {
+                        val row : Int = _json.getInt("val")
+                        val res : Int = boards[player.NrBoard].getResLinha(row)
+                        val json : JSONObject = JSONObject()
+                        json.put("type", MsgTypes.RESULT)
+                        json.put("res", res)
+                        player.sendJson(json)
+                        player.assignScore(res)
+                    }
+                }
             }
         } catch (x: Exception) {
             System.err.println(x.message)
@@ -91,7 +126,7 @@ class Server {
         boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
         var json : JSONObject = JSONObject()
-        json.put("type","GAMESTART")
+        json.put("type", MsgTypes.GAMESTART)
         json.put("players", Json.encodeToString(players))
         json.put("boards", Json.encodeToString(boards))
         json.put("level", Json.encodeToString(Level.get(NivelAtual)))

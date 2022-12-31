@@ -21,6 +21,9 @@ class Board(val cells: Array<Array<String>>) {
     @Transient var maior : Double = 0.0
     @Transient var segundoMaior : Double = 0.0
 
+    fun getResLinha(linha: Int): Int = linhas[linha]
+    fun getResColuna(coluna: Int): Int = colunas[coluna]
+
     init {
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
         val linhasResult : List<Double> = listOf(getResultadoLinha(0) ,getResultadoLinha(2) , getResultadoLinha(4))
@@ -59,7 +62,7 @@ class Board(val cells: Array<Array<String>>) {
 
     //TODO Falta tratar do caso de dividir por zero
     //FIXME
-    fun getResultadoLinha(linha: Int): Double {
+    private fun getResultadoLinha(linha: Int): Double {
         var result = 0.0
 
         var operator = cells[linha][1]
@@ -139,7 +142,7 @@ class Board(val cells: Array<Array<String>>) {
         return result
     }
 
-    fun getResultadoColuna(coluna: Int): Double {
+    private fun getResultadoColuna(coluna: Int): Double {
         var result = 0.0
         var operator = cells[1][coluna]
         var operator2 = cells[3][coluna]

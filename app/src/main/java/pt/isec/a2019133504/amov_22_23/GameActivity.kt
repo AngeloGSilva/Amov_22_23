@@ -25,13 +25,14 @@ import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.Data.Server
+import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityGameBinding
 import kotlin.random.Random
 
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
     companion object {
         private const val SERVER_MODE = 0
         private const val CLIENT_MODE = 1
@@ -47,6 +48,10 @@ class GameActivity : AppCompatActivity() {
                 putExtra("mode", CLIENT_MODE)
             }
         }
+    }
+
+    override fun onCellTouched(row: Int, col: Int) {
+        model.updateSelectedCell(row, col)
     }
 
     private val model: MultiPlayer by viewModels()
@@ -67,6 +72,8 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+        binding.boardGame.registerListener(this)
+
         when (intent.getIntExtra("mode", SERVER_MODE)) {
             SERVER_MODE -> startAsServer()
             CLIENT_MODE -> startAsClient()
@@ -81,6 +88,10 @@ class GameActivity : AppCompatActivity() {
 
         model.boardLD.observe(this) {
             updateCells(it)
+        }
+
+        model.pontosLD.observe(this) {
+            binding.multiPontos.text = resources.getString(R.string.Pontos, it)
         }
     }
 
