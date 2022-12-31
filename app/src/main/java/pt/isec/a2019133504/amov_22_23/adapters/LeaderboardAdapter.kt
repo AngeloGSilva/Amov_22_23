@@ -11,9 +11,9 @@ import android.widget.TextView
 import pt.isec.a2019133504.amov_22_23.Data.Player
 import pt.isec.a2019133504.amov_22_23.R
 
-class LeaderboardAdapter(data: Array<Player>, context: Context) :
+class LeaderboardAdapter(data: ArrayList<Player>, context: Context) :
     ArrayAdapter<Player>(context, pt.isec.a2019133504.amov_22_23.R.layout.leaderboard_item, data){
-    private var dataSet: Array<Player>?
+    private var dataSet: ArrayList<Player>?
     init {
         dataSet = data
     }

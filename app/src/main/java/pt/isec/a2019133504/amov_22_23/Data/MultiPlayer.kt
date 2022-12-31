@@ -34,9 +34,9 @@ class MultiPlayer() : ViewModel() {
     lateinit var player : Player
 
 
-    lateinit var players : Array<Player>
+    var players : ArrayList<Player> = ArrayList()
 
-    var playersLD = MutableLiveData<Array<Player>>()
+    var playersLD = MutableLiveData<ArrayList<Player>>()
     var boardLD = MutableLiveData<Board>()
     var pontosLD = MutableLiveData<Int>()
 
@@ -85,7 +85,8 @@ class MultiPlayer() : ViewModel() {
                         MessageTypes.GAMESTART -> {
                             val gameStart : GameStart = Json.decodeFromString(line)
                             player.NrBoard = 0
-                            players = gameStart.players.toTypedArray()
+                            players.clear()
+                            players.addAll(gameStart.players)
                             boards = gameStart.board.toTypedArray()
                             level = gameStart.level
                             playersLD.postValue(players)
