@@ -100,7 +100,7 @@ class Server {
                         val json : JSONObject = JSONObject()
                         json.put("type", MsgTypes.RESULT)
                         json.put("res", res)
-                        player.sendJson(json)
+                        player.sendJson(json.toString())
                         player.assignScore(res)
                     }
                     MsgTypes.MOVE_ROW -> {
@@ -109,7 +109,7 @@ class Server {
                         val json : JSONObject = JSONObject()
                         json.put("type", MsgTypes.RESULT)
                         json.put("res", res)
-                        player.sendJson(json)
+                        player.sendJson(json.toString())
                         player.assignScore(res)
                     }
                     else -> {}
