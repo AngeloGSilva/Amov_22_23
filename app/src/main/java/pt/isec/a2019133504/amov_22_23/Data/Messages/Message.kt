@@ -1,6 +1,5 @@
 package pt.isec.a2019133504.amov_22_23.Data.Messages
 
-import kotlin.reflect.KClass
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -11,7 +10,7 @@ import pt.isec.a2019133504.amov_22_23.Data.Player
 
 @Serializable
 class Message(val type : MessageTypes, val payload : String) {
-    inline fun <reified T : MessagePayload> getPayload(clazz: KClass<T>) : T {
+    inline fun <reified T : MessagePayload> getPayload() : T {
         return Json.decodeFromString(payload)
     }
 

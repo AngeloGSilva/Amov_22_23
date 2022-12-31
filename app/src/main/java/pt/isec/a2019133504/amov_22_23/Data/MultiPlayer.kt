@@ -83,7 +83,7 @@ class MultiPlayer() : ViewModel() {
                     val msg : Message = Json.decodeFromString(line)
                     when (msg.type) {
                         MessageTypes.GAMESTART -> {
-                            val gameStart : GameStart = msg.getPayload(GameStart::class)
+                            val gameStart : GameStart = msg.getPayload()
                             player.NrBoard = 0
                             players.clear()
                             players.addAll(gameStart.players)
