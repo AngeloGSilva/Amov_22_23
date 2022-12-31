@@ -3,7 +3,6 @@ package pt.isec.a2019133504.amov_22_23.Data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
@@ -130,7 +129,7 @@ class Server {
             return false
         boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
-        val msg = Json.encodeToString(Message(MessageTypes.GAMESTART, GameStart(players, boards.toList(), Level.get(NivelAtual))))
+        val msg = Message.create(MessageTypes.GAMESTART, GameStart(players, boards.toList(), Level.get(NivelAtual))).toString()
         for(p in players)
             p.sendJson(msg)
         return true
