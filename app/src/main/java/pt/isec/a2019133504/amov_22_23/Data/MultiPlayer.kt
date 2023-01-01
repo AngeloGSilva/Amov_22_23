@@ -55,8 +55,8 @@ class MultiPlayer() : ViewModel() {
                 val bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
                 Server.sendToServer(socket, Message.create(PlayerConnect(user!!.uid, ProfileActivity.username, bitmap)))
                 startJogadorComm()
-            } catch (_: Exception) {
-                System.out.println("ERRO AO CONECTAR AO SERVIDOR")
+            } catch (e: Exception) {
+                Log.e(tag, e.toString())
                 //stopGame()
             }
         }
@@ -66,44 +66,45 @@ class MultiPlayer() : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startJogadorComm() {
         thread {
-            try {
+                val bufferedReader = socket.getInputStream().bufferedReader()
                 while(true) {
-                    val bufferedReader = socket.getInputStream().bufferedReader()
-                    val line = bufferedReader.readLine()
-                    val msg : Message = Json.decodeFromString(line)
-                    when (msg.type) {
-                        MessageTypes.GAMESTART -> {
-                            Log.d(tag, "GAMESTART")
-                            val gameStart : GameStart = msg.getPayload()
-                            player = gameStart.players[user!!.uid]!!
-                            players.clear()
-                            players.putAll(gameStart.players)
-                            boards = gameStart.board.toTypedArray()
-                            level = gameStart.level
-                            state.postValue(State.WAITING_FOR_MOVE)
-                            playersLD.postValue(players)
-                            updateBoard()
-                        }
-                        MessageTypes.PLAYERUPDATE -> {
-                            val playerInfo : PlayerUpdate = msg.getPayload()
-                            Log.d(tag, "PlayerUpdate")
-                            players.get(playerInfo.uid)!!.apply {
-                                Pontos = playerInfo.Pontos
-                                NrBoard = playerInfo.NrBoard
-                                Timestamp = playerInfo.Timestamp
-                                if (this == player) {
-                                    state.postValue(State.WAITING_FOR_MOVE)
-                                    updateBoard()
-                                }
+                    try {
+                        val line = bufferedReader.readLine()
+                        val msg : Message = Json.decodeFromString(line)
+                        when (msg.type) {
+                            MessageTypes.GAMESTART -> {
+                                Log.d(tag, "GAMESTART")
+                                val gameStart : GameStart = msg.getPayload()
+                                player = gameStart.players[user!!.uid]!!
+                                players.clear()
+                                players.putAll(gameStart.players)
+                                boards = gameStart.board.toTypedArray()
+                                level = gameStart.level
+                                state.postValue(State.WAITING_FOR_MOVE)
+                                playersLD.postValue(players)
+                                updateBoard()
                             }
-                            playersLD.postValue(players)
+                            MessageTypes.PLAYERUPDATE -> {
+                                val playerInfo : PlayerUpdate = msg.getPayload()
+                                Log.d(tag, "PlayerUpdate")
+                                players.get(playerInfo.uid)!!.apply {
+                                    Pontos = playerInfo.Pontos
+                                    NrBoard = playerInfo.NrBoard
+                                    Timestamp = playerInfo.Timestamp
+                                    if (this == player) {
+                                        state.postValue(State.WAITING_FOR_MOVE)
+                                        updateBoard()
+                                    }
+                                }
+                                playersLD.postValue(players)
+                            }
+                            else -> {}
                         }
-                        else -> {}
+                    } catch (e: Exception) {
+                        Log.e(tag, e.toString())
+                    } finally {
+                        //stopGame()
                     }
-                }
-            } catch (_: Exception) {
-            } finally {
-                //stopGame()
             }
         }
     }
