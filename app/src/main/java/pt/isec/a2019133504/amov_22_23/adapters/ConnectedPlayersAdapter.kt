@@ -31,15 +31,24 @@ BaseAdapter(){
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = LayoutInflater.from(context)
 
-        val rowView: View = inflater.inflate(R.layout.listview_item, parent, false);
-        val textView = rowView.findViewById<View>(R.id.tv1) as TextView
-        val imageView = rowView.findViewById<View>(R.id.ivImg) as ImageView
 
-        val player = getItem(position)
-        //TODO time
-        if (player == null) return rowView
-        textView.setText(player.nome)
-        imageView.setImageBitmap(player.Imagem)
-        return rowView
+        if (convertView == null) {
+            val rowView: View = inflater.inflate(R.layout.listview_item, parent, false)
+            val textView = rowView.findViewById<View>(R.id.tv1) as TextView
+            val imageView = rowView.findViewById<View>(R.id.ivImg) as ImageView
+            val player = getItem(position)
+            if (player == null) return rowView
+            textView.setText(player.nome)
+            imageView.setImageBitmap(player.Imagem)
+            return rowView
+        }else {
+            val textView = convertView.findViewById<View>(R.id.tv1) as TextView
+            val imageView = convertView.findViewById<View>(R.id.ivImg) as ImageView
+            val player = getItem(position)
+            if (player == null) return convertView
+            textView.setText(player.nome)
+            imageView.setImageBitmap(player.Imagem)
+            return convertView
+        }
     }
 }
