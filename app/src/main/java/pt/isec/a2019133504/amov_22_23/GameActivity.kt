@@ -152,7 +152,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                 ConnectedPlayerListView = ListView(context).apply {
                     val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
                     layoutParams = paramsLV
-                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.server!!.players, context)
+                    connectedPlayersAdapter = ConnectedPlayersAdapter(model.server!!.playerList.players, context)
                     adapter = connectedPlayersAdapter
                 }
                 addView(ConnectedPlayerListView)
@@ -175,10 +175,9 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         model.startClient(this,"localhost")
         dlg?.show()
 
-        model.server!!.playersLD.observe(this) {
+        model.server!!.playerList.addObserver { _, _ ->
             connectedPlayersAdapter!!.notifyDataSetInvalidated()
         }
-
     }
 
 

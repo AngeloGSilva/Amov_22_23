@@ -105,8 +105,9 @@ class MultiPlayer() : ViewModel() {
     }
 
     private fun updateBoard() {
-        if (player.NrBoard > boards.size)
-            TODO("hide board, show bigger leaderboard? ")
+        //if (player.NrBoard >= boards.size)
+            //boardLD.postValue(Board.empty)
+        //FIXME boardview cant draw empty board
         boardLD.postValue(boards[player.NrBoard])
     }
 

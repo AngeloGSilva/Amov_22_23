@@ -8,7 +8,7 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Serializable
-class Board(val cells: Array<Array<String>>) {
+class Board(val cells: Array<Array<String>>, @Transient val empty: Boolean = false) {
 
     //TODO calcular resultados das colunas/linhas...
     // guardar em array e criar gets e ter o segundo melhor e o melhor guardado
@@ -16,25 +16,30 @@ class Board(val cells: Array<Array<String>>) {
 
     //TODO getmaiorresultado e segundo maior Guardar os resultados das linhas e colunas em arrays
 
-    @Transient var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
-    @Transient var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
-    @Transient var maior : Double = 0.0
-    @Transient var segundoMaior : Double = 0.0
+    @Transient private var colunas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
+    @Transient private var linhas : MutableList<Int> = mutableListOf<Int>(0 , 0 , 0)
+    @Transient private var maior : Double = 0.0
+    @Transient private var segundoMaior : Double = 0.0
 
     fun getResLinha(linha: Int): Int = linhas[linha/2]
     fun getResColuna(coluna: Int): Int = colunas[coluna/2]
 
     init {
+        if (!empty)
+            calculate()
+    }
+
+    private fun calculate() {
         val colunasResult : List<Double> = listOf(getResultadoColuna(0) ,getResultadoColuna(2) , getResultadoColuna(4))
         val linhasResult : List<Double> = listOf(getResultadoLinha(0) ,getResultadoLinha(2) , getResultadoLinha(4))
         val resultados = (colunasResult + linhasResult).sortedDescending()
 
 
         colunasResult.forEachIndexed { index, element ->
-           if (element == resultados[0])
-               this.colunas[index] = 2
+            if (element == resultados[0])
+                this.colunas[index] = 2
             else if (element == resultados[1])
-               this.colunas[index] = 1
+                this.colunas[index] = 1
         }
 
         linhasResult.forEachIndexed { index, element ->
@@ -220,7 +225,7 @@ class Board(val cells: Array<Array<String>>) {
     }
 
     companion object{
-        val sz : Int = 5;
+        val sz : Int = 5
 
         fun fromLevel(level: Level) : Board {
             val cells: Array<Array<String>> = Array(sz) { linha ->
@@ -236,6 +241,8 @@ class Board(val cells: Array<Array<String>>) {
             }
             return Board(cells)
         }
+
+        val empty = Board(Array(sz){Array(sz){""}}, true)
     }
 
 }

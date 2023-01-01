@@ -42,9 +42,7 @@ class Server {
     lateinit var level : Level
     lateinit var boards : Array<Board>
     private var socket: ServerSocket = ServerSocket(SERVER_PORT)
-
-    var players : MutableMap<String, Player> = mutableMapOf()
-    var playersLD = MutableLiveData(players.values)
+    val playerList = PlayerList()
 
     init {
         thread {
@@ -62,8 +60,7 @@ class Server {
                                 if (msg.type == MessageTypes.PLAYER_CONNECT){
                                     val playerConnect : PlayerConnect = msg.getPayload()
                                     val player = Player(playerConnect.uid, playerConnect.nome, playerConnect.Imagem, socketClient)
-                                    players.put(player.uid, player)
-                                    playersLD.postValue(players.values)
+                                    playerList.addPlayer(player)
                                     startServerComm(player)
                                 }
                             } catch (_: Exception) {
@@ -95,7 +92,7 @@ class Server {
                         if (moveCol.BoardN != player.NrBoard) continue
                         val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
                         player.assignScore(res)
-                        SendToAllPlayers(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
+                        playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                     }
                     MessageTypes.MOVE_ROW -> {
                         val moveRow : Move_Row = msg.getPayload()
@@ -103,7 +100,7 @@ class Server {
                         if (moveRow.BoardN != player.NrBoard) continue
                         val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
                         player.assignScore(res)
-                        SendToAllPlayers(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
+                        playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                     }
                     else -> {}
                 }
@@ -116,18 +113,14 @@ class Server {
         }
     }
 
-    fun SendToAllPlayers(message : Message) {
-        for(p in players.values)
-            p.sendMessage(message)
-    }
-
     fun StartGame() : Boolean {
         //FIXME uncomment
         /*if(players.size <=1)
             return false*/
-        boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
+        NivelAtual = 0
+        boards = Array(10) { Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
-        SendToAllPlayers(Message.create(GameStart(players, boards.asList(), Level.get(NivelAtual))))
+        playerList.sendToAll(Message.create(GameStart(playerList.players, boards.asList(), Level.get(NivelAtual))))
         return true
     }
 
