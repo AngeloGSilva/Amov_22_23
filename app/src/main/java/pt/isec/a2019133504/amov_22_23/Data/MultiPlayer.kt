@@ -113,6 +113,7 @@ class MultiPlayer() : ViewModel() {
     }
 
     fun updateSelectedCell(row: Int, col: Int) {
+        if (player.NrBoard >= boards.size) return
         if (state.value!! != State.WAITING_FOR_MOVE) return
         if (row == -1 && col == -1) return
         val msg : Message
