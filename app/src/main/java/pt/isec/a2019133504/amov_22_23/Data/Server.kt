@@ -101,7 +101,7 @@ class Server {
                         }
                         MessageTypes.MOVE_ROW -> {
                             val moveRow : Move_Row = msg.getPayload()
-                            if (moveRow.BoardN > boards.size) continue
+                            if (moveRow.BoardN >= boards.size) continue
                             if (moveRow.BoardN != player.NrBoard) continue
                             val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
                             player.assignScore(res)
