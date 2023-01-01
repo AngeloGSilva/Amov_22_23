@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 import org.json.JSONArray
 import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.IntRangeSerializer
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers._IntRange
 import kotlin.collections.ArrayList
 
-typealias _IntRange = @Serializable(IntRangeSerializer::class) IntRange
 
 @Serializable
 class Level(val ops: Array<String>,

@@ -89,10 +89,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         model.boardLD.observe(this) {
             updateCells(it)
         }
-
-        model.pontosLD.observe(this) {
-            binding.multiPontos.text = resources.getString(R.string.Pontos, it)
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

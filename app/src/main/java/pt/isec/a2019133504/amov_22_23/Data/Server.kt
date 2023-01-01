@@ -16,9 +16,6 @@ class Server {
     enum class State {
         WAITING_CONNECTIONS,PLAYING,INTERVAL,GAMEOVER
     }
-    enum class MsgTypes {
-        MOVE_ROW, MOVE_COL, PLAYERINFO, GAMESTART, RESULT
-    }
 
     private val _state = MutableLiveData(State.WAITING_CONNECTIONS)
     val state : LiveData<State>
@@ -29,11 +26,11 @@ class Server {
         const val MOVE_L = -1
         const val MOVE_C = -1
 
-        fun sendToServer(socket : Socket, msg: String) {
+        fun sendToServer(socket : Socket, msg: Message) {
             thread {
                 try {
                     val printStream = PrintStream(socket.getOutputStream())
-                    printStream.println(msg)
+                    printStream.println(msg.toString())
                     printStream.flush()
                 } catch (_: Exception) {
                 }
@@ -46,10 +43,8 @@ class Server {
     lateinit var boards : Array<Board>
     private var socket: ServerSocket = ServerSocket(SERVER_PORT)
 
-    var players : ArrayList<Player> = ArrayList()
-        get() = field
-
-    var playersLD = MutableLiveData<ArrayList<Player>>(players)
+    var players : MutableMap<String, Player> = mutableMapOf()
+    var playersLD = MutableLiveData(players.values)
 
     init {
         thread {
@@ -63,13 +58,14 @@ class Server {
                             try {
                                 val bufI = socketClient.getInputStream()
                                 val s = bufI.bufferedReader().readLine()
-                                val json = JSONObject(s)
-                                val foto2 = json.get("UserPhoto")
-                                val usernameholder = json.get("Username")
-                                val player: Player = Player(Json.decodeFromString(BitmapSerializer, foto2.toString()), usernameholder as String, socketClient)
-                                players.add(player)
-                                playersLD.postValue(players)
-                                startServerComm(player)
+                                val msg : Message = Json.decodeFromString(s)
+                                if (msg.type == MessageTypes.PLAYER_CONNECT){
+                                    val playerConnect : PlayerConnect = msg.getPayload()
+                                    val player = Player(playerConnect.uid, playerConnect.nome, playerConnect.Imagem, socketClient)
+                                    players.put(player.uid, player)
+                                    playersLD.postValue(players.values)
+                                    startServerComm(player)
+                                }
                             } catch (_: Exception) {
 
                             }
@@ -91,8 +87,7 @@ class Server {
     private fun startServerComm(player: Player) {
         try {
             while (true) {
-                val line = player.receiveLine()
-                val msg : Message = Json.decodeFromString(line)
+                val msg : Message = player.receiveMessage()
                 when (msg.type) {
                     MessageTypes.MOVE_COL -> {
                         val moveCol : Move_Col = msg.getPayload()
@@ -100,8 +95,7 @@ class Server {
                         if (moveCol.BoardN != player.NrBoard) continue
                         val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
                         player.assignScore(res)
-                        player.sendLine(Message.create(Result(res)).toString())
-                        UpdateLeaderBoard()
+                        SendToAllPlayers(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                     }
                     MessageTypes.MOVE_ROW -> {
                         val moveRow : Move_Row = msg.getPayload()
@@ -109,8 +103,7 @@ class Server {
                         if (moveRow.BoardN != player.NrBoard) continue
                         val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
                         player.assignScore(res)
-                        player.sendLine(Message.create(Result(res)).toString())
-                        UpdateLeaderBoard()
+                        SendToAllPlayers(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                     }
                     else -> {}
                 }
@@ -123,11 +116,9 @@ class Server {
         }
     }
 
-    fun UpdateLeaderBoard(){
-        //TODO erro Stack size 1024 KB, muitos pedidos, tem de se testar devagar
-        val msg = Message.create(PlayerInfo(players)).toString()
-        for(p in players)
-            p.sendLine(msg)
+    fun SendToAllPlayers(message : Message) {
+        for(p in players.values)
+            p.sendMessage(message)
     }
 
     fun StartGame() : Boolean {
@@ -136,9 +127,7 @@ class Server {
             return false*/
         boards = Array(10) { board -> Board.fromLevel(Level.get(NivelAtual))}
         _state.postValue(State.PLAYING)
-        val msg = Message.create(GameStart(players, boards.toList(), Level.get(NivelAtual))).toString()
-        for(p in players)
-            p.sendLine(msg)
+        SendToAllPlayers(Message.create(GameStart(players, boards.asList(), Level.get(NivelAtual))))
         return true
     }
 

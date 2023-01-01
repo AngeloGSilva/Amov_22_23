@@ -3,43 +3,40 @@ package pt.isec.a2019133504.amov_22_23.Data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.json.JSONObject
-import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import java.io.*
 import java.net.InetSocketAddress
-import java.net.ServerSocket
 import java.net.Socket
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 
 class MultiPlayer() : ViewModel() {
-    var NivelAtual : Int = 0
-    lateinit var level : Level
-    lateinit var boards : Array<Board>
-    lateinit var player : Player
+    enum class State {
+        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT
+    }
 
+    private val state = MutableLiveData(State.WAITING_START)
+    private val user = FirebaseAuth.getInstance().currentUser
 
-    var players : ArrayList<Player> = ArrayList()
+    private lateinit var level : Level
+    private lateinit var boards : Array<Board>
+    private lateinit var player : Player
 
-    var playersLD = MutableLiveData<ArrayList<Player>>()
+    var players : MutableMap<String, Player> = mutableMapOf()
+    var playersLD = MutableLiveData(players)
     var boardLD = MutableLiveData<Board>()
-    var pontosLD = MutableLiveData<Int>()
 
     var server : Server? = null
-    lateinit var socket : Socket
+    private lateinit var socket : Socket
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun startServer() {
@@ -54,12 +51,8 @@ class MultiPlayer() : ViewModel() {
             try {
                 socket.connect(InetSocketAddress(serverIP, serverPort), 5000)
                 val bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
-                var json = JSONObject()
-                json.put("Username", ProfileActivity.username)
-                json.put("UserPhoto",  Json.encodeToString(BitmapSerializer, bitmap))
-                Server.sendToServer(socket, json.toString())
-                player = Player(bitmap, ProfileActivity.username)
-                startJogadorComm(player)
+                Server.sendToServer(socket, Message.create(PlayerConnect(user!!.uid, ProfileActivity.username, bitmap)))
+                startJogadorComm()
             } catch (_: Exception) {
                 System.out.println("ERRO AO CONECTAR AO SERVIDOR")
                 //stopGame()
@@ -69,37 +62,36 @@ class MultiPlayer() : ViewModel() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun startJogadorComm(player :Player) {
+    private fun startJogadorComm() {
         thread {
             try {
                 while(true) {
-                    if (socket == null)
-                        return@thread
-
                     val bufferedReader = socket.getInputStream().bufferedReader()
                     val line = bufferedReader.readLine()
                     val msg : Message = Json.decodeFromString(line)
                     when (msg.type) {
                         MessageTypes.GAMESTART -> {
                             val gameStart : GameStart = msg.getPayload()
-                            player.NrBoard = 0
+                            player = gameStart.players[user!!.uid]!!
                             players.clear()
-                            players.addAll(gameStart.players)
+                            players.putAll(gameStart.players)
                             boards = gameStart.board.toTypedArray()
                             level = gameStart.level
+                            state.postValue(State.WAITING_FOR_MOVE)
                             playersLD.postValue(players)
                             updateBoard()
                         }
-                        MessageTypes.RESULT -> {
-                            val result : Result = msg.getPayload()
-                            player.assignScore(result.res)
-                            pontosLD.postValue(player.Pontos)
-                            updateBoard()
-                        }
-                        MessageTypes.PLAYERINFO -> {
-                            val playerInfo : PlayerInfo = msg.getPayload()
-                            players.clear()
-                            players.addAll(playerInfo.players)
+                        MessageTypes.PLAYERUPDATE -> {
+                            val playerInfo : PlayerUpdate = msg.getPayload()
+                            players.get(playerInfo.uid)!!.apply {
+                                Pontos = playerInfo.Pontos
+                                NrBoard = playerInfo.NrBoard
+                                Timestamp = playerInfo.Timestamp
+                                if (this == player) {
+                                    state.postValue(State.WAITING_FOR_MOVE)
+                                    updateBoard()
+                                }
+                            }
                             playersLD.postValue(players)
                         }
                         else -> {}
@@ -112,20 +104,22 @@ class MultiPlayer() : ViewModel() {
         }
     }
 
-    fun updateBoard() {
+    private fun updateBoard() {
         if (player.NrBoard > boards.size)
             TODO("hide board, show bigger leaderboard? ")
         boardLD.postValue(boards[player.NrBoard])
     }
 
     fun updateSelectedCell(row: Int, col: Int) {
+        if (state.value!! != State.WAITING_FOR_MOVE) return
         if (row == -1 && col == -1) return
-        val msg : String
+        val msg : Message
         if (row != -1)
-            msg = Message.create(Move_Row(row, player.NrBoard)).toString()
+            msg = Message.create(Move_Row(row, player.NrBoard))
         else
-            msg = Message.create(Move_Col(col, player.NrBoard)).toString()
+            msg = Message.create(Move_Col(col, player.NrBoard))
         Server.sendToServer(socket, msg)
+        state.postValue(State.WAITING_FOR_RESULT)
     }
 
 }

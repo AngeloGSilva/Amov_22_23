@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -17,6 +18,9 @@ import org.json.JSONObject
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import java.io.ByteArrayOutputStream
 import java.util.*
+
+
+typealias _Bitmap = @Serializable(BitmapSerializer::class) Bitmap
 
 object BitmapSerializer : KSerializer<Bitmap> {
     override val descriptor: SerialDescriptor =

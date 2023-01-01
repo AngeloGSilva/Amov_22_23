@@ -1,12 +1,18 @@
 package pt.isec.a2019133504.amov_22_23.Data.Messages
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import pt.isec.a2019133504.amov_22_23.Data.Board
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers._Bitmap
 import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.Player
+
+enum class MessageTypes {
+    DEFAULT, MOVE_ROW, MOVE_COL, PLAYERUPDATE, GAMESTART, RESULT, PLAYER_CONNECT
+}
 
 @Serializable
 class Message(val type : MessageTypes, val payload : String) {
@@ -28,12 +34,14 @@ class Message(val type : MessageTypes, val payload : String) {
 @Serializable
 open class MessagePayload(@Transient val type : MessageTypes = MessageTypes.DEFAULT)
 @Serializable
-data class GameStart(val players : List<Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.GAMESTART)
-@Serializable
-data class Result(val res : Int) : MessagePayload(MessageTypes.RESULT)
+data class GameStart(val players : Map<String, Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.GAMESTART)
+//@Serializable
+//data class Result(val res : Int) : MessagePayload(MessageTypes.RESULT)
 @Serializable
 data class Move_Row(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_ROW)
 @Serializable
 data class Move_Col(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_COL)
 @Serializable
-data class PlayerInfo(val players : List<Player>) : MessagePayload(MessageTypes.PLAYERINFO)
+data class PlayerUpdate(val uid:String, val Pontos:Int, val NrBoard:Int, val Timestamp:Long) : MessagePayload(MessageTypes.PLAYERUPDATE)
+@Serializable
+data class PlayerConnect(val uid:String, val nome:String, val Imagem: _Bitmap) : MessagePayload(MessageTypes.PLAYER_CONNECT)

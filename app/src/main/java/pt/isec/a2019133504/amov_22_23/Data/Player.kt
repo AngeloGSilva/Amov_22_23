@@ -1,26 +1,20 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
-import pt.isec.a2019133504.amov_22_23.Data.Deserializers.IntRangeSerializer
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers._Bitmap
+import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
 import java.io.*
 import java.net.Socket
-import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.concurrent.thread
 
-typealias _Bitmap = @Serializable(BitmapSerializer::class) Bitmap
-
 @Serializable
-class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? = null){
+class Player(val uid : String,val nome:String , val Imagem: _Bitmap,@Transient val socket: Socket? = null){
     var Pontos:Int = 0
     var NrBoard:Int = 0
     var Timestamp:Long = 0
@@ -35,11 +29,11 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
         NrBoard++
     }
 
-    fun sendLine(string: String){
+    fun sendMessage(msg: Message){
         thread {
             try {
                 val printStream = PrintStream(outputstream)
-                printStream.println(string)
+                printStream.println(msg.toString())
                 printStream.flush()
             } catch (_: Exception) {
                 //stopGame()
@@ -47,9 +41,9 @@ class Player(val Imagem:_Bitmap,val nome:String,@Transient val socket: Socket? =
         }
     }
 
-    fun receiveLine() : String {
-        val bufferedReader = inputstream?.bufferedReader() ?: return ""
-        return bufferedReader.readLine()
+    fun receiveMessage() : Message {
+        val bufferedReader = inputstream!!.bufferedReader()
+        return Json.decodeFromString(bufferedReader.readLine())
     }
 }
 
