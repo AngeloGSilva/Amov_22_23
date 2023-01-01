@@ -66,45 +66,45 @@ class MultiPlayer() : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startJogadorComm() {
         thread {
-                val bufferedReader = socket.getInputStream().bufferedReader()
-                while(true) {
-                    try {
-                        val line = bufferedReader.readLine()
-                        val msg : Message = Json.decodeFromString(line)
-                        when (msg.type) {
-                            MessageTypes.GAMESTART -> {
-                                Log.d(tag, "GAMESTART")
-                                val gameStart : GameStart = msg.getPayload()
-                                player = gameStart.players[user!!.uid]!!
-                                players.clear()
-                                players.putAll(gameStart.players)
-                                boards = gameStart.board.toTypedArray()
-                                level = gameStart.level
-                                state.postValue(State.WAITING_FOR_MOVE)
-                                playersLD.postValue(players)
-                                updateBoard()
-                            }
-                            MessageTypes.PLAYERUPDATE -> {
-                                val playerInfo : PlayerUpdate = msg.getPayload()
-                                Log.d(tag, "PlayerUpdate")
-                                players.get(playerInfo.uid)!!.apply {
-                                    Pontos = playerInfo.Pontos
-                                    NrBoard = playerInfo.NrBoard
-                                    Timestamp = playerInfo.Timestamp
-                                    if (this == player) {
-                                        state.postValue(State.WAITING_FOR_MOVE)
-                                        updateBoard()
-                                    }
-                                }
-                                playersLD.postValue(players)
-                            }
-                            else -> {}
+            val bufferedReader = socket.getInputStream().bufferedReader()
+            while(true) {
+                try {
+                    val line = bufferedReader.readLine()
+                    val msg : Message = Json.decodeFromString(line)
+                    when (msg.type) {
+                        MessageTypes.GAMESTART -> {
+                            Log.d(tag, "GAMESTART")
+                            val gameStart : GameStart = msg.getPayload()
+                            player = gameStart.players[user!!.uid]!!
+                            players.clear()
+                            players.putAll(gameStart.players)
+                            boards = gameStart.board.toTypedArray()
+                            level = gameStart.level
+                            state.postValue(State.WAITING_FOR_MOVE)
+                            playersLD.postValue(players)
+                            updateBoard()
                         }
-                    } catch (e: Exception) {
-                        Log.e(tag, e.toString())
-                    } finally {
-                        //stopGame()
+                        MessageTypes.PLAYERUPDATE -> {
+                            val playerInfo : PlayerUpdate = msg.getPayload()
+                            Log.d(tag, "PlayerUpdate")
+                            players.get(playerInfo.uid)!!.apply {
+                                Pontos = playerInfo.Pontos
+                                NrBoard = playerInfo.NrBoard
+                                Timestamp = playerInfo.Timestamp
+                                if (this == player) {
+                                    state.postValue(State.WAITING_FOR_MOVE)
+                                    updateBoard()
+                                }
+                            }
+                            playersLD.postValue(players)
+                        }
+                        else -> {}
                     }
+                } catch (e: Exception) {
+                    Log.e(tag, e.toString())
+                } finally {
+                    //stopGame()
+                }
             }
         }
     }
@@ -112,7 +112,8 @@ class MultiPlayer() : ViewModel() {
     private fun updateBoard() {
         if (player.NrBoard >= boards.size)
             boardLD.postValue(Board.empty)
-        boardLD.postValue(boards[player.NrBoard])
+        else
+            boardLD.postValue(boards[player.NrBoard])
     }
 
     fun updateSelectedCell(row: Int, col: Int) {
