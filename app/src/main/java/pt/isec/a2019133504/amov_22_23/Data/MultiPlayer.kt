@@ -73,6 +73,7 @@ class MultiPlayer() : ViewModel() {
                     val msg : Message = Json.decodeFromString(line)
                     when (msg.type) {
                         MessageTypes.GAMESTART -> {
+                            Log.d(tag, "GAMESTART")
                             val gameStart : GameStart = msg.getPayload()
                             player = gameStart.players[user!!.uid]!!
                             players.clear()
@@ -85,6 +86,7 @@ class MultiPlayer() : ViewModel() {
                         }
                         MessageTypes.PLAYERUPDATE -> {
                             val playerInfo : PlayerUpdate = msg.getPayload()
+                            Log.d(tag, "PlayerUpdate")
                             players.get(playerInfo.uid)!!.apply {
                                 Pontos = playerInfo.Pontos
                                 NrBoard = playerInfo.NrBoard

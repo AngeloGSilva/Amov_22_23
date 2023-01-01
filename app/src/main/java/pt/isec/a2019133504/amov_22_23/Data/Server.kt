@@ -63,6 +63,7 @@ class Server {
                                     val msg : Message = Json.decodeFromString(s)
                                     if (msg.type == MessageTypes.PLAYER_CONNECT){
                                         val playerConnect : PlayerConnect = msg.getPayload()
+                                        Log.d(tag, "PlayerConnect")
                                         val player = Player(playerConnect.uid, playerConnect.nome, playerConnect.Imagem, socketClient)
                                         playerList.addPlayer(player)
                                         startServerComm(player)
@@ -76,6 +77,7 @@ class Server {
                         } catch (e: Exception) {
                             Log.e(tag, e.toString())
                         } finally {
+                            Log.d(tag, "?????")
                             //Acabar o jogo para todos
                             //serverSocket?.close()
                             //stopGame()
@@ -92,6 +94,7 @@ class Server {
                     val msg : Message = player.receiveMessage()
                     when (msg.type) {
                         MessageTypes.MOVE_COL -> {
+                            Log.d(tag, "MOVE_COL")
                             val moveCol : Move_Col = msg.getPayload()
                             if (moveCol.BoardN >= boards.size) continue
                             if (moveCol.BoardN != player.NrBoard) continue
@@ -100,6 +103,7 @@ class Server {
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                         }
                         MessageTypes.MOVE_ROW -> {
+                            Log.d(tag, "MOVE_ROW")
                             val moveRow : Move_Row = msg.getPayload()
                             if (moveRow.BoardN >= boards.size) continue
                             if (moveRow.BoardN != player.NrBoard) continue
