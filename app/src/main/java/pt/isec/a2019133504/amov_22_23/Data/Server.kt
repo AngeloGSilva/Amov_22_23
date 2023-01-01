@@ -77,7 +77,6 @@ class Server {
                         } catch (e: Exception) {
                             Log.e(tag, e.toString())
                         } finally {
-                            Log.d(tag, "?????")
                             //Acabar o jogo para todos
                             //serverSocket?.close()
                             //stopGame()

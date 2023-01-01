@@ -139,7 +139,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
             if (abs(event1.y - event2.y) > cellSizePixels) return true
             val y = (event1.y + event2.y) / 2
             val row = (y / cellSizePixels).toInt()
-            System.out.println(row)
+            //System.out.println(row)
             //selectedRow = row
             if (row % 2 == 0) {
                 listener?.onCellTouched(row,-1)
@@ -160,26 +160,26 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
     }
 
     override fun onDown(p0: MotionEvent?): Boolean {
-        System.out.println("onDown:" + p0)
+        //System.out.println("onDown:" + p0)
         return true
     }
 
     override fun onShowPress(p0: MotionEvent?) {
-        System.out.println("onShowPress:" + p0)
+        //System.out.println("onShowPress:" + p0)
     }
 
     override fun onSingleTapUp(p0: MotionEvent?): Boolean {
-        System.out.println("onSingleTapUp:"+p0)
+        //System.out.println("onSingleTapUp:"+p0)
         return false
     }
 
     override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-        System.out.println("onScroll:"+ p0 + p1+ p2+ p3)
+        //System.out.println("onScroll:"+ p0 + p1+ p2+ p3)
         return false
     }
 
     override fun onLongPress(p0: MotionEvent?) {
-        System.out.println("onLongPress:")
+        //System.out.println("onLongPress:")
     }
 
     fun updateBoard(board:  Board) {
