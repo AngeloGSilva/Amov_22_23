@@ -170,7 +170,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         model.startClient(this,"localhost")
         dlg?.show()
 
-        model.server!!.playerList.addObserver { _, _ ->
+        model.server!!.playerList.playersLD.observe(this) {
             connectedPlayersAdapter!!.notifyDataSetInvalidated()
         }
     }
