@@ -178,10 +178,16 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCells(board: Board) {
-        binding.boardGame.updateBoard(board)
-        binding.boardGame.isVisible = true
-        binding.WaitingforHost.isVisible = false
-        binding.progressBar.isVisible = false
+        if(board.empty){
+            binding.boardGame.isVisible = false
+        }
+        else
+        {
+            binding.boardGame.updateBoard(board)
+            binding.boardGame.isVisible = true
+            binding.WaitingforHost.isVisible = false
+            binding.progressBar.isVisible = false
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

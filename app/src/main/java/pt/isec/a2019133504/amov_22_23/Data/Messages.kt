@@ -11,7 +11,7 @@ import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.Player
 
 enum class MessageTypes {
-    DEFAULT, MOVE_ROW, MOVE_COL, PLAYERUPDATE, GAMESTART, RESULT, PLAYER_CONNECT
+    DEFAULT, MOVE_ROW, MOVE_COL, PLAYERUPDATE, GAMESTART,PLAYERINTERVAL,GAMERESUME,RESULT, PLAYER_CONNECT
 }
 
 @Serializable
@@ -45,3 +45,5 @@ data class Move_Col(val move : Int, val BoardN : Int) : MessagePayload(MessageTy
 data class PlayerUpdate(val uid:String, val Pontos:Int, val NrBoard:Int, val Timestamp:Long) : MessagePayload(MessageTypes.PLAYERUPDATE)
 @Serializable
 data class PlayerConnect(val uid:String, val nome:String, val Imagem: _Bitmap) : MessagePayload(MessageTypes.PLAYER_CONNECT)
+@Serializable
+data class PlayerInterval(val uid:String) : MessagePayload(MessageTypes.PLAYERINTERVAL)

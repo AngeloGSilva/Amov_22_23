@@ -23,7 +23,7 @@ import kotlin.concurrent.thread
 class MultiPlayer() : ViewModel() {
     private val tag = "Multiplayer"
     enum class State {
-        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT
+        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL
     }
 
     private val state = MutableLiveData(State.WAITING_START)
@@ -97,6 +97,11 @@ class MultiPlayer() : ViewModel() {
                                 }
                             }
                             playersLD.postValue(players)
+                        }MessageTypes.PLAYERINTERVAL ->{
+                            val playerInfo : PlayerInterval = msg.getPayload()
+                            Log.d(tag, "PlayerInterval")
+                            state.postValue(State.WAITING_FOR_NEXT_LEVEL)
+
                         }
                         else -> {}
                     }

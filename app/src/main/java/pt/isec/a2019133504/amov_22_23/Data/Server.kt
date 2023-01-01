@@ -55,7 +55,6 @@ class Server {
 
                         try {
                         val socketClient = socket.accept()
-
                             thread {
                                 try {
                                     val bufI = socketClient.getInputStream()
@@ -100,6 +99,8 @@ class Server {
                             val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
                             player.assignScore(res)
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
+                            if(player.NrBoard == 9)
+                                player.sendMessage(Message.create(PlayerInterval(player.uid)))
                         }
                         MessageTypes.MOVE_ROW -> {
                             Log.d(tag, "MOVE_ROW")
@@ -109,6 +110,8 @@ class Server {
                             val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
                             player.assignScore(res)
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
+                            if(player.NrBoard == 9)
+                                player.sendMessage(Message.create(PlayerInterval(player.uid)))
                         }
                         else -> {}
                     }
