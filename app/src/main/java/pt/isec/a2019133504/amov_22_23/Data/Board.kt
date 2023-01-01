@@ -1,11 +1,16 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import com.ezylang.evalex.Expression
+import com.ezylang.evalex.data.EvaluationValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.json.JSONArray
 import org.json.JSONTokener
 import kotlin.random.Random
 import kotlin.random.nextInt
+
+open class Cell()
+class Operator() : Cell()
 
 @Serializable
 class Board(val cells: Array<Array<String>>, @Transient val empty: Boolean = false) {
@@ -64,164 +69,18 @@ class Board(val cells: Array<Array<String>>, @Transient val empty: Boolean = fal
         }
     }
 
-
-    //TODO Falta tratar do caso de dividir por zero
-    //FIXME
     private fun getResultadoLinha(linha: Int): Double {
-        var result = 0.0
-
-        var operator = cells[linha][1]
-        var operator2 = cells[linha][3]
-        var num1 = cells[linha][0].toDouble()
-        var num3 = cells[linha][2].toDouble()
-        var num5 = cells[linha][4].toDouble()
-
-        when (operator) {
-            "*" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = (num1 * num3) + num5
-                        //result = ((num1.times(num3)).plus(num5))
-                    }
-                    "-" -> {
-                        result = (num1.times(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.times(num3).times(num5)
-                    }
-                    "/"->{
-                        result = (num1 * num3)/num5
-                        //result = num1.times(num3).div(num5)
-                    }
-                }
-            }
-            "/" ->{
-                when (operator2) {
-                    "+" -> {
-                        result = (num1.div(num3)).plus(num5)
-                    }
-                    "-" -> {
-                        result = (num1.div(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.div(num3).times(num5)
-                    }
-                    "/"->{
-                        result = num1.div(num3).div(num5)
-                    }
-                }
-            }
-            "+" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = num1.plus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.plus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.plus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.plus(num3.div(num5))
-                    }
-                }
-            }
-            "-"->{
-                when (operator2) {
-                    "+" -> {
-                        result = num1.minus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.minus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.minus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.minus(num3.div(num5))
-                    }
-                }
-            }
-        }
-        return result
+        val exp = cells[linha].joinToString(separator = "")
+        val expression = Expression(exp)
+        val result: EvaluationValue = expression.evaluate()
+        return result.numberValue.toDouble()
     }
 
     private fun getResultadoColuna(coluna: Int): Double {
-        var result = 0.0
-        var operator = cells[1][coluna]
-        var operator2 = cells[3][coluna]
-        var num1 = cells[0][coluna].toDouble()
-        var num3 = cells[2][coluna].toDouble()
-        var num5 = cells[4][coluna].toDouble()
-        //if (operator.equals("*") || operator.equals("/") && operator2.equals("+") || operator2.equals("-")) {
-        when (operator) {
-            "*" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = ((num1.times(num3)).plus(num5))
-                    }
-                    "-" -> {
-                        result = (num1.times(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.times(num3).times(num5)
-                    }
-                    "/"->{
-                        result = num1.times(num3).div(num5)
-                    }
-                }
-            }
-            "/" ->{
-                when (operator2) {
-                    "+" -> {
-                        result = (num1.div(num3)).plus(num5)
-                    }
-                    "-" -> {
-                        result = (num1.div(num3)).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.div(num3).times(num5)
-                    }
-                    "/"->{
-                        result = num1.div(num3).div(num5)
-                    }
-                }
-            }
-            "+" -> {
-                when (operator2) {
-                    "+" -> {
-                        result = num1.plus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.plus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.plus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.plus(num3.div(num5))
-                    }
-                }
-            }
-            "-"->{
-                when (operator2) {
-                    "+" -> {
-                        result = num1.minus(num3).plus(num5)
-                    }
-                    "-" -> {
-                        result = num1.minus(num3).minus(num5)
-                    }
-                    "*"->{
-                        result = num1.minus(num3.times(num5))
-                    }
-                    "/"->{
-                        result = num1.minus(num3.div(num5))
-                    }
-                }
-            }
-        }
-        return result
+        val exp = cells[0][coluna] + cells[1][coluna] + cells[2][coluna] + cells[3][coluna] + cells[4][coluna]
+        val expression = Expression(exp)
+        val result: EvaluationValue = expression.evaluate()
+        return result.numberValue.toDouble()
     }
 
     companion object{
@@ -230,13 +89,12 @@ class Board(val cells: Array<Array<String>>, @Transient val empty: Boolean = fal
         fun fromLevel(level: Level) : Board {
             val cells: Array<Array<String>> = Array(sz) { linha ->
                 Array(sz) { coluna ->
-                    if (linha % 2 == 0 && coluna % 2 == 0) {
-                        (Random.nextInt(level.range) * 1.0).toString()
-                    } else if ((linha == coluna && (linha % 2 != 0 || coluna % 2 != 0)) || (linha % 2 != 0 && coluna % 2 != 0)) {
-                        " "
-                    } else {
+                    if (linha % 2 == 0 && coluna % 2 == 0)
+                        Random.nextInt(level.range).toString()
+                    else if (linha == coluna || (linha % 2 != 0 && coluna % 2 != 0))
+                        ""
+                    else
                         level.ops.random()
-                    }
                 }
             }
             return Board(cells)

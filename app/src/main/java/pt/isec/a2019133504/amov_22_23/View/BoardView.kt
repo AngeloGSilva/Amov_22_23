@@ -15,9 +15,7 @@ import kotlin.math.abs
 class BoardView (context: Context, attributeSet: AttributeSet) : View(context, attributeSet),
     GestureDetector.OnGestureListener{
 
-    private var size = 5
-
-    private lateinit var cells : Array<Array<String>>
+    private lateinit var board : Board
 
     // these are set in onDraw
     private var cellSizePixels = 0F
@@ -54,7 +52,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     override fun onDraw(canvas: Canvas) {
         textPaint.textSize = 60f
-        cellSizePixels = width / size.toFloat()
+        cellSizePixels = width / Board.sz.toFloat()
         //updateMeasurements(width)
         drawLines(canvas)
         drawText(canvas)
@@ -62,7 +60,12 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint) {
-        canvas.drawRect(c * cellSizePixels, r * cellSizePixels, (c + 1) * cellSizePixels, (r + 1) * cellSizePixels, paint)
+        canvas.drawRect(
+            c * cellSizePixels + 4F,
+            r * cellSizePixels + 4F,
+            (c + 1) * cellSizePixels - 4F,
+            (r + 1) * cellSizePixels - 4F,
+            paint)
     }
 
     private fun drawLines(canvas: Canvas) {
@@ -70,22 +73,22 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
         //TODO MELHORAR FUNCAO DE DESENHO
         //Desenha Linhas Verticais
-        for (i in 0 until size) {
+        for (i in 0 until Board.sz) {
             canvas.drawLine(
                 i * cellSizePixels,
                 0F,
                 i * cellSizePixels,
-                (cellSizePixels * size), // height.toFloatheight.toFloat()
+                (cellSizePixels * Board.sz), // height.toFloatheight.toFloat()
                 thickLinePaint
             )
 
         }
         //Desenha Linhas horizontais
-        for (i in 0 until size+1) {
+        for (i in 0 until Board.sz+1) {
             canvas.drawLine(
                 0F,
                 i * cellSizePixels,
-                (cellSizePixels * size), //width.toFloat()
+                (cellSizePixels * Board.sz), //width.toFloat()
                 i * cellSizePixels,
                 thickLinePaint
             )
@@ -94,21 +97,21 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
     private fun drawText(canvas: Canvas) {
         textPaint.textSize = 60f
-        for (r in 0 until size) {
-            for (c in 0 until size) {
-                if (r % 2 == 0 && c % 2 == 0) {
+        for (r in 0 until Board.sz) {
+            for (c in 0 until Board.sz) {
+                if (!(r%2==0 && c%2==0) && !(r==c || (r%2!=0 && c%2!=0)))
+                    fillCell(canvas, r, c, startingCellPaint)
+
+                try {
                     canvas.drawText(
-                        (cells[r][c].toDouble().toInt().toString()),//TODO MELHORAR ESTA LINHA
+                        (board.cells[r][c].toDouble().toInt().toString()),
                         (c + 0.5f) * cellSizePixels,
                         (r + 0.5f) * cellSizePixels,
                         textPaint
                     )
-                }else if((r==c && (r%2!=0 || c%2!=0)) || (r%2!=0 && c%2!=0)){
-                    continue
-                }else {
-                    fillCell(canvas,r,c,startingCellPaint)
+                } catch (_ : Exception) {
                     canvas.drawText(
-                        cells[r][c],
+                        board.cells[r][c],
                         (c + 0.5f) * cellSizePixels,
                         (r + 0.55f) * cellSizePixels,
                         textPaint
@@ -132,7 +135,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        if (abs(velocityX)> abs(velocityY)) {
+        if (abs(velocityX)>abs(velocityY)) {
+            if (abs(event1.y - event2.y) > cellSizePixels) return true
             val y = (event1.y + event2.y) / 2
             val row = (y / cellSizePixels).toInt()
             System.out.println(row)
@@ -142,6 +146,7 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
 
             }
         }else{
+            if (abs(event1.x - event2.x) > cellSizePixels) return true
             val x = (event1.x+event2.x)/2
             val col = (x/cellSizePixels).toInt()
             if (col % 2 == 0) {
@@ -177,8 +182,8 @@ class BoardView (context: Context, attributeSet: AttributeSet) : View(context, a
         System.out.println("onLongPress:")
     }
 
-    fun updateCells(cells:  Board) {
-        this.cells = cells.cells
+    fun updateBoard(board:  Board) {
+        this.board = board
         invalidate()
     }
 

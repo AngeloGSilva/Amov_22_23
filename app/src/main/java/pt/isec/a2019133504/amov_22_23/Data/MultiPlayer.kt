@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ import kotlin.concurrent.thread
 
 
 class MultiPlayer() : ViewModel() {
+    private val tag = "Multiplayer"
     enum class State {
         WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT
     }
@@ -105,9 +107,8 @@ class MultiPlayer() : ViewModel() {
     }
 
     private fun updateBoard() {
-        //if (player.NrBoard >= boards.size)
-            //boardLD.postValue(Board.empty)
-        //FIXME boardview cant draw empty board
+        if (player.NrBoard >= boards.size)
+            boardLD.postValue(Board.empty)
         boardLD.postValue(boards[player.NrBoard])
     }
 
@@ -115,10 +116,14 @@ class MultiPlayer() : ViewModel() {
         if (state.value!! != State.WAITING_FOR_MOVE) return
         if (row == -1 && col == -1) return
         val msg : Message
-        if (row != -1)
+        if (row != -1) {
             msg = Message.create(Move_Row(row, player.NrBoard))
-        else
+            Log.d(tag, "Move_Row($row, ${player.NrBoard})")
+        }
+        else {
             msg = Message.create(Move_Col(col, player.NrBoard))
+            Log.d(tag, "Move_Col($col, ${player.NrBoard})")
+        }
         Server.sendToServer(socket, msg)
         state.postValue(State.WAITING_FOR_RESULT)
     }

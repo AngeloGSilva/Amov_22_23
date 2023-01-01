@@ -1,31 +1,17 @@
 package pt.isec.a2019133504.amov_22_23
 
 import android.app.AlertDialog
-import android.app.DownloadManager.Query
-import android.content.ContentValues.TAG
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.Query.Direction
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.NonCancellable.cancel
-import kotlinx.coroutines.channels.ticker
 import pt.isec.a2019133504.amov_22_23.Data.Board
-import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
-import kotlin.math.sin
 
 
 class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
@@ -42,7 +28,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
         binding.imageView.setImageBitmap(ProfileActivity.imgdata)
 
-        binding.boardGame.updateCells(singlePlayer.returnboardcells())
+        binding.boardGame.updateBoard(singlePlayer.returnboardcells())
 
         singlePlayer.cellsLiveData.observe(this) { updateCells(it) }
         singlePlayer.fimLiveData.observe(this) { updateFim(it) }
@@ -128,7 +114,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updateCells(cells: Board) = cells.let {
-        binding.boardGame.updateCells(cells)
+        binding.boardGame.updateBoard(cells)
     }
 
     private fun updateTimer(timer : Long){

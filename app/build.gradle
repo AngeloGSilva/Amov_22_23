@@ -66,4 +66,5 @@ dependencies {
 
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
+    implementation 'com.ezylang:EvalEx:3.0.1'
 }

@@ -17,19 +17,14 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.view.ViewCompat.NestedScrollType
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
-import pt.isec.a2019133504.amov_22_23.Data.Perfil
 import pt.isec.a2019133504.amov_22_23.Data.Server
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityGameBinding
-import kotlin.random.Random
 
 
 class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
@@ -183,7 +178,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCells(board: Board) {
-        binding.boardGame.updateCells(board)
+        binding.boardGame.updateBoard(board)
         binding.boardGame.isVisible = true
         binding.WaitingforHost.isVisible = false
         binding.progressBar.isVisible = false
