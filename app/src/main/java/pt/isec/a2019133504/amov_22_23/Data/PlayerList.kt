@@ -49,6 +49,11 @@ class PlayerList {
         return true
     }
 
+    fun closeSockets(){
+        for (p in _players.values)
+            p.socket!!.close()
+    }
+
     fun allLost() : Boolean {
         for(p in _players.values)
             if (!p.Lost)
