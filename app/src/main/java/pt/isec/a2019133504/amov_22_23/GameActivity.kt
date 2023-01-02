@@ -73,6 +73,29 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             CLIENT_MODE -> startAsClient()
         }
 
+        model.state.observe(this){
+            when(it){
+                MultiPlayer.State.WAITING_FOR_MOVE->{
+                    binding.boardGame.isVisible = true
+                    binding.WaitingforHost.isVisible = false
+                    binding.progressBar.isVisible = false
+                }
+                MultiPlayer.State.WAITING_FOR_NEXT_LEVEL ->{
+                    binding.boardGame.isVisible = false
+                    binding.progressBar.isVisible = true
+                    binding.WaitingforPlayers.isVisible = true
+
+                }
+                MultiPlayer.State.SPECTATING ->  {
+
+                }
+                MultiPlayer.State.GAME_OVER ->{
+
+                }
+                else -> {}
+            }
+        }
+
         LeaderBoardPlayerAdapter = LeaderboardAdapter(model.players,this)
         binding.leaderboard.adapter = LeaderBoardPlayerAdapter
 

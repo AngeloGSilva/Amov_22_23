@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 class MultiPlayer() : ViewModel() {
     private val tag = "Multiplayer"
     enum class State {
-        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL, SPECTATING
+        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL, SPECTATING,GAME_OVER
     }
 
     private val _state = MutableLiveData(State.WAITING_START)

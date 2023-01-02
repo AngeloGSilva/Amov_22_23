@@ -38,27 +38,14 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updateLevel(estado : Boolean){
-
-        /*val builder = AlertDialog.Builder(this)
-        builder.setTitle("Alerta de Jogo")
-        builder.setMessage("Jogo em pausa por 5 segundos!")
-        builder.setCancelable(false)
-        val caixaAlerta = builder.create()
-        caixaAlerta.show()
-        val handler = Handler()
-        handler.postDelayed({
-            caixaAlerta.cancel()
-            singlePlayer.startTimer(singlePlayer.pause)
-        }, 5000)*/
-
         binding.boardGame.isVisible = false
         binding.NextLevelTimer.isVisible = true
         binding.timertitle.isVisible = true
         binding.timer.isVisible = false
 
-        object : CountDownTimer(1000, 1000) {
+        object : CountDownTimer(5000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
-                    binding.NextLevelTimer.text= (millisUntilFinished/1000).toString()
+                    binding.NextLevelTimer.text= ((millisUntilFinished/1000) + 1).toString()
                 }
                 override fun onFinish() {
                     singlePlayer.startTimer(singlePlayer.pause)
