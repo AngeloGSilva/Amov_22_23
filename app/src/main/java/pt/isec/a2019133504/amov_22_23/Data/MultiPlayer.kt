@@ -115,6 +115,8 @@ class MultiPlayer() : ViewModel() {
                         else -> {}
                     }
                 } catch (e: Exception) {
+                    if (socket.isClosed)
+                        break
                     Log.e(tag, e.stackTraceToString())
                 } finally {
                     //stopGame()

@@ -52,7 +52,7 @@ class Server {
 
     init {
         thread {
-            socket.run {
+            socket.use {
                 System.out.println("THREAD RUNNING")
                 while(state.value == State.WAITING_CONNECTIONS) {
                     try {
@@ -77,10 +77,6 @@ class Server {
                     //players[players.size] = Player(Recebido por JSON,socketClient)
                     } catch (e: Exception) {
                         Log.e(tag, e.stackTraceToString())
-                    } finally {
-                        //Acabar o jogo para todos
-                        //socket.close()
-                        //stopGame()
                     }
                 }
             }
@@ -113,9 +109,9 @@ class Server {
                         else -> {}
                     }
                 } catch (e: Exception) {
+                    if (player.socket==null || player.socket.isClosed)
+                        break
                     Log.e(tag, e.stackTraceToString())
-                } finally {
-                    //stopGame()
                 }
             }
     }
