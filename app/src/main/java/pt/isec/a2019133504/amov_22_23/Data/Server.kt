@@ -1,6 +1,5 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +11,7 @@ import java.net.ServerSocket
 import java.net.Socket
 import java.time.Instant.now
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class Server {
@@ -44,9 +44,11 @@ class Server {
 
     var NivelAtual : Int = 0
     lateinit var level : Level
-    lateinit var boards : Array<Board>
+    val boards = ArrayList<Board>()
     private var socket: ServerSocket = ServerSocket(SERVER_PORT)
     val playerList = PlayerList()
+
+    private val timer = Timer()
 
     init {
         thread {
@@ -96,10 +98,8 @@ class Server {
                             if (moveCol.BoardN >= boards.size) continue
                             if (moveCol.BoardN != player.NrBoard) continue
                             val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
-                            player.assignScore(res, Level.get(NivelAtual).winTime)
+                            player.assignScore(res, if (res>0) Level.get(NivelAtual).winTime else 0)
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
-                            if(player.NrBoard == 9)
-                                player.sendMessage(Message.create(PlayerInterval(player.uid)))
                         }
                         MessageTypes.MOVE_ROW -> {
                             Log.d(tag, "MOVE_ROW")
@@ -107,10 +107,8 @@ class Server {
                             if (moveRow.BoardN >= boards.size) continue
                             if (moveRow.BoardN != player.NrBoard) continue
                             val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
-                            player.assignScore(res, Level.get(NivelAtual).winTime)
+                            player.assignScore(res, if (res>0) Level.get(NivelAtual).winTime else 0)
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
-                            if(player.NrBoard == 9)
-                                player.sendMessage(Message.create(PlayerInterval(player.uid)))
                         }
                         else -> {}
                     }
@@ -126,13 +124,29 @@ class Server {
         //FIXME uncomment
         /*if(players.size <=1)
             return false*/
-        NivelAtual = 0
-        val level = Level.get(NivelAtual)
-        boards = Array(10) { Board.fromLevel(level)}
-        playerList.setTimestap(now().plusSeconds(level.maxTime.toLong()))
-        _state.postValue(State.PLAYING)
-        playerList.sendToAll(Message.create(GameStart(playerList.players, boards.asList(), Level.get(NivelAtual))))
-        return true
+        NivelAtual = -1
+        return NextLevel()
     }
 
+    fun NextLevel() : Boolean {
+        if (!playerList.allFinished(boards.size)) return false
+        if (Level.isLast(NivelAtual)) TODO("game over")
+        if (NivelAtual>=0)
+            playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
+        NivelAtual++
+        val level = Level.get(NivelAtual)
+        boards.clear()
+        boards.addAll(Array(10) { Board.fromLevel(level)})
+        playerList.setTimestap(now().plusSeconds(level.maxTime.toLong()))
+        playerList.setBoardNr(0)
+        _state.postValue(State.PLAYING)
+        playerList.sendToAll(Message.create(StartLevel(playerList.players, boards, Level.get(NivelAtual))))
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (NextLevel())
+                    this.cancel()
+            }
+        }, 0, 1000)
+        return true
+    }
 }

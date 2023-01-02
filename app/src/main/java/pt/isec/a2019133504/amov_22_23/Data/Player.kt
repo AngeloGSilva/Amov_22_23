@@ -21,6 +21,7 @@ class Player(val uid : String,val nome:String , val Imagem: _Bitmap,@Transient v
     var Pontos : Int = 0
     var NrBoard : Int = 0
     var Timestamp : _Instant = Instant.MAX
+    var Lost = false
 
      val inputstream: InputStream?
         get() = socket?.getInputStream()

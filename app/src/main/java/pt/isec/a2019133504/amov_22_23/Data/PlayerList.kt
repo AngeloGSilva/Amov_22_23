@@ -1,9 +1,9 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
-import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
 import java.time.Instant
+import java.time.Instant.now
 
 class PlayerList {
     private var _players : MutableMap<String, Player> = mutableMapOf()
@@ -26,5 +26,22 @@ class PlayerList {
             p.Timestamp = timestamp
     }
 
+    fun setBoardNr(BoardNr: Int) {
+        for(p in _players.values)
+            p.NrBoard = BoardNr
+    }
 
+    fun markBelowThreshold(threshold: Int) {
+        for (p in _players.values)
+            if (p.Pontos < threshold)
+                p.Lost = true
+    }
+
+    fun allFinished(NrBoards: Int) : Boolean {
+        val now = now()
+        for(p in _players.values)
+            if (p.Timestamp.isAfter(now) && p.NrBoard<NrBoards)
+                return false
+        return true
+    }
 }

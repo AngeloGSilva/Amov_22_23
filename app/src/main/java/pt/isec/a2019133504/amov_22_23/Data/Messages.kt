@@ -12,7 +12,7 @@ import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.Player
 
 enum class MessageTypes {
-    DEFAULT, MOVE_ROW, MOVE_COL, PLAYERUPDATE, GAMESTART,PLAYERINTERVAL,GAMERESUME,RESULT, PLAYER_CONNECT
+    DEFAULT, MOVE_ROW, MOVE_COL, PLAYERUPDATE, START_LEVEL,PLAYERINTERVAL,GAMERESUME,RESULT, PLAYER_CONNECT
 }
 
 @Serializable
@@ -35,7 +35,7 @@ class Message(val type : MessageTypes, val payload : String) {
 @Serializable
 open class MessagePayload(@Transient val type : MessageTypes = MessageTypes.DEFAULT)
 @Serializable
-data class GameStart(val players : Map<String, Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.GAMESTART)
+data class StartLevel(val players : Map<String, Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.START_LEVEL)
 //@Serializable
 //data class Result(val res : Int) : MessagePayload(MessageTypes.RESULT)
 @Serializable

@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 class MultiPlayer() : ViewModel() {
     private val tag = "Multiplayer"
     enum class State {
-        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL
+        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL, SPECTATING
     }
 
     private val _state = MutableLiveData(State.WAITING_START)
@@ -71,17 +71,21 @@ class MultiPlayer() : ViewModel() {
                     val line = bufferedReader.readLine()
                     val msg : Message = Json.decodeFromString(line)
                     when (msg.type) {
-                        MessageTypes.GAMESTART -> {
+                        MessageTypes.START_LEVEL -> {
                             Log.d(tag, "GAMESTART")
-                            val gameStart : GameStart = msg.getPayload()
-                            player = gameStart.players[user!!.uid]!!
+                            val startLevel : StartLevel = msg.getPayload()
                             players.clear()
-                            players.putAll(gameStart.players)
-                            boards = gameStart.board.toTypedArray()
-                            level = gameStart.level
-                            _state.postValue(State.WAITING_FOR_MOVE)
+                            players.putAll(startLevel.players)
+                            player = startLevel.players[user!!.uid]!!
+                            if (player.Lost)
+                                _state.postValue(State.SPECTATING)
+                            else {
+                                boards = startLevel.board.toTypedArray()
+                                level = startLevel.level
+                                _state.postValue(State.WAITING_FOR_MOVE)
+                                updateBoard()
+                            }
                             playersLD.postValue(players)
-                            updateBoard()
                         }
                         MessageTypes.PLAYERUPDATE -> {
                             val playerInfo : PlayerUpdate = msg.getPayload()
@@ -93,13 +97,15 @@ class MultiPlayer() : ViewModel() {
                                 if (this == player) {
                                     _state.postValue(State.WAITING_FOR_MOVE)
                                     updateBoard()
+                                    if(player.NrBoard >= boards.size)
+                                        _state.postValue(State.WAITING_FOR_NEXT_LEVEL)
                                 }
                             }
                             playersLD.postValue(players)
-                        }MessageTypes.PLAYERINTERVAL ->{
+                        }
+                        MessageTypes.PLAYERINTERVAL ->{
                             val playerInfo : PlayerInterval = msg.getPayload()
                             Log.d(tag, "PlayerInterval")
-                            _state.postValue(State.WAITING_FOR_NEXT_LEVEL)
 
                         }
                         else -> {}

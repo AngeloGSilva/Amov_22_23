@@ -51,8 +51,12 @@ class LeaderboardAdapter(private val map: Map<String, Player>, private val conte
         textViewUsername.setText(player.nome)
         imageView.setImageBitmap(player.Imagem)
         textViewPontos.setText(context.getString(R.string.Pontos, player.Pontos))
-        val tempo = now().until(player.Timestamp, ChronoUnit.SECONDS)
-        textViewTime.setText(context.getString(R.string.Tempo,  if (tempo>=0) tempo else 0 ))
+        if (player.Lost)
+            textViewTime.setText("Perdeu")
+        else{
+            val tempo = now().until(player.Timestamp, ChronoUnit.SECONDS)
+            textViewTime.setText(context.getString(R.string.Tempo,  if (tempo>=0) tempo else 0 ))
+        }
         return rowView
     }
 }
