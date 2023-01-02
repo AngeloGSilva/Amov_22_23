@@ -72,10 +72,6 @@ class SinglePlayer() {
     }
 
     fun checkVitoria() {
-
-        //TODO ver a linha ou coluna e ver onde o resultado da linha ou coluna selecionada se encontra(soma mais alta ou segunda mais alta)
-        //TODO somar os pontos e continuar para a proxima board do msm niver ou proxima board do nivel seguinte
-
         if (selectedCol == -1 && selectedRow != -1)
             pontos += returnboard().getResLinha(selectedRow)
         else if (selectedRow == -1 && selectedCol != -1)

@@ -48,7 +48,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.NextLevelTimer.text= ((millisUntilFinished/1000) + 1).toString()
                 }
                 override fun onFinish() {
-                    singlePlayer.startTimer(singlePlayer.pause)
                     binding.boardGame.isVisible = true
                     binding.NextLevelTimer.isVisible = false
                     binding.timer.isVisible = true
