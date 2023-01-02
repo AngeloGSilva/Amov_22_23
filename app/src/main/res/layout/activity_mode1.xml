@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Add Score to firebase"
+            android:text="@string/add_score_to_firebase"
             android:visibility="invisible" />
 
         <Button
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Play Again"
+            android:text="@string/play_again"
             android:visibility="invisible" />
 
         <Button
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Menu Inicial"
+            android:text="@string/menu_inicial"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00"
-        android:textSize="50dp"
+        android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/GameNextLevel"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/GameNextLevelTimer"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +90,7 @@
         android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:src="@mipmap/profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/linearLayout3"
@@ -113,14 +113,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Pontos"
-            android:textSize="40dp" />
+            android:textSize="40sp" />
 
         <TextView
             android:id="@+id/InfoP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00"
-            android:textSize="40dp" />
+            android:textSize="40sp" />
 
         <!--<TextView
             android:id="@+id/InfoPontos"
