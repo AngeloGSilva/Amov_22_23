@@ -11,7 +11,7 @@
     <string name="msg_email_address">E-mail address</string>
     <string name="msg_password">Password:</string>
     <string name="hint_password">Password</string>
-    <string name="btn_createAccount">Cria Conta  (e-mail)</string>
+    <string name="btn_createAccount">Cria Conta</string>
     <string name="btn_logout">"Sair "</string>
     <string name="btn_add_new_data">Adicionar</string>
     <string name="btn_update_data">Actualizar</string>
@@ -20,7 +20,7 @@
     <string name="App_Title">Cerburs</string>
     <string name="menu_inicial">Menu Inicial</string>
     <string name="time">Tempo:</string>
-    <string name="btn_signIn">Entrar (e-mail)</string>
+    <string name="btn_signIn">Entrar</string>
     <string name="AppInfoTakes">Tens o que é preciso?</string>
     <string name="GameNextLevel">Próximo nivel em:</string>
     <string name="Pontos">Pontos: %d</string>
@@ -40,4 +40,7 @@
     <string name="waiting_for_all_players">Esperar por todos os jogadores</string>
     <string name="add_score_to_firebase">Adicionar a firebase</string>
     <string name="play_again">Jogar novamente</string>
+    <string name="save">Guardar</string>
+    <string name="gallery">Galeria</string>
+    <string name="gallery">G</string>
 </resources>

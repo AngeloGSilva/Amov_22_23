@@ -10,7 +10,7 @@
     <string name="msg_email_address">E-mail address</string>
     <string name="msg_password">Password:</string>
     <string name="hint_password">Password</string>
-    <string name="btn_createAccount">Create account (e-mail)</string>
+    <string name="btn_createAccount">Create account</string>
     <string name="btn_logout">Logout</string>
     <string name="msg_data_status" translatable="false">Data status</string>
     <string name="btn_add_new_data">Add new data</string>
@@ -36,11 +36,14 @@
     <string name="waiting_for_all_players">Waiting for all players</string>
     <string name="add_score_to_firebase">Add Score to firebase</string>
     <string name="play_again">Play Again</string>
-    <string name="btn_signIn">Sign In (e-mail)</string>
+    <string name="btn_signIn">Sign In</string>
     <string name="GameNextLevel">Next level in:</string>
     <string name="client_mode">Client Mode</string>
     <string name="time">Time:</string>
     <string name="menu_inicial">Start Menu</string>
+    <string name="scores" translatable="false">Scores</string>
+    <string name="save">Save</string>
+    <string name="gallery">Gallery</string>
     <!--<string name="timeleaderboard">Time:%d</string>
     <string name="pontosleaderboard">Pontos:%d</string>-->
 </resources>
