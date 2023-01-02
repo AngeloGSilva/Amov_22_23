@@ -11,27 +11,27 @@
         android:id="@+id/WaitingforHost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Waiting for host to start"
-        android:textSize="35dp"
+        android:text="@string/waiting_for_host_to_start"
+        android:textSize="35sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.82"></TextView>
+        app:layout_constraintVertical_bias="0.82" />
 
     <TextView
         android:id="@+id/WaitingforPlayers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Waiting for all players"
-        android:textSize="35dp"
+        android:text="@string/waiting_for_all_players"
+        android:textSize="35sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.82"></TextView>
+        app:layout_constraintVertical_bias="0.82" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ProgressBar>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout5"
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Add Score to firebase"
+            android:text="@string/add_score_to_firebase"
             android:visibility="invisible" />
 
         <Button
@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Play Again"
+            android:text="@string/play_again"
             android:visibility="invisible" />
 
         <Button
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Menu Inicial"
+            android:text="@string/menu_inicial"
             android:visibility="invisible" />
 
     </LinearLayout>
@@ -86,7 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/GameNextLevel"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/GameNextLevelTimer"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -163,7 +163,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            android:text="Time:"
+            android:text="@string/time"
             android:textSize="25sp" />
     </LinearLayout>
 
