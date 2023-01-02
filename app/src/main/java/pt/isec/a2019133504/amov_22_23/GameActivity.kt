@@ -79,18 +79,25 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.boardGame.isVisible = true
                     binding.WaitingforHost.isVisible = false
                     binding.progressBar.isVisible = false
+                    binding.WaitingforPlayers.isVisible = false
                 }
                 MultiPlayer.State.WAITING_FOR_NEXT_LEVEL ->{
                     binding.boardGame.isVisible = false
                     binding.progressBar.isVisible = true
+                    binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = true
-
                 }
                 MultiPlayer.State.SPECTATING ->  {
-
+                    binding.boardGame.isVisible = false
+                    binding.progressBar.isVisible = false
+                    binding.WaitingforHost.isVisible = false
+                    binding.WaitingforPlayers.isVisible = false
                 }
                 MultiPlayer.State.GAME_OVER ->{
-
+                    binding.boardGame.isVisible = false
+                    binding.progressBar.isVisible = false
+                    binding.WaitingforHost.isVisible = false
+                    binding.WaitingforPlayers.isVisible = false
                 }
                 else -> {}
             }
@@ -208,16 +215,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
 
 
     private fun updateCells(board: Board) {
-        if(board.empty){
-            binding.boardGame.isVisible = false
-        }
-        else
-        {
-            binding.boardGame.updateBoard(board)
-            binding.boardGame.isVisible = true
-            binding.WaitingforHost.isVisible = false
-            binding.progressBar.isVisible = false
-        }
+        binding.boardGame.updateBoard(board)
     }
 
     private fun startAsClient() {
