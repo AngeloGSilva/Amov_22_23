@@ -78,10 +78,11 @@ class SinglePlayer() {
 
         if (selectedCol == -1 && selectedRow != -1)
             pontos += returnboard().getResLinha(selectedRow)
-        else if (selectedRow == -1 && selectedCol != -1) {
+        else if (selectedRow == -1 && selectedCol != -1)
             pontos += returnboard().getResColuna(selectedCol)
 
-            timerObject.cancel()
+        timerObject.cancel()
+
             val time = pause + Level.get(NivelAtual).winTime
             if (time >= Level.get(NivelAtual).maxTime)
                 startTimer(Level.get(NivelAtual).maxTime.toLong())
@@ -89,12 +90,12 @@ class SinglePlayer() {
                 startTimer(time)
 
 
-            if (Level.isLast(NivelAtual) && BoardAtual == 9) {
+            if (Level.isLast(NivelAtual) && BoardAtual == boards.size-1) {
                 //TODO para acabar
                 fimLiveData.postValue(true)
                 pontosLiveData.postValue(pontos)
             } else {
-                if (BoardAtual == 9) {
+                if (BoardAtual == boards.size-1) {
                     BoardAtual = 0
                     NivelAtual++
                     boards = Array(10) { board ->
@@ -104,10 +105,11 @@ class SinglePlayer() {
                     nextLevel.postValue(true)
                 } else
                     BoardAtual++
+
                 pontosLiveData.postValue(pontos)
                 cellsLiveData.postValue(returnboardcells())
             }
-        }
+
 
     }
 }
