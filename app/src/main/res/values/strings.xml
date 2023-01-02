@@ -26,6 +26,7 @@
     <string name="GameNextLevel">Próximo nivel em:</string>
     <string name="GameNextLevelTimer">5</string>
     <string name="Pontos">Pontos: %d</string>
+    <string name="Tempo">Tempo: %d</string>
     <string name="server_mode">server</string>
     <string name="client_mode">cliente</string>
     <string name="rock_paper_scissors">Rock-Paper-Scissors</string>

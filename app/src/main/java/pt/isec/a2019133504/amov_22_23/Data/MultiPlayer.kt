@@ -3,9 +3,8 @@ package pt.isec.a2019133504.amov_22_23.Data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +25,10 @@ class MultiPlayer() : ViewModel() {
         WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL
     }
 
-    private val state = MutableLiveData(State.WAITING_START)
+    private val _state = MutableLiveData(State.WAITING_START)
+    val state : LiveData<State>
+        get() = _state
+
     private val user = FirebaseAuth.getInstance().currentUser
 
     private lateinit var level : Level
@@ -40,12 +42,10 @@ class MultiPlayer() : ViewModel() {
     var server : Server? = null
     private lateinit var socket : Socket
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun startServer() {
         server = Server()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = Server.SERVER_PORT) {
         socket = Socket()
@@ -63,7 +63,6 @@ class MultiPlayer() : ViewModel() {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startJogadorComm() {
         thread {
             val bufferedReader = socket.getInputStream().bufferedReader()
@@ -80,7 +79,7 @@ class MultiPlayer() : ViewModel() {
                             players.putAll(gameStart.players)
                             boards = gameStart.board.toTypedArray()
                             level = gameStart.level
-                            state.postValue(State.WAITING_FOR_MOVE)
+                            _state.postValue(State.WAITING_FOR_MOVE)
                             playersLD.postValue(players)
                             updateBoard()
                         }
@@ -92,7 +91,7 @@ class MultiPlayer() : ViewModel() {
                                 NrBoard = playerInfo.NrBoard
                                 Timestamp = playerInfo.Timestamp
                                 if (this == player) {
-                                    state.postValue(State.WAITING_FOR_MOVE)
+                                    _state.postValue(State.WAITING_FOR_MOVE)
                                     updateBoard()
                                 }
                             }
@@ -100,7 +99,7 @@ class MultiPlayer() : ViewModel() {
                         }MessageTypes.PLAYERINTERVAL ->{
                             val playerInfo : PlayerInterval = msg.getPayload()
                             Log.d(tag, "PlayerInterval")
-                            state.postValue(State.WAITING_FOR_NEXT_LEVEL)
+                            _state.postValue(State.WAITING_FOR_NEXT_LEVEL)
 
                         }
                         else -> {}
@@ -123,7 +122,7 @@ class MultiPlayer() : ViewModel() {
 
     fun updateSelectedCell(row: Int, col: Int) {
         if (player.NrBoard >= boards.size) return
-        if (state.value!! != State.WAITING_FOR_MOVE) return
+        if (_state.value!! != State.WAITING_FOR_MOVE) return
         if (row == -1 && col == -1) return
         val msg : Message
         if (row != -1) {
@@ -135,7 +134,7 @@ class MultiPlayer() : ViewModel() {
             Log.d(tag, "Move_Col($col, ${player.NrBoard})")
         }
         Server.sendToServer(socket, msg)
-        state.postValue(State.WAITING_FOR_RESULT)
+        _state.postValue(State.WAITING_FOR_RESULT)
     }
 
 }

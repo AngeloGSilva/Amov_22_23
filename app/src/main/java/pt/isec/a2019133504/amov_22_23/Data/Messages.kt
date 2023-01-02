@@ -7,6 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers._Bitmap
+import pt.isec.a2019133504.amov_22_23.Data.Deserializers._Instant
 import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.Player
 
@@ -42,7 +43,7 @@ data class Move_Row(val move : Int, val BoardN : Int) : MessagePayload(MessageTy
 @Serializable
 data class Move_Col(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_COL)
 @Serializable
-data class PlayerUpdate(val uid:String, val Pontos:Int, val NrBoard:Int, val Timestamp:Long) : MessagePayload(MessageTypes.PLAYERUPDATE)
+data class PlayerUpdate(val uid:String, val Pontos:Int, val NrBoard:Int, val Timestamp: _Instant) : MessagePayload(MessageTypes.PLAYERUPDATE)
 @Serializable
 data class PlayerConnect(val uid:String, val nome:String, val Imagem: _Bitmap) : MessagePayload(MessageTypes.PLAYER_CONNECT)
 @Serializable

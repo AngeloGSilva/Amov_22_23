@@ -3,7 +3,6 @@ package pt.isec.a2019133504.amov_22_23.Data.Deserializers
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -26,14 +25,12 @@ object BitmapSerializer : KSerializer<Bitmap> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("IntRange", PrimitiveKind.STRING)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun serialize(encoder: Encoder, value: Bitmap) {
         var baos = ByteArrayOutputStream()
         value.compress(Bitmap.CompressFormat.PNG, 90, baos)
         encoder.encodeString(Base64.getEncoder().encodeToString(baos.toByteArray()))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun deserialize(decoder: Decoder): Bitmap {
         val _decoder = Base64.getDecoder().decode(decoder.decodeString())
         return BitmapFactory.decodeByteArray(_decoder, 0, _decoder.size)

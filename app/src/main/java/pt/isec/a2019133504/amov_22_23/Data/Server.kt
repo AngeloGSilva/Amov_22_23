@@ -1,16 +1,17 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.json.JSONObject
-import pt.isec.a2019133504.amov_22_23.Data.Deserializers.BitmapSerializer
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import java.io.PrintStream
 import java.net.ServerSocket
 import java.net.Socket
+import java.time.Instant.now
+import java.util.*
 import kotlin.concurrent.thread
 
 class Server {
@@ -51,37 +52,35 @@ class Server {
         thread {
             socket.run {
                 System.out.println("THREAD RUNNING")
-                    while(state.value == State.WAITING_CONNECTIONS) {
-
-                        try {
+                while(state.value == State.WAITING_CONNECTIONS) {
+                    try {
                         val socketClient = socket.accept()
-                            thread {
-                                try {
-                                    val bufI = socketClient.getInputStream()
-                                    val s = bufI.bufferedReader().readLine()
-                                    val msg : Message = Json.decodeFromString(s)
-                                    if (msg.type == MessageTypes.PLAYER_CONNECT){
-                                        val playerConnect : PlayerConnect = msg.getPayload()
-                                        Log.d(tag, "PlayerConnect")
-                                        val player = Player(playerConnect.uid, playerConnect.nome, playerConnect.Imagem, socketClient)
-                                        playerList.addPlayer(player)
-                                        startServerComm(player)
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e(tag, e.toString())
+                        thread {
+                            try {
+                                val bufI = socketClient.getInputStream()
+                                val s = bufI.bufferedReader().readLine()
+                                val msg : Message = Json.decodeFromString(s)
+                                if (msg.type == MessageTypes.PLAYER_CONNECT){
+                                    val playerConnect : PlayerConnect = msg.getPayload()
+                                    Log.d(tag, "PlayerConnect")
+                                    val player = Player(playerConnect.uid, playerConnect.nome, playerConnect.Imagem, socketClient)
+                                    playerList.addPlayer(player)
+                                    startServerComm(player)
                                 }
+                            } catch (e: Exception) {
+                                Log.e(tag, e.toString())
                             }
-                        //System.out.println("Conectado ao socket" + socketClient.toString())
-                        //players[players.size] = Player(Recebido por JSON,socketClient)
-                        } catch (e: Exception) {
-                            Log.e(tag, e.toString())
-                        } finally {
-                            //Acabar o jogo para todos
-                            //serverSocket?.close()
-                            //stopGame()
                         }
+                    //System.out.println("Conectado ao socket" + socketClient.toString())
+                    //players[players.size] = Player(Recebido por JSON,socketClient)
+                    } catch (e: Exception) {
+                        Log.e(tag, e.toString())
+                    } finally {
+                        //Acabar o jogo para todos
+                        //socket.close()
+                        //stopGame()
                     }
-
+                }
             }
         }
     }
@@ -97,7 +96,7 @@ class Server {
                             if (moveCol.BoardN >= boards.size) continue
                             if (moveCol.BoardN != player.NrBoard) continue
                             val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
-                            player.assignScore(res)
+                            player.assignScore(res, Level.get(NivelAtual).winTime)
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                             if(player.NrBoard == 9)
                                 player.sendMessage(Message.create(PlayerInterval(player.uid)))
@@ -108,7 +107,7 @@ class Server {
                             if (moveRow.BoardN >= boards.size) continue
                             if (moveRow.BoardN != player.NrBoard) continue
                             val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
-                            player.assignScore(res)
+                            player.assignScore(res, Level.get(NivelAtual).winTime)
                             playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
                             if(player.NrBoard == 9)
                                 player.sendMessage(Message.create(PlayerInterval(player.uid)))
@@ -128,7 +127,9 @@ class Server {
         /*if(players.size <=1)
             return false*/
         NivelAtual = 0
-        boards = Array(10) { Board.fromLevel(Level.get(NivelAtual))}
+        val level = Level.get(NivelAtual)
+        boards = Array(10) { Board.fromLevel(level)}
+        playerList.setTimestap(now().plusSeconds(level.maxTime.toLong()))
         _state.postValue(State.PLAYING)
         playerList.sendToAll(Message.create(GameStart(playerList.players, boards.asList(), Level.get(NivelAtual))))
         return true

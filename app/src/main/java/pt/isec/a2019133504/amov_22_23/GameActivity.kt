@@ -9,13 +9,13 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.InputFilter
 import android.text.Spanned
 import android.util.Patterns
 import android.view.Gravity
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import pt.isec.a2019133504.amov_22_23.Data.Board
@@ -25,6 +25,7 @@ import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityGameBinding
+import java.util.*
 
 
 class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
@@ -58,9 +59,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
     private var LeaderBoardPlayerAdapter : LeaderboardAdapter? = null
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private lateinit var binding: ActivityGameBinding
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGameBinding.inflate(layoutInflater)
@@ -81,12 +80,21 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()
         }
 
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (!model.state.value!!.equals(MultiPlayer.State.WAITING_START))
+                    this@GameActivity.runOnUiThread {
+                        LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()
+                    }
+            }
+        }, 0, 1000)
+
         model.boardLD.observe(this) {
             updateCells(it)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startAsServer() {
         model.startServer()
         val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
@@ -176,7 +184,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCells(board: Board) {
         if(board.empty){
             binding.boardGame.isVisible = false
@@ -190,7 +197,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startAsClient() {
         val edtBox = EditText(this).apply {
             maxLines = 1

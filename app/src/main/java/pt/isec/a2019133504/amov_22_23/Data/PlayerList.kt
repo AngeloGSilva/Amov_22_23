@@ -1,9 +1,9 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
-import androidx.lifecycle.LiveData
+import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import pt.isec.a2019133504.amov_22_23.Data.Messages.Message
-import java.util.*
+import java.time.Instant
 
 class PlayerList {
     private var _players : MutableMap<String, Player> = mutableMapOf()
@@ -19,6 +19,11 @@ class PlayerList {
     fun sendToAll(message : Message) {
         for(p in _players.values)
             p.sendMessage(message)
+    }
+
+    fun setTimestap(timestamp: Instant) {
+        for(p in _players.values)
+            p.Timestamp = timestamp
     }
 
 
