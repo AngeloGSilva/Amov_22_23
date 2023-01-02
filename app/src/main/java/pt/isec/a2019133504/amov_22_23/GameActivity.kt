@@ -206,7 +206,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         windowParam?.gravity = Gravity.TOP
         window?.attributes = windowParam
 
-        model.startClient(this,"localhost")
+        model.startClient(this.applicationContext,"localhost")
         dlg?.show()
 
         model.server!!.playerList.playersLD.observe(this) {
@@ -253,10 +253,10 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     Toast.makeText(this@GameActivity, R.string.error_address, Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    model.startClient(this,strIP)
+                    model.startClient(this.applicationContext,strIP)
                 }
             }.setNeutralButton(R.string.btn_emulator) { _: DialogInterface, _: Int ->
-                model.startClient(this,"10.0.2.2", Server.SERVER_PORT - 1)
+                model.startClient(this.applicationContext,"10.0.2.2", Server.SERVER_PORT - 1)
                 binding.WaitingforHost.isVisible = true
                 binding.progressBar.isVisible = true
             }.setNegativeButton(R.string.button_cancel) { _: DialogInterface, _: Int ->

@@ -3,7 +3,10 @@ package pt.isec.a2019133504.amov_22_23.Data
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +15,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
+import pt.isec.a2019133504.amov_22_23.R
 import java.io.*
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -52,7 +56,12 @@ class MultiPlayer() : ViewModel() {
         thread {
             try {
                 socket.connect(InetSocketAddress(serverIP, serverPort), 5000)
-                val bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
+                //TODO Imagem cliente a null
+                val bitmap : Bitmap
+                if (ProfileActivity.imgdata == null)
+                     bitmap = ResourcesCompat.getDrawable(c.resources,R.drawable.ic_no_pic,null)!!.toBitmap()
+                else
+                     bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
                 Server.sendToServer(socket, Message.create(PlayerConnect(user!!.uid, ProfileActivity.username, bitmap)))
                 startJogadorComm()
             } catch (e: Exception) {

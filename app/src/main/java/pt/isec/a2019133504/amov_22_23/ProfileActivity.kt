@@ -41,6 +41,7 @@ class ProfileActivity : AppCompatActivity() {
 
     lateinit var imageView: ImageView
     private val pickImage = 100
+
     companion object {
         var imgdata : Bitmap? = null
         lateinit var username : String
@@ -166,6 +167,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
+        //TODO fazer no save em vez de no take
         imagePath = getTempFilename(this)
         startActivityForTakePhotoResult.launch(
             FileProvider.getUriForFile(this,
