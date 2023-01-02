@@ -36,7 +36,7 @@ class Server {
                     printStream.println(msg.toString())
                     printStream.flush()
                 } catch (e: Exception) {
-                    Log.e("sendToServer", e.toString())
+                    Log.e("sendToServer", e.stackTraceToString())
                 }
             }
         }
@@ -76,7 +76,7 @@ class Server {
                     //System.out.println("Conectado ao socket" + socketClient.toString())
                     //players[players.size] = Player(Recebido por JSON,socketClient)
                     } catch (e: Exception) {
-                        Log.e(tag, e.toString())
+                        Log.e(tag, e.stackTraceToString())
                     } finally {
                         //Acabar o jogo para todos
                         //socket.close()
@@ -113,7 +113,7 @@ class Server {
                         else -> {}
                     }
                 } catch (e: Exception) {
-                    Log.e(tag, e.toString())
+                    Log.e(tag, e.stackTraceToString())
                 } finally {
                     //stopGame()
                 }

@@ -56,7 +56,7 @@ class MultiPlayer() : ViewModel() {
                 Server.sendToServer(socket, Message.create(PlayerConnect(user!!.uid, ProfileActivity.username, bitmap)))
                 startJogadorComm()
             } catch (e: Exception) {
-                Log.e(tag, e.toString())
+                Log.e(tag, e.stackTraceToString())
                 //stopGame()
             }
         }
@@ -111,7 +111,7 @@ class MultiPlayer() : ViewModel() {
                         else -> {}
                     }
                 } catch (e: Exception) {
-                    Log.e(tag, e.toString())
+                    Log.e(tag, e.stackTraceToString())
                 } finally {
                     //stopGame()
                 }
