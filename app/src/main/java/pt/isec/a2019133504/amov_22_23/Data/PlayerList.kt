@@ -39,9 +39,13 @@ class PlayerList {
 
     fun allFinished(NrBoards: Int) : Boolean {
         val now = now()
-        for(p in _players.values)
-            if (p.Timestamp.isAfter(now) && p.NrBoard<NrBoards)
+        for(p in _players.values){
+            if (p.Lost)
+                continue
+
+            if (p.NrBoard<NrBoards && p.Timestamp.isAfter(now))
                 return false
+        }
         return true
     }
 }
