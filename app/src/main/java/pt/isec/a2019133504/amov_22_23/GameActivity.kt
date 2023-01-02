@@ -98,6 +98,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.progressBar.isVisible = false
                     binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = false
+                    //TODO botão para o inicio
                 }
                 else -> {}
             }

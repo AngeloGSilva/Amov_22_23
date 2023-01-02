@@ -132,8 +132,9 @@ class Server {
         if (!playerList.allFinished(boards.size)) return false
         if (NivelAtual>=0)
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
-        if (playerList.allLost()) TODO("NO PLAYERS PLAYING")
-        if (Level.isLast(NivelAtual)) TODO("LAST LEVEL PLAYED")
+        if (playerList.allLost() || Level.isLast(NivelAtual)) {
+            playerList.sendToAll(Message.create(MessagePayload(MessageTypes.GAMEOVER))) //TODO close socket?
+        }
         NivelAtual++
         val level = Level.get(NivelAtual)
         boards.clear()

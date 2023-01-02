@@ -108,6 +108,10 @@ class MultiPlayer() : ViewModel() {
                             Log.d(tag, "PlayerInterval")
 
                         }
+                        MessageTypes.GAMEOVER -> {
+                            _state.postValue(State.GAME_OVER)
+                            socket.close()
+                        }
                         else -> {}
                     }
                 } catch (e: Exception) {
