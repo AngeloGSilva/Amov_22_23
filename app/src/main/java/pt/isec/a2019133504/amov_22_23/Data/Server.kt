@@ -130,8 +130,8 @@ class Server {
 
     fun NextLevel() : Boolean {
         if (!playerList.allFinished(boards.size)) return false
-        Log.d("NextLevel", "Nivel atual: ${NivelAtual}")
-        if (Level.isLast(NivelAtual)) TODO("game over")
+        if (!playerList.anyStillPlaying()) TODO("NO PLAYERS PLAYING")
+        if (Level.isLast(NivelAtual)) TODO("LAST LEVEL PLAYED")
         if (NivelAtual>=0)
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
         NivelAtual++
