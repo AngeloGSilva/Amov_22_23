@@ -70,7 +70,8 @@ class Server {
                                     startServerComm(player)
                                 }
                             } catch (e: Exception) {
-                                Log.e(tag, e.toString())
+                                if (!socketClient.isClosed)
+                                    Log.e(tag, e.stackTraceToString())
                             }
                         }
                     //System.out.println("Conectado ao socket" + socketClient.toString())
@@ -121,6 +122,7 @@ class Server {
         /*if(players.size <=1)
             return false*/
         NivelAtual = -1
+        socket.close()
         return NextLevel()
     }
 
