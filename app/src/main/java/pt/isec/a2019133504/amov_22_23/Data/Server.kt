@@ -130,10 +130,10 @@ class Server {
 
     fun NextLevel() : Boolean {
         if (!playerList.allFinished(boards.size)) return false
-        if (!playerList.anyStillPlaying()) TODO("NO PLAYERS PLAYING")
-        if (Level.isLast(NivelAtual)) TODO("LAST LEVEL PLAYED")
         if (NivelAtual>=0)
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
+        if (playerList.allLost()) TODO("NO PLAYERS PLAYING")
+        if (Level.isLast(NivelAtual)) TODO("LAST LEVEL PLAYED")
         NivelAtual++
         val level = Level.get(NivelAtual)
         boards.clear()

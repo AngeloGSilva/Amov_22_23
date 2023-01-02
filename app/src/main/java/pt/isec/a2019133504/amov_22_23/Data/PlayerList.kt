@@ -49,10 +49,10 @@ class PlayerList {
         return true
     }
 
-    fun anyStillPlaying() : Boolean {
+    fun allLost() : Boolean {
         for(p in _players.values)
             if (!p.Lost)
-                return true
-        return false
+                return false
+        return true
     }
 }
