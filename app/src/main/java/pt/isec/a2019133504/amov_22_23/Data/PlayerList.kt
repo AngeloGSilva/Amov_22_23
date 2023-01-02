@@ -48,4 +48,11 @@ class PlayerList {
         }
         return true
     }
+
+    fun anyStillPlaying() : Boolean {
+        for(p in _players.values)
+            if (!p.Lost)
+                return true
+        return false
+    }
 }
