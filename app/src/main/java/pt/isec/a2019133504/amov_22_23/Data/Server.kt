@@ -126,13 +126,17 @@ class Server {
         return NextLevel()
     }
 
+    fun EndGame() {
+        //TODO pontuação db
+        playerList.closeSockets()
+    }
+
     fun NextLevel() : Boolean {
         if (!playerList.allFinished(boards.size)) return false
         if (NivelAtual>=0)
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
         if (playerList.allLost() || Level.isLast(NivelAtual)) {
-            playerList.sendToAll(Message.create(MessagePayload(MessageTypes.GAMEOVER))) //TODO close socket?
-            playerList.closeSockets()
+            playerList.sendToAll(Message.create(MessagePayload(MessageTypes.GAMEOVER)))
             return false
         }
         NivelAtual++
