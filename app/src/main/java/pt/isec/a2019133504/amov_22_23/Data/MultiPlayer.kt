@@ -56,13 +56,12 @@ class MultiPlayer() : ViewModel() {
         thread {
             try {
                 socket.connect(InetSocketAddress(serverIP, serverPort), 5000)
-                //TODO Imagem cliente a null
                 val bitmap : Bitmap
                 if (ProfileActivity.imgdata == null)
-                     bitmap = ResourcesCompat.getDrawable(c.resources,R.drawable.ic_no_pic,null)!!.toBitmap()
+                    bitmap = ResourcesCompat.getDrawable(c.resources, R.drawable.ic_no_pic,null)!!.toBitmap()
                 else
-                     bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
-                Server.sendToServer(socket, Message.create(PlayerConnect(user!!.uid, ProfileActivity.username, bitmap)))
+                    bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
+                Message.PlayerConnect(user!!.uid, ProfileActivity.username, bitmap).sendTo(socket)
                 startJogadorComm()
             } catch (e: Exception) {
                 Log.e(tag, e.stackTraceToString())
@@ -77,32 +76,29 @@ class MultiPlayer() : ViewModel() {
             val bufferedReader = socket.getInputStream().bufferedReader()
             while(true) {
                 try {
-                    val line = bufferedReader.readLine()
-                    val msg : Message = Json.decodeFromString(line)
-                    when (msg.type) {
-                        MessageTypes.START_LEVEL -> {
+                    val msg = Message.receive(bufferedReader)
+                    when (msg) {
+                        is Message.StartLevel -> {
                             Log.d(tag, "GAMESTART")
-                            val startLevel : StartLevel = msg.getPayload()
                             players.clear()
-                            players.putAll(startLevel.players)
-                            player = startLevel.players[user!!.uid]!!
+                            players.putAll(msg.players)
+                            player = msg.players[user!!.uid]!!
                             if (player.Lost)
                                 _state.postValue(State.SPECTATING)
                             else {
-                                boards = startLevel.board.toTypedArray()
-                                level = startLevel.level
+                                boards = msg.board.toTypedArray()
+                                level = msg.level
                                 _state.postValue(State.WAITING_FOR_MOVE)
                                 updateBoard()
                             }
                             playersLD.postValue(players)
                         }
-                        MessageTypes.PLAYERUPDATE -> {
-                            val playerInfo : PlayerUpdate = msg.getPayload()
+                        is Message.PlayerUpdate -> {
                             Log.d(tag, "PlayerUpdate")
-                            players.get(playerInfo.uid)!!.apply {
-                                Pontos = playerInfo.Pontos
-                                NrBoard = playerInfo.NrBoard
-                                Timestamp = playerInfo.Timestamp
+                            players.get(msg.uid)!!.apply {
+                                Pontos = msg.Pontos
+                                NrBoard = msg.NrBoard
+                                Timestamp = msg.Timestamp
                                 if (this == player) {
                                     _state.postValue(State.WAITING_FOR_MOVE)
                                     updateBoard()
@@ -112,12 +108,7 @@ class MultiPlayer() : ViewModel() {
                             }
                             playersLD.postValue(players)
                         }
-                        MessageTypes.PLAYERINTERVAL ->{
-                            val playerInfo : PlayerInterval = msg.getPayload()
-                            Log.d(tag, "PlayerInterval")
-
-                        }
-                        MessageTypes.GAMEOVER -> {
+                        is Message.GameOver -> {
                             _state.postValue(State.GAME_OVER)
                             socket.close()
                         }
@@ -142,20 +133,22 @@ class MultiPlayer() : ViewModel() {
     }
 
     fun updateSelectedCell(row: Int, col: Int) {
-        if (player.NrBoard >= boards.size) return
-        if (_state.value!! != State.WAITING_FOR_MOVE) return
-        if (row == -1 && col == -1) return
-        val msg : Message
-        if (row != -1) {
-            msg = Message.create(Move_Row(row, player.NrBoard))
-            Log.d(tag, "Move_Row($row, ${player.NrBoard})")
+        thread {
+            if (player.NrBoard >= boards.size) return@thread
+            if (_state.value!! != State.WAITING_FOR_MOVE) return@thread
+            if (row == -1 && col == -1) return@thread
+            val msg : Message
+            if (row != -1) {
+                msg = Message.Move_Row(row, player.NrBoard)
+                Log.d(tag, "Move_Row($row, ${player.NrBoard})")
+            }
+            else {
+                msg = Message.Move_Col(col, player.NrBoard)
+                Log.d(tag, "Move_Col($col, ${player.NrBoard})")
+            }
+            msg.sendTo(socket)
+            _state.postValue(State.WAITING_FOR_RESULT)
         }
-        else {
-            msg = Message.create(Move_Col(col, player.NrBoard))
-            Log.d(tag, "Move_Col($col, ${player.NrBoard})")
-        }
-        Server.sendToServer(socket, msg)
-        _state.postValue(State.WAITING_FOR_RESULT)
     }
 
 }

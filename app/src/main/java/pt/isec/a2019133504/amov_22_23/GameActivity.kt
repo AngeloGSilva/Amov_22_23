@@ -73,9 +73,11 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             CLIENT_MODE -> startAsClient()
         }
 
+        val timer = Timer()
         model.state.observe(this){
             when(it){
                 MultiPlayer.State.WAITING_FOR_MOVE->{
+                    dlg?.dismiss()
                     binding.boardGame.isVisible = true
                     binding.WaitingforHost.isVisible = false
                     binding.progressBar.isVisible = false
@@ -98,6 +100,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.progressBar.isVisible = false
                     binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = false
+                    timer.cancel()
                     //TODO botão para o inicio
                 }
                 else -> {}
@@ -111,7 +114,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()
         }
 
-        val timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
                 if (!model.state.value!!.equals(MultiPlayer.State.WAITING_START))
@@ -174,12 +176,10 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     text = "Start"
                     textSize = 10f
                     setOnClickListener {
-                        if(!model.server!!.StartGame())
-                            return@setOnClickListener
+                        model.server!!.StartGame()
 
                         //Notificar o server de que o jogo começou
                         //Notifica os clientes que vai começar
-                        dlg?.dismiss()
                     }
                 })
             })

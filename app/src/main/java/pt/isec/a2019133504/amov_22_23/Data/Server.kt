@@ -26,20 +26,6 @@ class Server {
 
     companion object {
         const val SERVER_PORT = 9999
-        const val MOVE_L = -1
-        const val MOVE_C = -1
-
-        fun sendToServer(socket : Socket, msg: Message) {
-            thread {
-                try {
-                    val printStream = PrintStream(socket.getOutputStream())
-                    printStream.println(msg.toString())
-                    printStream.flush()
-                } catch (e: Exception) {
-                    Log.e("sendToServer", e.stackTraceToString())
-                }
-            }
-        }
     }
 
     var NivelAtual : Int = 0
@@ -59,13 +45,10 @@ class Server {
                         val socketClient = socket.accept()
                         thread {
                             try {
-                                val bufI = socketClient.getInputStream()
-                                val s = bufI.bufferedReader().readLine()
-                                val msg : Message = Json.decodeFromString(s)
-                                if (msg.type == MessageTypes.PLAYER_CONNECT){
-                                    val playerConnect : PlayerConnect = msg.getPayload()
+                                val msg = Message.receive(socketClient)
+                                if (msg is Message.PlayerConnect){
                                     Log.d(tag, "PlayerConnect")
-                                    val player = Player(playerConnect.uid, playerConnect.nome, playerConnect.Imagem, socketClient)
+                                    val player = Player(msg.uid, msg.nome, msg.Imagem, socketClient)
                                     playerList.addPlayer(player)
                                     startServerComm(player)
                                 }
@@ -77,7 +60,8 @@ class Server {
                     //System.out.println("Conectado ao socket" + socketClient.toString())
                     //players[players.size] = Player(Recebido por JSON,socketClient)
                     } catch (e: Exception) {
-                        Log.e(tag, e.stackTraceToString())
+                        if (!socket.isClosed)
+                            Log.e(tag, e.stackTraceToString())
                     }
                 }
             }
@@ -85,58 +69,72 @@ class Server {
     }
 
     private fun startServerComm(player: Player) {
-            while (true) {
-                try {
-                    val msg : Message = player.receiveMessage()
-                    when (msg.type) {
-                        MessageTypes.MOVE_COL -> {
-                            Log.d(tag, "MOVE_COL")
-                            val moveCol : Move_Col = msg.getPayload()
-                            if (moveCol.BoardN >= boards.size) continue
-                            if (moveCol.BoardN != player.NrBoard) continue
-                            val res : Int = boards[player.NrBoard].getResColuna(moveCol.move)
-                            player.assignScore(res, if (res>0) Level.get(NivelAtual).winTime else 0)
-                            playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
-                        }
-                        MessageTypes.MOVE_ROW -> {
-                            Log.d(tag, "MOVE_ROW")
-                            val moveRow : Move_Row = msg.getPayload()
-                            if (moveRow.BoardN >= boards.size) continue
-                            if (moveRow.BoardN != player.NrBoard) continue
-                            val res : Int = boards[player.NrBoard].getResLinha(moveRow.move)
-                            player.assignScore(res, if (res>0) Level.get(NivelAtual).winTime else 0)
-                            playerList.sendToAll(Message.create(PlayerUpdate(player.uid, player.Pontos, player.NrBoard, player.Timestamp)))
-                        }
-                        else -> {}
+        while (_state.value!! != State.GAMEOVER) {
+            try {
+                val msg = player.receiveMessage()
+                when (msg) {
+                    is Message.Move_Col -> {
+                        Log.d(tag, "MOVE_COL")
+                        if (msg.BoardN >= boards.size) continue
+                        if (msg.BoardN != player.NrBoard) continue
+                        val res : Int = boards[player.NrBoard].getResColuna(msg.move)
+                        player.assignScore(res, if (res>0) Level.get(NivelAtual).winTime else 0)
+                        playerList.sendToAll(
+                            Message.PlayerUpdate(
+                                player.uid,
+                                player.Pontos,
+                                player.NrBoard,
+                                player.Timestamp
+                            )
+                        )
                     }
-                } catch (e: Exception) {
-                    if (player.socket==null || player.socket.isClosed)
-                        break
-                    Log.e(tag, e.stackTraceToString())
+                    is Message.Move_Row -> {
+                        if (msg.BoardN >= boards.size) continue
+                        if (msg.BoardN != player.NrBoard) continue
+                        val res : Int = boards[player.NrBoard].getResLinha(msg.move)
+                        player.assignScore(res, if (res>0) Level.get(NivelAtual).winTime else 0)
+                        playerList.sendToAll(
+                            Message.PlayerUpdate(
+                                player.uid,
+                                player.Pontos,
+                                player.NrBoard,
+                                player.Timestamp
+                            )
+                        )
+                    }
+                    else -> {}
                 }
+            } catch (e: Exception) {
+                if (player.socket==null || player.socket.isClosed)
+                    break
+                if (_state.value!=State.GAMEOVER)
+                    Log.e(tag, e.stackTraceToString())
             }
+        }
+        player.socket!!.close()
     }
 
-    fun StartGame() : Boolean {
+    fun StartGame() {
         //FIXME uncomment
         /*if(players.size <=1)
             return false*/
-        NivelAtual = -1
-        socket.close()
-        return NextLevel()
+        thread {
+            NivelAtual = -1
+            socket.close()
+            NextLevel()
+        }
     }
 
     fun EndGame() {
         //TODO pontuação db
-        playerList.closeSockets()
     }
 
     fun NextLevel() : Boolean {
-        if (!playerList.allFinished(boards.size)) return false
         if (NivelAtual>=0)
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
         if (playerList.allLost() || Level.isLast(NivelAtual)) {
-            playerList.sendToAll(Message.create(MessagePayload(MessageTypes.GAMEOVER)))
+            _state.postValue(State.GAMEOVER)
+            playerList.sendToAll(Message.GameOver())
             return false
         }
         NivelAtual++
@@ -146,11 +144,13 @@ class Server {
         playerList.setTimestap(now().plusSeconds(level.maxTime.toLong()))
         playerList.setBoardNr(0)
         _state.postValue(State.PLAYING)
-        playerList.sendToAll(Message.create(StartLevel(playerList.players, boards, Level.get(NivelAtual))))
+        playerList.sendToAll(Message.StartLevel(playerList.players, boards, Level.get(NivelAtual)))
         timer.schedule(object : TimerTask() {
             override fun run() {
-                if (NextLevel())
-                    this.cancel()
+                if (!playerList.allFinished(boards.size))
+                    return
+                NextLevel()
+                this.cancel()
             }
         }, 0, 1000)
         return true

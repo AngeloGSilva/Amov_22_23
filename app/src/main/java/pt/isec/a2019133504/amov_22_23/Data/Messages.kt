@@ -1,7 +1,6 @@
 package pt.isec.a2019133504.amov_22_23.Data.Messages
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -10,39 +9,47 @@ import pt.isec.a2019133504.amov_22_23.Data.Deserializers._Bitmap
 import pt.isec.a2019133504.amov_22_23.Data.Deserializers._Instant
 import pt.isec.a2019133504.amov_22_23.Data.Level
 import pt.isec.a2019133504.amov_22_23.Data.Player
+import java.io.*
+import java.net.Socket
 
-enum class MessageTypes {
-    DEFAULT, MOVE_ROW, MOVE_COL, PLAYERUPDATE, START_LEVEL,PLAYERINTERVAL,GAMERESUME, PLAYER_CONNECT, GAMEOVER
-}
 
 @Serializable
-class Message(val type : MessageTypes, val payload : String) {
-    inline fun <reified T : MessagePayload> getPayload() : T {
-        return Json.decodeFromString(payload)
+sealed class Message {
+    @Serializable
+    data class StartLevel(val players : Map<String, Player>, val board: List<Board>, val level: Level) : Message()
+    @Serializable
+    data class Move_Row(val move : Int, val BoardN : Int) : Message()
+    @Serializable
+    data class Move_Col(val move : Int, val BoardN : Int) : Message()
+    @Serializable
+    data class PlayerUpdate(val uid:String, val Pontos:Int, val NrBoard:Int, val Timestamp: _Instant) : Message()
+    @Serializable
+    data class PlayerConnect(val uid:String, val nome:String, val Imagem: _Bitmap) : Message()
+    @Serializable
+    class GameOver : Message()
+
+    fun sendTo(socket: Socket) {
+        val outBuffer = socket.getOutputStream().bufferedWriter()
+        outBuffer.write(Json.encodeToString(this))
+        outBuffer.newLine()
+        outBuffer.flush()
     }
 
-    override fun toString() : String {
-        return Json.encodeToString(this)
+    fun sendTo(outBuffer: BufferedWriter) {
+        outBuffer.write(Json.encodeToString(this))
+        outBuffer.newLine()
+        outBuffer.flush()
     }
 
     companion object {
-        inline fun <reified T : MessagePayload> create(_payload: T) : Message {
-            return Message(_payload.type, Json.encodeToString(_payload))
+        fun receive(socket: Socket): Message {
+            val inBuffer = socket.getInputStream().bufferedReader()
+            return Json.decodeFromString(inBuffer.readLine())
+        }
+
+        fun receive(inBuffer: BufferedReader): Message {
+            return Json.decodeFromString(inBuffer.readLine())
         }
     }
 }
 
-@Serializable
-open class MessagePayload(@Transient val type : MessageTypes = MessageTypes.DEFAULT)
-@Serializable
-data class StartLevel(val players : Map<String, Player>, val board: List<Board>, val level: Level) : MessagePayload(MessageTypes.START_LEVEL)
-@Serializable
-data class Move_Row(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_ROW)
-@Serializable
-data class Move_Col(val move : Int, val BoardN : Int) : MessagePayload(MessageTypes.MOVE_COL)
-@Serializable
-data class PlayerUpdate(val uid:String, val Pontos:Int, val NrBoard:Int, val Timestamp: _Instant) : MessagePayload(MessageTypes.PLAYERUPDATE)
-@Serializable
-data class PlayerConnect(val uid:String, val nome:String, val Imagem: _Bitmap) : MessagePayload(MessageTypes.PLAYER_CONNECT)
-@Serializable
-data class PlayerInterval(val uid:String) : MessagePayload(MessageTypes.PLAYERINTERVAL)

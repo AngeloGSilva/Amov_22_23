@@ -23,11 +23,6 @@ class Player(val uid : String,val nome:String , val Imagem: _Bitmap,@Transient v
     var Timestamp : _Instant = Instant.MAX
     var Lost = false
 
-     val inputstream: InputStream?
-        get() = socket?.getInputStream()
-     val outputstream: OutputStream?
-        get() = socket?.getOutputStream()
-
     fun assignScore(pontos : Int, segundos : Int) {
         Pontos += pontos
         Timestamp = Timestamp.plusSeconds(segundos.toLong())
@@ -35,20 +30,11 @@ class Player(val uid : String,val nome:String , val Imagem: _Bitmap,@Transient v
     }
 
     fun sendMessage(msg: Message){
-        thread {
-            try {
-                val printStream = PrintStream(outputstream)
-                printStream.println(msg.toString())
-                printStream.flush()
-            } catch (_: Exception) {
-                //stopGame()
-            }
-        }
+        msg.sendTo(socket!!)
     }
 
     fun receiveMessage() : Message {
-        val bufferedReader = inputstream!!.bufferedReader()
-        return Json.decodeFromString(bufferedReader.readLine())
+        return Message.receive(socket!!)
     }
 }
 
