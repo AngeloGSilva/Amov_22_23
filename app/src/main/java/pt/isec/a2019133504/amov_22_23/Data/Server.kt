@@ -130,6 +130,7 @@ class Server {
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
         if (playerList.allLost() || Level.isLast(NivelAtual)) {
             playerList.sendToAll(Message.create(MessagePayload(MessageTypes.GAMEOVER))) //TODO close socket?
+            playerList.closeSockets()
             return false
         }
         NivelAtual++
