@@ -33,8 +33,6 @@ class MultiPlayer() : ViewModel() {
     val state : LiveData<State>
         get() = _state
 
-    private val user = FirebaseAuth.getInstance().currentUser
-
     private lateinit var level : Level
     private lateinit var boards : Array<Board>
     private lateinit var player : Player
@@ -53,15 +51,17 @@ class MultiPlayer() : ViewModel() {
     @SuppressLint("SuspiciousIndentation")
     fun startClient(c : Context,serverIP: String, serverPort: Int = Server.SERVER_PORT) {
         socket = Socket()
+        players.clear()
+        _state.postValue(State.WAITING_START)
         thread {
             try {
                 socket.connect(InetSocketAddress(serverIP, serverPort), 5000)
                 val bitmap : Bitmap
-                if (ProfileActivity.imgdata == null)
+                if (CurrentUser.imgdata == null)
                     bitmap = ResourcesCompat.getDrawable(c.resources, R.drawable.ic_no_pic,null)!!.toBitmap()
                 else
-                    bitmap = Bitmap.createScaledBitmap(ProfileActivity.imgdata!!,64,64,false)
-                Message.PlayerConnect(user!!.uid, ProfileActivity.username, bitmap).sendTo(socket)
+                    bitmap = Bitmap.createScaledBitmap(CurrentUser.imgdata!!,64,64,false)
+                Message.PlayerConnect(CurrentUser.uid!!, CurrentUser.username, bitmap).sendTo(socket)
                 startJogadorComm()
             } catch (e: Exception) {
                 Log.e(tag, e.stackTraceToString())
@@ -82,7 +82,7 @@ class MultiPlayer() : ViewModel() {
                             Log.d(tag, "GAMESTART")
                             players.clear()
                             players.putAll(msg.players)
-                            player = msg.players[user!!.uid]!!
+                            player = msg.players[CurrentUser.uid]!!
                             if (player.Lost)
                                 _state.postValue(State.SPECTATING)
                             else {
@@ -100,10 +100,12 @@ class MultiPlayer() : ViewModel() {
                                 NrBoard = msg.NrBoard
                                 Timestamp = msg.Timestamp
                                 if (this == player) {
-                                    _state.postValue(State.WAITING_FOR_MOVE)
-                                    updateBoard()
                                     if(player.NrBoard >= boards.size)
                                         _state.postValue(State.WAITING_FOR_NEXT_LEVEL)
+                                    else {
+                                        _state.postValue(State.WAITING_FOR_MOVE)
+                                        updateBoard()
+                                    }
                                 }
                             }
                             playersLD.postValue(players)
@@ -137,6 +139,7 @@ class MultiPlayer() : ViewModel() {
             if (player.NrBoard >= boards.size) return@thread
             if (_state.value!! != State.WAITING_FOR_MOVE) return@thread
             if (row == -1 && col == -1) return@thread
+            _state.postValue(State.WAITING_FOR_RESULT)
             val msg : Message
             if (row != -1) {
                 msg = Message.Move_Row(row, player.NrBoard)
@@ -147,7 +150,6 @@ class MultiPlayer() : ViewModel() {
                 Log.d(tag, "Move_Col($col, ${player.NrBoard})")
             }
             msg.sendTo(socket)
-            _state.postValue(State.WAITING_FOR_RESULT)
         }
     }
 

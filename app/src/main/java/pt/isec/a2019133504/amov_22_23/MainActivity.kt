@@ -12,10 +12,11 @@ import com.google.firebase.firestore.Query.Direction
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
-import pt.isec.a2019133504.amov_22_23.Data.Perfil
+import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private val user = CurrentUser
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

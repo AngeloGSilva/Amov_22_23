@@ -31,6 +31,9 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import createFileFromUri
 import getTempFilename
+import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.UserData
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityProfileBinding
 import setPic
 import java.io.File
@@ -38,14 +41,9 @@ import java.io.FileInputStream
 import java.util.UUID
 
 class ProfileActivity : AppCompatActivity() {
+    private val user = CurrentUser
 
     lateinit var imageView: ImageView
-    private val pickImage = 100
-
-    companion object {
-        var imgdata : Bitmap? = null
-        lateinit var username : String
-    }
 
     private lateinit var binding: ActivityProfileBinding
     private var imagePath : String? = null
@@ -88,7 +86,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.saveData.setOnClickListener {
             //tentativa
             if(imagePath!=null)
-                imgdata = BitmapFactory.decodeFile(imagePath)
+                CurrentUser.imgdata = BitmapFactory.decodeFile(imagePath)
             var texto = binding.UsernameEdit.text
             if(!texto.isNullOrEmpty())
                 if(!texto.toString().equals("New Username"))
@@ -108,11 +106,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun escolhePhoto() {
-        //Log.i(TAG, "chooseImage_v3: ")
         startActivityForContentResult.launch("image/*")
     }
 
-    // para a v3
     var startActivityForContentResult = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
@@ -122,25 +118,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun verify_permissions() {
-        /*
-        if ( ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsGranted = false
-            ActivityCompat.requestPermissions(this,
-                arrayOf(
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                PERMISSIONS_REQUEST_CODE
-            )
-        }else
-            permissionsGranted = true
-    */
         requestPermissionLauncher.launch(
             arrayOf(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -160,10 +137,6 @@ class ProfileActivity : AppCompatActivity() {
         if(imagePath != null) {
             setPic(binding.profilephoto, imagePath!!)
         }
-        /*else*/
-/*
-            binding.frPreview.background = ResourcesCompat.getDrawable(resources,android.R.drawable.ic_menu_report_image,null)
-*/
     }
 
     private fun takePhoto() {
@@ -182,28 +155,13 @@ class ProfileActivity : AppCompatActivity() {
             updatePreview()}
     }
 
-
-    //update imageview after taking an photo
-/*    override fun onResume() {
-       // imageView.setImageURI(imgdata)
-        super.onResume()
-    }*/
-
     fun setUserName() {
-        var email = auth.currentUser?.email.toString()
-        val userName = hashMapOf(
-            "UserName" to binding.UsernameEdit.text.toString()
-        )
-        //TODO CHECK IF USERNAME ALREADY USED, addd number of games played
-        db.collection("UserData").document(email).set(userName)
-            .addOnSuccessListener {
-                username = userName.get("UserName").toString()
-                binding.UsernameView.text = userName.get("UserName")
-                Log.i(ContentValues.TAG, "addDataToFirestore: Success")
-            }
-            .addOnFailureListener { e->
-                Log.i(ContentValues.TAG, "addDataToFirestore: ${e.message}")
-            }
+        val newUsername = binding.UsernameEdit.text.toString()
+
+        FirebaseDb.setUserData(auth.currentUser!!.uid, UserData(newUsername)).addOnSuccessListener {
+            CurrentUser.username = newUsername
+            binding.UsernameView.text = newUsername
+        }
     }
 
     fun checkUserPhoto(){
@@ -222,47 +180,12 @@ class ProfileActivity : AppCompatActivity() {
         }.addOnFailureListener{
             if(progressdialog.isShowing)
                 progressdialog.dismiss()
-            Toast.makeText(this,"FAILIURE",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this,"FAILIURE",Toast.LENGTH_SHORT).show()
         }
-
-        //val Username :String = binding.Username?.text.toString()
-        var email = auth.currentUser!!.email.toString()
-        db.collection("UserData").document(email).get()
-            .addOnSuccessListener {result ->
-                username = result.get("UserName").toString()
-                binding.UsernameView.text = result.get("UserName").toString()
-                }
-            .addOnFailureListener{
-
+        FirebaseDb.getUserData(auth.currentUser!!.uid).addOnSuccessListener {
+            val userdata = UserData(it)
+            CurrentUser.username = userdata.Username
+            binding.UsernameView.text = userdata.Username
         }
-
-
-        /*db.collection("UserData").document(email).get().addOnSuccessListener { result ->
-            binding.Username!!.text = result.data?.values
-        }*/
-/*
-        db.collection("users")
-        .get()
-        .addOnSuccessListener { result ->
-            for (document in result) {
-                Log.d(TAG, "${document.id} => ${document.data}")
-            }
-        }
-        .addOnFailureListener { exception ->
-            Log.w(TAG, "Error getting documents.", exception)
-        }*/
-
-
     }
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == pickImage) {
-            imageView.setImageURI(data?.data)
-            //binding.profilephoto.setImageURI(data?.data)
-            //imgdata = data?.data
-        }
-    }*/
-
-
 }

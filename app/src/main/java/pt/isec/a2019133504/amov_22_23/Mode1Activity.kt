@@ -5,16 +5,18 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.Query.Direction
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import pt.isec.a2019133504.amov_22_23.Data.Board
+import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.Score
 import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
 
 
 class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
+    private val user = CurrentUser
     private val singlePlayer = SinglePlayer()
     private lateinit var binding: ActivityMode1Binding
 
@@ -26,7 +28,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         setContentView(binding.root)
         binding.boardGame.registerListener(this)
 
-        binding.imageView.setImageBitmap(ProfileActivity.imgdata)
+        binding.imageView.setImageBitmap(CurrentUser.imgdata)
 
         binding.boardGame.updateBoard(singlePlayer.returnboardcells())
 
@@ -52,6 +54,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.NextLevelTimer.isVisible = false
                     binding.timer.isVisible = true
                     binding.timertitle.isVisible = false
+                    singlePlayer.startTimer(singlePlayer.timerCount.value!!)
                 }
             }.start()
 
@@ -75,15 +78,9 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.btnMenuInicial.isVisible = true
         binding.tryAgain.isVisible = true
 
-        binding.btnAddFirestore.setOnClickListener(){
-            //TODO binding de status Message
-            if(addDataToFirestore()) {
-                //TODO binding de status Message
-                binding.btnAddFirestore.isEnabled = false
-            }else{
-                //TODO binding de status Message
-            }
-        }
+        FirebaseDb.addScore(
+            Score(FirebaseAuth.getInstance().currentUser!!.uid, CurrentUser.username, singlePlayer.pontos.toLong(), singlePlayer.timerCount.value!!.toLong())
+        )
 
         binding.tryAgain.setOnClickListener(){
             finish()
@@ -128,30 +125,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
         }
         builder.show()
-    }
-
-    fun addDataToFirestore() : Boolean{
-        val db = Firebase.firestore
-        var email = SignInActivity.emailUser
-        val scores = hashMapOf(
-            "Email" to email,
-            "Pontuacao" to singlePlayer.pontos,
-            "Time" to singlePlayer.timerCount
-        )
-        var TopScore : Boolean = false
-        db.collection("Top5Scores").orderBy("Pontuacao", Direction.ASCENDING).limit(1).get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    if(document.data["Pontuacao"].toString().toInt() < singlePlayer.pontos) {
-                        db.collection("Top5Scores").document(document.id).set(scores)
-                        TopScore = true
-                    }
-                }
-            }
-            .addOnFailureListener{result->
-                //TODO set e limite 5
-            }
-        return TopScore
     }
 
 

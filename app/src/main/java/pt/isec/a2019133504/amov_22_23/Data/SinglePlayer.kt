@@ -1,7 +1,9 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import java.util.*
 
 class SinglePlayer() {
     var pontos = 0
@@ -19,6 +21,8 @@ class SinglePlayer() {
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
 
     //var maioresValores = MutableLiveData<Pair<Double,Double>>()
+
+    private var timeleft: Long = 0
     var pontosLiveData = MutableLiveData<Int>()
     var cellsLiveData = MutableLiveData<Board>()
     var fimLiveData = MutableLiveData<Boolean>()
@@ -32,20 +36,26 @@ class SinglePlayer() {
     //TODO fling no single vai incaminhr para o mathgame no multiplayer envia em json para o server
     //TODO apagar a cena da vitoria
 
-    private lateinit var timerObject: CountDownTimer
-    fun startTimer(totalTime: Long) {
-        timerObject = object : CountDownTimer((totalTime * 1000).toLong(), 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                timerCount.postValue(millisUntilFinished / 1000)
-                pause = millisUntilFinished / 1000
-            }
+    private val timer = Timer()
+    private var timertask : TimerTask? = null
 
-            override fun onFinish() {
-                //TODO para acabar
-                fimLiveData.postValue(true)
-                pontosLiveData.postValue(pontos)
+    fun startTimer(totalTime: Long) {
+        timeleft = totalTime
+        timerCount.postValue(timeleft)
+        timertask?.cancel()
+        timertask = object : TimerTask() {
+            override fun run() {
+                timeleft--
+                timerCount.postValue(timeleft)
+                Log.d("Singleplayer Timer", timeleft.toString())
+                if (timeleft == 0L) {
+                    this.cancel()
+                    fimLiveData.postValue(true)
+                    pontosLiveData.postValue(pontos)
+                }
             }
-        }.start()
+        }
+        timer.schedule(timertask, 0, 1000)
     }
 
     fun returnboard(): Board {
@@ -57,7 +67,7 @@ class SinglePlayer() {
     }
 
     init {
-        startTimer(30)
+        startTimer(Level.get(NivelAtual).maxTime.toLong())
         cellsLiveData.postValue(boards[BoardAtual])
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         pontosLiveData.postValue(pontos)
@@ -72,40 +82,49 @@ class SinglePlayer() {
     }
 
     fun checkVitoria() {
+
+        //TODO ver a linha ou coluna e ver onde o resultado da linha ou coluna selecionada se encontra(soma mais alta ou segunda mais alta)
+        //TODO somar os pontos e continuar para a proxima board do msm niver ou proxima board do nivel seguinte
+        timertask?.cancel()
+        var res = 0
         if (selectedCol == -1 && selectedRow != -1)
-            pontos += returnboard().getResLinha(selectedRow)
+            res = returnboard().getResLinha(selectedRow)
         else if (selectedRow == -1 && selectedCol != -1)
-            pontos += returnboard().getResColuna(selectedCol)
+            res = returnboard().getResColuna(selectedCol)
 
-        timerObject.cancel()
+        pontos += res
 
-            val time = pause + Level.get(NivelAtual).winTime
-            if (time >= Level.get(NivelAtual).maxTime)
+        if (Level.isLast(NivelAtual) && BoardAtual == boards.size-1) {
+            //TODO para acabar
+            fimLiveData.postValue(true)
+            pontosLiveData.postValue(pontos)
+            return
+        }
+        val time : Long
+        if (BoardAtual == boards.size-1) {
+            BoardAtual = 0
+            NivelAtual++
+            boards = Array(10) { board ->
+                Board.fromLevel(Level.get(NivelAtual))
+            }
+            nextLevel.postValue(true)
+            time = Level.get(NivelAtual).maxTime.toLong()
+            pontosLiveData.postValue(pontos)
+            cellsLiveData.postValue(returnboardcells())
+            if (time > Level.get(NivelAtual).maxTime)
+                timerCount.postValue(Level.get(NivelAtual).maxTime.toLong())
+            else
+                timerCount.postValue(time)
+            //TODO show countdown
+        } else{
+            BoardAtual++
+            time = timeleft + if (res == 0) 0 else Level.get(NivelAtual).winTime
+            pontosLiveData.postValue(pontos)
+            cellsLiveData.postValue(returnboardcells())
+            if (time > Level.get(NivelAtual).maxTime)
                 startTimer(Level.get(NivelAtual).maxTime.toLong())
             else
                 startTimer(time)
-
-
-            if (Level.isLast(NivelAtual) && BoardAtual == boards.size-1) {
-                //TODO para acabar
-                fimLiveData.postValue(true)
-                pontosLiveData.postValue(pontos)
-            } else {
-                if (BoardAtual == boards.size-1) {
-                    BoardAtual = 0
-                    NivelAtual++
-                    boards = Array(10) { board ->
-                        Board.fromLevel(Level.get(NivelAtual))
-                    }
-                    timerObject.cancel()
-                    nextLevel.postValue(true)
-                } else
-                    BoardAtual++
-
-                pontosLiveData.postValue(pontos)
-                cellsLiveData.postValue(returnboardcells())
-            }
-
-
+        }
     }
 }

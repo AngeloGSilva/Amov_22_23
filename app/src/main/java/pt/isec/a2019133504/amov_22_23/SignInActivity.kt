@@ -15,30 +15,28 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import pt.isec.a2019133504.amov_22_23.Data.Perfil
+import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.UserData
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
 import pt.isec.a2019133504.amov_22_23.databinding.ActivitySignInBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
 
 
 class SignInActivity : AppCompatActivity() {
-    companion object{
-        private var TAG = ""
-        //lateinit var perfil : Perfil
-        lateinit var emailUser : String
-        lateinit var auth: FirebaseAuth
-    }
+    private val user = CurrentUser
     val STRING_LENGTH = 10
     lateinit var db : FirebaseFirestore
     private lateinit var binding: ActivitySignInBinding
     //private lateinit var auth: FirebaseAuth
     private val strEmail get() = binding.edEmail.text.toString()
     private val strPass get() = binding.edPassword.text.toString()
+    private val auth = FirebaseAuth.getInstance()
+    private var TAG = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
-        auth = FirebaseAuth.getInstance()
         db = Firebase.firestore
         setContentView(binding.root)
 
@@ -58,19 +56,8 @@ class SignInActivity : AppCompatActivity() {
         storageref.getFile(localfile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
             //ProfileActivity.imgdata = getImageUri(this,bitmap)
-            ProfileActivity.imgdata = bitmap
+            CurrentUser.imgdata = bitmap
         }
-    }
-
-    fun checkUsernameexists(){
-        var email = auth.currentUser!!.email.toString()
-        db.collection("UserData").document(email).get()
-            .addOnSuccessListener {result ->
-                ProfileActivity.username = result.get("UserName").toString()
-            }
-            .addOnFailureListener{
-
-            }
     }
 
     fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
@@ -103,9 +90,7 @@ class SignInActivity : AppCompatActivity() {
     fun signInWithEmail(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
-                emailUser = email
                 checkphotoexists()
-                checkUsernameexists()
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
             }
@@ -118,14 +103,8 @@ class SignInActivity : AppCompatActivity() {
     fun createUserWithEmail(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
-                //TODO USERNAME
-                emailUser = email
-                val username = hashMapOf(
-                    "UserName" to "User_" + getRandomString(STRING_LENGTH),
-                )
-                db.collection("UserData").document(email).set(username)
+                FirebaseDb.setUserData(result.user!!.uid, UserData("User_" + getRandomString(STRING_LENGTH)))
                 checkphotoexists()
-                checkUsernameexists()
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
             }

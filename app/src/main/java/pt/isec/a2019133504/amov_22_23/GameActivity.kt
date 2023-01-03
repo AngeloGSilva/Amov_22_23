@@ -19,6 +19,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import pt.isec.a2019133504.amov_22_23.Data.Board
+import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.Server
 import pt.isec.a2019133504.amov_22_23.View.BoardView
@@ -29,6 +30,7 @@ import java.util.*
 
 
 class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
+    private val user = CurrentUser
     companion object {
         private const val SERVER_MODE = 0
         private const val CLIENT_MODE = 1

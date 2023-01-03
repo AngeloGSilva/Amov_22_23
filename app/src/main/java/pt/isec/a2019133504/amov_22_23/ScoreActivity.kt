@@ -1,41 +1,27 @@
 package pt.isec.a2019133504.amov_22_23
 
-import android.content.ContentValues
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import pt.isec.a2019133504.amov_22_23.databinding.ActivityProfileBinding
+import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.Score
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityScoreBinding
 
 class ScoreActivity : AppCompatActivity() {
+    private val user = CurrentUser
     private lateinit var binding: ActivityScoreBinding
-    private lateinit var db : FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityScoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = Firebase.firestore
         var topScoresList = ArrayList<Int>()
         var contador = 0
-        db.collection("Top5Scores").get().addOnSuccessListener {
-                result ->
-            for (document in result) {
-                Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
-                    topScoresList[contador] = document.data.get("Pontuacao").toString().toInt()
-                contador++
-                }
-            }
-        .addOnFailureListener { exception ->
-            Log.w(ContentValues.TAG, "Error getting documents.", exception)
+
+        //TODO add listview to view
+        FirebaseDb.getScores().addOnSuccessListener {
+            val scores = Score.fromQuery(it)
+            //TODO change adapter based on multiplayer or singleplayer
         }
 
 
