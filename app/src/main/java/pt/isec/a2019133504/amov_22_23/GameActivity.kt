@@ -18,11 +18,9 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import pt.isec.a2019133504.amov_22_23.Data.Board
-import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
+import org.checkerframework.checker.units.qual.Current
+import pt.isec.a2019133504.amov_22_23.Data.*
 import pt.isec.a2019133504.amov_22_23.Data.Facts.facts
-import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
-import pt.isec.a2019133504.amov_22_23.Data.Server
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
@@ -74,6 +72,21 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         when (intent.getIntExtra("mode", SERVER_MODE)) {
             SERVER_MODE -> startAsServer()
             CLIENT_MODE -> startAsClient()
+        }
+
+        model.TimerTransition.observe(this){
+             object : CountDownTimer(it.toLong(), 1000) {
+                 private var toast : Toast? = null
+                override fun onTick(millisUntilFinished: Long) {
+                        toast?.cancel()
+                        toast = Toast.makeText(applicationContext,"Starting in:" + millisUntilFinished/1000,Toast.LENGTH_SHORT)
+                        toast!!.show()}
+                override fun onFinish() {
+                        toast?.cancel()
+                        toast = Toast.makeText(applicationContext,"Starting soon",Toast.LENGTH_SHORT)
+                        toast?.show()}
+
+            }.start()
         }
 
         val timer = Timer()
@@ -174,6 +187,15 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     textSize = 20f
                     setTextColor(Color.rgb(96, 96, 32))
                 })
+            })
+            addView(LinearLayout(context).apply {
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams = params
+                setBackgroundColor(Color.rgb(240, 224, 208))
+                orientation = LinearLayout.HORIZONTAL
                 addView(Button(context).apply {
                     val paramsbt = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -184,13 +206,34 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     textSize = 10f
                     setOnClickListener {
                         model.server!!.StartGame()
-
-                        //Notificar o server de que o jogo começou
-                        //Notifica os clientes que vai começar
+                        dlg?.setCancelable(false)
+                    }
+                })
+                addView(Button(context).apply {
+                    val paramsbt = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    layoutParams = paramsbt
+                    text = "Share"
+                    textSize = 10f
+                    setOnClickListener {
+                        val shareIntent = Intent()
+                        shareIntent.action = Intent.ACTION_SEND
+                        shareIntent.type = "text/plain"
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, strIPAddress);
+                        startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                "getString(R.string.send_to)"
+                            )
+                        )
                     }
                 })
             })
-                ConnectedPlayerListView = ListView(context).apply {
+
+
+            ConnectedPlayerListView = ListView(context).apply {
                     val paramsLV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT)
                     layoutParams = paramsLV
                     connectedPlayersAdapter = ConnectedPlayersAdapter(model.server!!.playerList.players, context)
@@ -198,7 +241,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                 }
                 addView(ConnectedPlayerListView)
         }
-
         dlg = AlertDialog.Builder(this)
             .setTitle("Server Mode - " + strIPAddress)
             .setView(llh)
@@ -278,6 +320,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
 
     fun getRandomFact(): String {
         val random = Random()
+        //TODO PRTUGES
         val randomIndex = random.nextInt(facts.size)
         return "Fact: " + facts[randomIndex]
     }

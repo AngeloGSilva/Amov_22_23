@@ -57,15 +57,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
                     singlePlayer.startTimer(singlePlayer.timerCount.value!!)
                 }
             }.start()
-
-        /*val handler = Handler()
-        handler.postDelayed({
-            singlePlayer.startTimer(singlePlayer.pause)
-            binding.boardGame.isVisible = true;
-            binding.timer.isVisible = false;
-            binding.timertitle.isVisible = false;
-        }, 5000)*/
-
     }
 
     private fun updateFim(estado : Boolean){

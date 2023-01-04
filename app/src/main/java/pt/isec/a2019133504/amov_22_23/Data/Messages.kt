@@ -26,6 +26,8 @@ sealed class Message {
     @Serializable
     data class PlayerConnect(val uid:String, val nome:String, val Imagem: _Bitmap) : Message()
     @Serializable
+    data class LevelTransition(val time : Long) : Message()
+    @Serializable
     class GameOver : Message()
 
     fun sendTo(socket: Socket) {

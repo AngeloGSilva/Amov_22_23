@@ -4,16 +4,27 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firestore.v1.StructuredAggregationQuery.Aggregation.Count
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
+import pt.isec.a2019133504.amov_22_23.GameActivity
 import pt.isec.a2019133504.amov_22_23.ProfileActivity
 import pt.isec.a2019133504.amov_22_23.R
 import java.io.*
@@ -37,9 +48,12 @@ class MultiPlayer() : ViewModel() {
     private lateinit var boards : Array<Board>
     private lateinit var player : Player
 
+    private var timerTransition : CountDownTimer? = null
+
     var players : MutableMap<String, Player> = mutableMapOf()
     var playersLD = MutableLiveData(players)
     var boardLD = MutableLiveData<Board>()
+    var TimerTransition = MutableLiveData<Int>()
 
     var server : Server? = null
     private lateinit var socket : Socket
@@ -113,6 +127,22 @@ class MultiPlayer() : ViewModel() {
                         is Message.GameOver -> {
                             _state.postValue(State.GAME_OVER)
                             socket.close()
+                        }
+                        is Message.LevelTransition ->{
+                            try {
+                                timerTransition?.cancel()
+                            }catch (e: Exception){
+
+                            }
+                            TimerTransition.postValue((msg.time).toInt())
+                            /*timerTransition =  object : CountDownTimer(msg.time, 1000) {
+                                override fun onTick(millisUntilFinished: Long) {
+                                    TimerTransition.postValue((millisUntilFinished/1000).toInt())
+                                }
+                                override fun onFinish() {
+                                    TimerTransition.postValue(-1)
+                                }
+                            }.start()*/
                         }
                         else -> {}
                     }

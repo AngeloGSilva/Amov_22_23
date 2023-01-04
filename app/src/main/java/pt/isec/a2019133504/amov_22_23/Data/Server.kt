@@ -1,6 +1,10 @@
 package pt.isec.a2019133504.amov_22_23.Data
 
+import android.os.Build
+import android.os.CountDownTimer
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.serialization.decodeFromString
@@ -136,6 +140,10 @@ class Server {
             _state.postValue(State.GAMEOVER)
             playerList.sendToAll(Message.GameOver())
             return false
+        }
+        if (NivelAtual>=0) {
+            playerList.sendToAll(Message.LevelTransition(5000))
+            Thread.sleep(5000)
         }
         NivelAtual++
         val level = Level.get(NivelAtual)
