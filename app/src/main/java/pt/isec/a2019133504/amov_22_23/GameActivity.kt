@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
+import pt.isec.a2019133504.amov_22_23.Data.Facts.facts
 import pt.isec.a2019133504.amov_22_23.Data.MultiPlayer
 import pt.isec.a2019133504.amov_22_23.Data.Server
 import pt.isec.a2019133504.amov_22_23.View.BoardView
@@ -84,12 +85,16 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.WaitingforHost.isVisible = false
                     binding.progressBar.isVisible = false
                     binding.WaitingforPlayers.isVisible = false
+                    binding.RandomFactView.isVisible=false
                 }
                 MultiPlayer.State.WAITING_FOR_NEXT_LEVEL ->{
                     binding.boardGame.isVisible = false
                     binding.progressBar.isVisible = true
                     binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = true
+                    binding.RandomFactView.text = getRandomFact()
+                    binding.RandomFactView.isVisible=true
+
                 }
                 MultiPlayer.State.SPECTATING ->  {
                     binding.boardGame.isVisible = false
@@ -269,5 +274,11 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             .create()
 
         dlg.show()
+    }
+
+    fun getRandomFact(): String {
+        val random = Random()
+        val randomIndex = random.nextInt(facts.size)
+        return "Fact: " + facts[randomIndex]
     }
 }
