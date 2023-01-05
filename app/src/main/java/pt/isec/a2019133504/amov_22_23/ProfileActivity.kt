@@ -101,7 +101,7 @@ class ProfileActivity : AppCompatActivity() {
 
         verify_permissions()
         updatePreview()
-
+ //Tratar o voltar para tras
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

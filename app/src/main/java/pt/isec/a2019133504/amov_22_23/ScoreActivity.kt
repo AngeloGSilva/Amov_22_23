@@ -42,5 +42,6 @@ class ScoreActivity : AppCompatActivity() {
         if (topScoresList.size == 5)
             binding.score1.text = topScoresList[4].toString()
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 }

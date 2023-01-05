@@ -21,5 +21,6 @@ class Modo2Activity : AppCompatActivity() {
         binding.btnClient.setOnClickListener {
             startActivity(GameActivity.getClientModeIntent(this))
         }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 }

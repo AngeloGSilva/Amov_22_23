@@ -7,6 +7,16 @@
     tools:context=".MainActivity">
 
     <ImageView
+        android:id="@+id/GearProfile"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:padding="8dp"
+        android:src="@drawable/gear"
+        android:text="Hello World!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/MainLogo"
         android:layout_width="match_parent"
         android:layout_height="0dp"

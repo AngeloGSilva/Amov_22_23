@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ScoreActivity">
 
-    <ScrollView
+    <ListView
         android:id="@+id/top_scores"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,5 +58,5 @@
                 android:text="" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </ScrollView>
+    </ListView>
 </androidx.constraintlayout.widget.ConstraintLayout>

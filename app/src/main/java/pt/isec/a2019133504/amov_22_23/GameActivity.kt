@@ -66,6 +66,9 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.endgameMenu.setOnClickListener{
+            finish()
+        }
 
         binding.boardGame.registerListener(this)
 
@@ -120,6 +123,9 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.progressBar.isVisible = false
                     binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = false
+                    binding.endgameimage.isVisible = true
+                    binding.endgameMenu.isVisible = true
+                    binding.endgametext.isVisible = true
                     timer.cancel()
                     //TODO botão para o inicio
                 }
@@ -214,6 +220,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
+
                     layoutParams = paramsbt
                     text = "Share"
                     textSize = 10f

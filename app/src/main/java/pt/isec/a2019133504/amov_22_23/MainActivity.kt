@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.MainLogo.setOnClickListener {
+        binding.GearProfile?.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
@@ -46,15 +46,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnScores.setOnClickListener {
-            ///val intent = Intent(this,ScoreActivity::class.java)
-            ///startActivity(intent)
-            lateinit var db: FirebaseFirestore
-            db = Firebase.firestore
-            db.collection("Top5Scores").orderBy("Pontuacao", Direction.DESCENDING).limit(5).get().addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
-                }
-            }
+            val intent = Intent(this,ScoreActivity::class.java)
+            startActivity(intent)
         }
     }
 }
