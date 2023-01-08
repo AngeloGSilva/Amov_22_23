@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerScore
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.Score
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.UserData
+import java.util.UUID
 
 object FirebaseDb {
     @SuppressLint("StaticFieldLeak")
@@ -33,13 +34,25 @@ object FirebaseDb {
         db.collection("Top5ScoresPontos").get()
             .addOnSuccessListener { result ->
                 if (result.size() < 5) {
-                    db.collection("Top5ScoresPontos").document((result.size()+1).toString()).set(score)
+                    db.collection("Top5ScoresPontos").document(UUID.randomUUID().toString()).set(score)
                     return@addOnSuccessListener
                 }
 
                 for (document in result)
-                    if((document.data["TotalScore"] as Int) < score.TotalScore)
+                    if((document.data["totalScore"] as Int) < score.TotalScore)
                         db.collection("Top5ScoresPontos").document(document.id).set(score)
+            }
+
+        db.collection("Top5ScoresTempo").get()
+            .addOnSuccessListener { result ->
+                if (result.size() < 5) {
+                    db.collection("Top5ScoresTempo").document(UUID.randomUUID().toString()).set(score)
+                    return@addOnSuccessListener
+                }
+
+                for (document in result)
+                    if((document.data["tempo"] as Long) < score.Tempo)
+                        db.collection("Top5ScoresTempo").document(document.id).set(score)
             }
     }
 
