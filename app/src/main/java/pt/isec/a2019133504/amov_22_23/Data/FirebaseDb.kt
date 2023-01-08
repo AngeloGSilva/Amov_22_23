@@ -39,7 +39,7 @@ object FirebaseDb {
                 }
 
                 var doc = result.documents.minBy { d -> (d.data!!["totalScore"] as Int) }
-                if((doc.data!!["totalScore"] as Int) < score.Tempo)
+                if((doc.data!!["totalScore"] as Int) < score.TotalScore)
                     db.collection("Top5ScoresPontos").document(doc.id).set(score)
             }
 
