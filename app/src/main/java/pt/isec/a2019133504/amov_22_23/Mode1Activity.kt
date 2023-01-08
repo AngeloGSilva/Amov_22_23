@@ -18,13 +18,13 @@ import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
 
 class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     private val user = CurrentUser
-    private val singlePlayer  = SinglePlayer()
+    private val singlePlayer : SinglePlayer by viewModels()
     private lateinit var binding: ActivityMode1Binding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        supportActionBar?.hide()
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.boardGame.registerListener(this)

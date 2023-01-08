@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.util.*
 
-class SinglePlayer(){
+class SinglePlayer : ViewModel(){
     var pontos = 0
     private var NivelAtual: Int = 0
     var boards: Array<Board> = Array(10) { board ->

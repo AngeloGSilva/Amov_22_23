@@ -64,17 +64,15 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
     private lateinit var binding: ActivityGameBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         val imageView = findViewById<ImageView>(R.id.endgameimage)
         Glide.with(this)
             .asGif()
             .load(getRandomGif())
             .into(imageView)
-
-
 
         binding.endgameMenu.setOnClickListener{
             finish()

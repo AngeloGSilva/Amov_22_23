@@ -114,13 +114,6 @@
             android:text="@string/Pontos"
             android:textSize="40sp" />
 
-        <TextView
-            android:id="@+id/InfoP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:textSize="40sp" />
-
         <!--<TextView
             android:id="@+id/InfoPontos"
             android:layout_width="wrap_content"
