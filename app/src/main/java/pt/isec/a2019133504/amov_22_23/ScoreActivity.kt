@@ -15,33 +15,17 @@ class ScoreActivity : AppCompatActivity() {
         binding = ActivityScoreBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var topScoresList = ArrayList<Int>()
-        var contador = 0
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //TODO add listview to view
+
+
         FirebaseDb.getScores().addOnSuccessListener {
             val scores = Score.fromQuery(it)
             //TODO change adapter based on multiplayer or singleplayer
         }
 
 
-        if (topScoresList.size == 0) return
 
-        if (topScoresList.size >= 1)
-            binding.score1.text = topScoresList[0].toString()
 
-        if (topScoresList.size >= 2)
-            binding.score1.text = topScoresList[1].toString()
-
-        if (topScoresList.size >= 3)
-            binding.score1.text = topScoresList[2].toString()
-
-        if (topScoresList.size >= 4)
-            binding.score1.text = topScoresList[3].toString()
-
-        if (topScoresList.size == 5)
-            binding.score1.text = topScoresList[4].toString()
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 }

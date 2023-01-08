@@ -119,8 +119,8 @@ class Server {
     }
 
     fun StartGame() {
-        if(playerList.players.size <=1)
-            return
+/*        if(playerList.players.size <=1)
+            return*/
         thread {
             NivelAtual = -1
             socket.close()

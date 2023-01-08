@@ -80,10 +80,11 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
 
         binding.boardGame.registerListener(this)
 
-        when (intent.getIntExtra("mode", SERVER_MODE)) {
-            SERVER_MODE -> startAsServer()
-            CLIENT_MODE -> startAsClient()
-        }
+        if(model.state.value == MultiPlayer.State.WAITING_START)
+            when (intent.getIntExtra("mode", SERVER_MODE)) {
+                SERVER_MODE -> startAsServer()
+                CLIENT_MODE -> startAsClient()
+            }
 
         model.TimerTransition.observe(this){
              object : CountDownTimer(it.toLong(), 1000) {

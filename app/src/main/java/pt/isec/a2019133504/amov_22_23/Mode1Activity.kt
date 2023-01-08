@@ -28,9 +28,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.boardGame.registerListener(this)
-
         binding.imageView.setImageBitmap(CurrentUser.imgdata)
-
         binding.boardGame.updateBoard(singlePlayer.returnboardcells())
 
         singlePlayer.cellsLiveData.observe(this) { updateCells(it) }
@@ -118,8 +116,6 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         }
         builder.show()
     }
-
-
 }
 
 
