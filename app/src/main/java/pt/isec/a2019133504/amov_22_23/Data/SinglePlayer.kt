@@ -3,9 +3,10 @@ package pt.isec.a2019133504.amov_22_23.Data
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import java.util.*
 
-class SinglePlayer() {
+class SinglePlayer(){
     var pontos = 0
     private var NivelAtual: Int = 0
     var boards: Array<Board> = Array(10) { board ->

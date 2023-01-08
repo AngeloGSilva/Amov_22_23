@@ -3,6 +3,7 @@ package pt.isec.a2019133504.amov_22_23
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.CountDownTimer
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +18,7 @@ import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
 
 class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     private val user = CurrentUser
-    private val singlePlayer = SinglePlayer()
+    private val singlePlayer  = SinglePlayer()
     private lateinit var binding: ActivityMode1Binding
 
 
