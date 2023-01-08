@@ -38,9 +38,9 @@ object FirebaseDb {
                     return@addOnSuccessListener
                 }
 
-                for (document in result)
-                    if((document.data["totalScore"] as Int) < score.TotalScore)
-                        db.collection("Top5ScoresPontos").document(document.id).set(score)
+                var doc = result.documents.minBy { d -> (d.data!!["totalScore"] as Int) }
+                if((doc.data!!["totalScore"] as Int) < score.Tempo)
+                    db.collection("Top5ScoresPontos").document(doc.id).set(score)
             }
 
         db.collection("Top5ScoresTempo").get()
@@ -50,9 +50,9 @@ object FirebaseDb {
                     return@addOnSuccessListener
                 }
 
-                for (document in result)
-                    if((document.data["tempo"] as Long) < score.Tempo)
-                        db.collection("Top5ScoresTempo").document(document.id).set(score)
+                var doc = result.documents.minBy { d -> (d.data!!["tempo"] as Long) }
+                if((doc.data!!["tempo"] as Long) < score.Tempo)
+                    db.collection("Top5ScoresTempo").document(doc.id).set(score)
             }
     }
 
