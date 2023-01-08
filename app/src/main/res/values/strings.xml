@@ -30,7 +30,7 @@
     <string name="my_wins">My wins:</string>
     <string name="other_wins">Other wins:</string>
     <string name="total_games">Total games:</string>
-    <string name="msg_ip_address">Waiting for all Client…</string>
+    <string name="msg_ip_address">Waiting for all Clients…</string>
     <string name="btn_emulator">Connect to Emulator</string>
     <string name="waiting_for_host_to_start">Waiting for host to start</string>
     <string name="waiting_for_all_players">Waiting for all players</string>

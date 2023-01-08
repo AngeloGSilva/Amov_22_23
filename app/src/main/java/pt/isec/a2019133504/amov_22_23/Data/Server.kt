@@ -119,9 +119,8 @@ class Server {
     }
 
     fun StartGame() {
-        //FIXME uncomment
-        /*if(players.size <=1)
-            return false*/
+        if(playerList.players.size <=1)
+            return
         thread {
             NivelAtual = -1
             socket.close()

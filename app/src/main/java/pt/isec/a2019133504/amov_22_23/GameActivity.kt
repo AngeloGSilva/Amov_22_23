@@ -18,6 +18,7 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import org.checkerframework.checker.units.qual.Current
 import pt.isec.a2019133504.amov_22_23.Data.*
 import pt.isec.a2019133504.amov_22_23.Data.Facts.facts
@@ -66,6 +67,15 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        val imageView = findViewById<ImageView>(R.id.endgameimage)
+        Glide.with(this)
+            .asGif()
+            .load(getRandomGif())
+            .into(imageView)
+
+
+
         binding.endgameMenu.setOnClickListener{
             finish()
         }
@@ -101,15 +111,12 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.WaitingforHost.isVisible = false
                     binding.progressBar.isVisible = false
                     binding.WaitingforPlayers.isVisible = false
-                    binding.RandomFactView.isVisible=false
                 }
                 MultiPlayer.State.WAITING_FOR_NEXT_LEVEL ->{
                     binding.boardGame.isVisible = false
                     binding.progressBar.isVisible = true
                     binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = true
-                    binding.RandomFactView.text = getRandomFact()
-                    binding.RandomFactView.isVisible=true
 
                 }
                 MultiPlayer.State.SPECTATING ->  {
@@ -117,6 +124,15 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.progressBar.isVisible = false
                     binding.WaitingforHost.isVisible = false
                     binding.WaitingforPlayers.isVisible = false
+                }
+                MultiPlayer.State.TRANSITION ->{
+                    binding.boardGame.isVisible = false
+                    binding.progressBar.isVisible = false
+                    binding.WaitingforHost.isVisible = false
+                    binding.WaitingforPlayers.isVisible = false
+                    binding.endgameimage.isVisible = true
+                    binding.endgameMenu.isVisible = true
+                    binding.endgametext.isVisible = true
                 }
                 MultiPlayer.State.GAME_OVER ->{
                     binding.boardGame.isVisible = false
@@ -208,7 +224,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
                     layoutParams = paramsbt
-                    text = "Start"
+                    text = "Start [Min:1]"
                     textSize = 10f
                     setOnClickListener {
                         model.server!!.StartGame()
@@ -330,5 +346,16 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         //TODO PRTUGES
         val randomIndex = random.nextInt(facts.size)
         return "Fact: " + facts[randomIndex]
+    }
+
+    fun getRandomGif(): String{
+        val gifs = listOf("https://www.galvanizeaction.org/wp-content/uploads/2022/06/Wow-gif.gif",
+            "https://media.tenor.com/rKLBka9zl5UAAAAM/yeah-excellent.gif",
+            "https://thumbs.gfycat.com/FluffyMeanCoelacanth-max-1mb.gif",
+            "https://media2.giphy.com/media/9lusxBBUsTz8Fk029b/giphy.gif",
+            "https://thumbs.gfycat.com/FragrantBogusHoopoe-max-1mb.gif")
+        val random = Random()
+        val randomIndex = random.nextInt(gifs.size)
+        return gifs[randomIndex]
     }
 }

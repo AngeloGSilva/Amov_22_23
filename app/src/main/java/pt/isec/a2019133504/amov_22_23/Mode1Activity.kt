@@ -97,7 +97,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updatePontos(pontos : Int){
-        binding.InfoP.text = pontos.toString()
+        binding.InfoPontos.text = String.format(getString(R.string.Pontos),pontos)
     }
 
     override fun onCellTouched(row: Int, col: Int) {

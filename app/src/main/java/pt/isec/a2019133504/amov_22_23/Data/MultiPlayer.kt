@@ -37,7 +37,7 @@ import kotlin.concurrent.thread
 class MultiPlayer() : ViewModel() {
     private val tag = "Multiplayer"
     enum class State {
-        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL, SPECTATING,GAME_OVER
+        WAITING_START, WAITING_FOR_MOVE, WAITING_FOR_RESULT,WAITING_FOR_NEXT_LEVEL,TRANSITION, SPECTATING,GAME_OVER
     }
 
     private val _state = MutableLiveData(State.WAITING_START)
@@ -98,7 +98,7 @@ class MultiPlayer() : ViewModel() {
                             players.putAll(msg.players)
                             player = msg.players[CurrentUser.uid]!!
                             if (player.Lost)
-                                _state.postValue(State.SPECTATING)
+                                _state.postValue(State.TRANSITION)
                             else {
                                 boards = msg.board.toTypedArray()
                                 level = msg.level
