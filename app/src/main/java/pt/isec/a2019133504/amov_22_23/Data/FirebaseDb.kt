@@ -33,13 +33,13 @@ object FirebaseDb {
         db.collection("Top5ScoresPontos").get()
             .addOnSuccessListener { result ->
                 if (result.size() < 5) {
-                    db.collection("Top5ScoresPontos").document((result.size()+1).toString()).set(score.getMap())
+                    db.collection("Top5ScoresPontos").document((result.size()+1).toString()).set(score)
                     return@addOnSuccessListener
                 }
 
                 for (document in result)
-                    if((document.data["Pontuacao"] as Long) < score.getSumScore())
-                        db.collection("Top5ScoresPontos").document(document.id).set(score.getMap())
+                    if((document.data["TotalScore"] as Int) < score.TotalScore)
+                        db.collection("Top5ScoresPontos").document(document.id).set(score)
             }
     }
 
