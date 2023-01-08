@@ -8,7 +8,10 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerPlayer
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerScore
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import java.io.PrintStream
 import java.net.ServerSocket
@@ -37,6 +40,8 @@ class Server {
     val boards = ArrayList<Board>()
     private var socket: ServerSocket = ServerSocket(SERVER_PORT)
     val playerList = PlayerList()
+    var startingTime : Long = 0
+    var pauses = 0
 
     private val timer = Timer()
 
@@ -125,11 +130,15 @@ class Server {
             NivelAtual = -1
             socket.close()
             NextLevel()
+            startingTime = System.currentTimeMillis()
         }
     }
 
     fun EndGame() {
-        //TODO pontuação db
+        val mpp : MutableList<MultiplayerPlayer> = mutableListOf()
+        for (mp in playerList.players.values)
+            mpp.add(MultiplayerPlayer(mp.uid, mp.nome, mp.Pontos))
+        FirebaseDb.addMultiScore(MultiplayerScore(mpp, System.currentTimeMillis() - startingTime + pauses))
     }
 
     fun NextLevel() : Boolean {
@@ -138,11 +147,13 @@ class Server {
         if (playerList.allLost() || Level.isLast(NivelAtual)) {
             _state.postValue(State.GAMEOVER)
             playerList.sendToAll(Message.GameOver())
+            EndGame()
             return false
         }
         if (NivelAtual>=0) {
             playerList.sendToAll(Message.LevelTransition(5000))
             Thread.sleep(5000)
+            pauses += 5000
         }
         NivelAtual++
         val level = Level.get(NivelAtual)

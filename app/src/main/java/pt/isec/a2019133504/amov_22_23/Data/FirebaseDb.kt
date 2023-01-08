@@ -7,6 +7,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerScore
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.Score
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.UserData
 
@@ -25,6 +26,20 @@ object FirebaseDb {
             }
             .addOnFailureListener{ result->
                 //TODO set e limite 5
+            }
+    }
+
+    fun addMultiScore(score : MultiplayerScore) {
+        db.collection("Top5ScoresPontos").get()
+            .addOnSuccessListener { result ->
+                if (result.size() < 5) {
+                    db.collection("Top5ScoresPontos").document((result.size()+1).toString()).set(score.getMap())
+                    return@addOnSuccessListener
+                }
+
+                for (document in result)
+                    if((document.data["Pontuacao"] as Long) < score.getSumScore())
+                        db.collection("Top5ScoresPontos").document(document.id).set(score.getMap())
             }
     }
 
