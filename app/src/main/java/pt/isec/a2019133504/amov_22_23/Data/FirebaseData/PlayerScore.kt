@@ -14,7 +14,7 @@ data class PlayerScore(val uid: String, val username: String, val pontuacao: Int
     constructor(document : HashMap<String, Any>) : this(
         document.get("uid")!! as String,
         document.get("username")!! as String,
-        document.get("pontuacao")!! as Int,
+        (document.get("pontuacao")!! as Long).toInt(),
         document.get("tempo")!! as Long
     )
 
