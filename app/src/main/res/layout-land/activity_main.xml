@@ -18,7 +18,7 @@
 
     <ImageView
         android:id="@+id/MainLogo"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@mipmap/logo"
         android:text="Hello World!"
@@ -55,6 +55,7 @@
             android:text="@string/mode2" />
 
         <Button
+            android:id="@+id/btn_scoresSingle"
             android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"

@@ -1,6 +1,7 @@
 package pt.isec.a2019133504.amov_22_23
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.viewModels
@@ -97,6 +98,8 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
 
         binding.btnMenuInicial.setOnClickListener(){
             finish()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 

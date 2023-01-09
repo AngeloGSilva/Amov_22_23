@@ -62,8 +62,8 @@ class ProfileActivity : AppCompatActivity() {
             binding.UsernameView.text = userdata.Username
         }
 
-        binding.UsernameEdit?.setOnClickListener{
-            binding.UsernameEdit!!.text.clear()
+        binding.UsernameEdit.setOnClickListener{
+            binding.UsernameEdit.text.clear()
         }
 
         binding.btnCapture.setOnClickListener {
@@ -80,7 +80,6 @@ class ProfileActivity : AppCompatActivity() {
                 CurrentUser.imgdata = BitmapFactory.decodeFile(imagePath)
             var texto = binding.UsernameEdit.text
             if(!texto.isNullOrEmpty())
-                if(!texto.toString().equals("New Username") || !texto.toString().equals("Novo Username"))
                     setUserName()
             if (imagePath!=null){
                 System.out.println("Path da foto:" + imagePath + "\nUID:" + uid)
