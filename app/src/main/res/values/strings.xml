@@ -41,7 +41,8 @@
     <string name="client_mode">Client Mode</string>
     <string name="time">Time:</string>
     <string name="menu_inicial">Start Menu</string>
-    <string name="scores" translatable="false">Scores</string>
+    <string name="singlescores" translatable="false">Singleplayer Scores</string>
+    <string name="multiscores" translatable="false">Multiplayer Scores</string>
     <string name="save">Save</string>
     <string name="gallery">Gallery</string>
     <string name="you_lost">You Lost!</string>

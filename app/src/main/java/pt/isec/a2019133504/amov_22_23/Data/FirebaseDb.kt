@@ -24,8 +24,8 @@ object FirebaseDb {
                     return@addOnSuccessListener
                 }
 
-                var doc = result.documents.minBy { d -> (d.data!!["totalScore"] as Long) }
-                if((doc.data!!["totalScore"] as Long).toInt() < score.pontuacao)
+                var doc = result.documents.minBy { d -> (d.data!!["pontuacao"] as Long) }
+                if((doc.data!!["pontuacao"] as Long).toInt() < score.pontuacao)
                     db.collection("Top5Scores").document(doc.id).set(score)
             }
     }
@@ -57,11 +57,11 @@ object FirebaseDb {
     }
 
     fun getUserData(uid : String): Task<DocumentSnapshot> {
-        return db.collection(UserData.Collection).document(uid).get()
+        return db.collection("UserData").document(uid).get()
     }
 
     fun setUserData(uid : String, newUserData: UserData): Task<Void> {
-        return db.collection(UserData.Collection).document(uid).set(newUserData.getMap())
+        return db.collection("UserData").document(uid).set(newUserData)
     }
 
     fun getScores() : Task<QuerySnapshot> {

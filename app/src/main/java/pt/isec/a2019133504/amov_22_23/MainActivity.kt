@@ -40,8 +40,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.btnScores.setOnClickListener {
+        binding.btnScoresSingle.setOnClickListener {
             val intent = Intent(this,ScoreActivity::class.java)
+            intent.putExtra(ScoreActivity.type, ScoreActivity.SINGLE)
+            startActivity(intent)
+        }
+
+        binding.btnScoresMulti.setOnClickListener {
+            val intent = Intent(this,ScoreActivity::class.java)
+            intent.putExtra(ScoreActivity.type, ScoreActivity.MULTI)
             startActivity(intent)
         }
     }

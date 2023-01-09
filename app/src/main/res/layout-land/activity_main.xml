@@ -55,21 +55,17 @@
             android:text="@string/mode2" />
 
         <Button
-            android:id="@+id/btn_scores"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:text="Scores"/>
+        android:id="@+id/btn_scoresSingle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/singlescores"/>
 
         <Button
+            android:id="@+id/btn_scoresMulti"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp" />
-
-
+            android:layout_margin="8dp"
+            android:text="@string/multiscores"/>
     </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

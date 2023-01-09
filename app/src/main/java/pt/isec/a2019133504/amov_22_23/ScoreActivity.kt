@@ -10,6 +10,13 @@ import pt.isec.a2019133504.amov_22_23.databinding.ActivityScoreBinding
 class ScoreActivity : AppCompatActivity() {
     private val user = CurrentUser
     private lateinit var binding: ActivityScoreBinding
+
+    companion object {
+        val SINGLE = 0
+        val MULTI = 1
+        val type = "type"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityScoreBinding.inflate(layoutInflater)
@@ -18,13 +25,17 @@ class ScoreActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         //TODO add listview to view
 
-
-        FirebaseDb.getScores().addOnSuccessListener {
-            //TODO change adapter based on multiplayer or singleplayer
+        when (intent.getIntExtra("type", SINGLE)) {
+            SINGLE -> {
+                FirebaseDb.getScores().addOnSuccessListener {
+                    //TODO change adapter based on multiplayer or singleplayer
+                }
+            }
+            MULTI -> {
+                FirebaseDb.getScores().addOnSuccessListener {
+                    //TODO change adapter based on multiplayer or singleplayer
+                }
+            }
         }
-
-
-
-
     }
 }
