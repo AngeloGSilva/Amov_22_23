@@ -42,7 +42,7 @@
     <string name="start">Start</string>
     <string name="share">Share</string>
     <string name="lost">Lost</string>
-    <string name="credits">Project devoloped in Android/Kotlin, by  Ângelo Silva - 2017016269, Leonardo Gomes - 2019133504 e Rodrigo Cardoso - 2018011775</string>
+    <string name="credits">Project devoloped in Android/Kotlin, by  Ângelo Silva - 2017016269, Leonardo Gomes - 2019133504, Rodrigo Cardoso - 2018011775</string>
     <string name="credititle">Credits</string>
 
     <!--<string name="timeleaderboard">Time:%d</string>
