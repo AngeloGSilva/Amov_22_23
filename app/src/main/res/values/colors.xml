@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="principal">#9c4239</color>
-    <color name="secundaria">#775652</color>
-    <color name="terceira">#715b2e</color>
-    <color name="principalVariante">#ffdad5</color>
-    <color name="secundariaVariante">#ffdad5</color>
-    <color name="terceiraVariante">#fddfa6</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="grey">#808080</color>
 </resources>

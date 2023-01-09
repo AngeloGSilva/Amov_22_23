@@ -80,7 +80,7 @@ class ProfileActivity : AppCompatActivity() {
                 CurrentUser.imgdata = BitmapFactory.decodeFile(imagePath)
             var texto = binding.UsernameEdit.text
             if(!texto.isNullOrEmpty())
-                if(!texto.toString().equals("New Username"))
+                if(!texto.toString().equals("New Username") || !texto.toString().equals("Novo Username"))
                     setUserName()
             if (imagePath!=null){
                 System.out.println("Path da foto:" + imagePath + "\nUID:" + uid)

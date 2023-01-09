@@ -141,6 +141,10 @@ class Server {
         FirebaseDb.addMultiScore(MultiplayerScore(mpp, System.currentTimeMillis() - startingTime + pauses))
     }
 
+    public fun JogDestroy(){
+        socket.close()
+    }
+
     fun NextLevel() : Boolean {
         if (NivelAtual>=0)
             playerList.markBelowThreshold(Level.get(NivelAtual).threshold, System.currentTimeMillis() - startingTime + pauses)

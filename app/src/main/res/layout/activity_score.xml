@@ -5,9 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ScoreActivity">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"></TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/LeaderbaordmultiPontos"
+        app:layout_constraintBottom_toTopOf="@+id/top_scores"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ListView
         android:id="@+id/top_scores"
         android:layout_width="match_parent"
@@ -18,7 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ListView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/Top_scores2"
@@ -29,5 +36,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_scores"></ListView>
+        app:layout_constraintTop_toBottomOf="@+id/top_scores" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/LeaderbaordmultiTempo"
+        app:layout_constraintBottom_toTopOf="@+id/Top_scores2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_scores" />
 </androidx.constraintlayout.widget.ConstraintLayout>

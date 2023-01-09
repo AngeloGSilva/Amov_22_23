@@ -187,7 +187,7 @@
         android:id="@+id/endgametext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You Lost!"
+        android:text="@string/you_lost"
         android:textSize="35sp"
         android:visibility="invisible"
         android:paddingBottom="10dp"

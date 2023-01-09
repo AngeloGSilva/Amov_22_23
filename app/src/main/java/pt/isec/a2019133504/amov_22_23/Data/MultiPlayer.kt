@@ -173,6 +173,7 @@ class MultiPlayer() : ViewModel() {
         }
     }
 
+
     private fun updateBoard() {
         if (player.NrBoard >= boards.size)
             boardLD.postValue(Board.empty)

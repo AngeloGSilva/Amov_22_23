@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:text="New Username"
+                android:text="@string/new_username"
                 android:textColor="@color/grey" />
 
 
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:text="Save"
+                android:text="@string/save"
                 android:textSize="10dp" />
 
         </LinearLayout>

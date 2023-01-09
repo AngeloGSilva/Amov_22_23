@@ -3,6 +3,7 @@ package pt.isec.a2019133504.amov_22_23
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
@@ -63,6 +64,7 @@ class ScoreActivity : AppCompatActivity() {
                     var scoreList = PlayerScore.fromQuery(it)
                     var adapter = PlayerScoreAdapter(scoreList,this)
                     binding.topScores.adapter = adapter
+                    binding.LeaderbaordmultiTempo.visibility=View.INVISIBLE
                 }
             }
             MULTI -> {

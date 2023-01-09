@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Amov_22_23</string>
     <string name="mode1">Modo 1</string>
     <string name="mode2">Modo 2</string>
     <string name="name">Nome</string>
-    <string name="btn_choose_photo">Escolhe Foto</string>
     <string name="btn_take_photo">Câmera</string>
-    <string name="msg_status">Status</string>
     <string name="msg_email">E-mail:</string>
     <string name="msg_email_address">E-mail address</string>
     <string name="msg_password">Password:</string>
     <string name="hint_password">Password</string>
     <string name="btn_createAccount">Cria Conta</string>
-    <string name="btn_logout">"Sair "</string>
-    <string name="btn_add_new_data">Adicionar</string>
-    <string name="btn_update_data">Actualizar</string>
-    <string name="btn_observe_data">Observar</string>
-    <string name="btn_remove_data">Remover</string>
     <string name="App_Title">Cerburs</string>
     <string name="menu_inicial">Menu Inicial</string>
     <string name="time">Tempo:</string>
@@ -31,9 +23,6 @@
     <string name="button_connect">Conectado</string>
     <string name="ask_ip">Endereco IP do Servidor:</string>
     <string name="button_cancel">Cancelar</string>
-    <string name="my_wins">Minhas Vitorias:</string>
-    <string name="other_wins">Outras vitorias:</string>
-    <string name="total_games">Jogos totais:</string>
     <string name="msg_ip_address">Esperar por todos os Clientes</string>
     <string name="btn_emulator">Conectar ao Emulador</string>
     <string name="waiting_for_host_to_start">Espera pelo host</string>
@@ -44,5 +33,12 @@
     <string name="gallery">Galeria</string>
     <string name="you_lost">Perdeste!</string>
     <string name="returnMenu">Voltar</string>
+    <string name="LeaderbaordmultiPontos">Lista Pontos</string>
+    <string name="LeaderbaordmultiTempo">Lista Tempo</string>
+    <string name="lost">Perdeu</string>
+    <string name="share">Partilhar</string>
+    <string name="start">Começar</string>
+    <string name="galeria">Galeria</string>
+    <string name="new_username">Novo Username</string>
 
 </resources>

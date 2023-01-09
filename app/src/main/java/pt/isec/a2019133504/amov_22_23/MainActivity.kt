@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
-        //TODO alterar para activity modo1 (apenas teste)
         binding.btnMode1.setOnClickListener {
 
             val intent = Intent(this, Mode1Activity::class.java)

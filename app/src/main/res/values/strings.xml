@@ -1,22 +1,13 @@
 <resources>
-    <string name="app_name">Amov_22_23</string>
     <string name="mode1">Mode 1</string>
     <string name="mode2">Mode 2</string>
     <string name="name">Name: %s</string>
-    <string name="btn_choose_photo">Choose Photo</string>
     <string name="btn_take_photo">Camera</string>
-    <string name="msg_status">Status</string>
     <string name="msg_email">E-mail:</string>
     <string name="msg_email_address">E-mail address</string>
     <string name="msg_password">Password:</string>
     <string name="hint_password">Password</string>
     <string name="btn_createAccount">Create account</string>
-    <string name="btn_logout">Logout</string>
-    <string name="msg_data_status" translatable="false">Data status</string>
-    <string name="btn_add_new_data">Add new data</string>
-    <string name="btn_update_data">Update data</string>
-    <string name="btn_observe_data">Observe data</string>
-    <string name="btn_remove_data">Remove data</string>
     <string name="App_Title">Cerbrus</string>
     <string name="AppInfoTakes">Got what it takes?</string>
     <string name="GameNextLevelTimer" translatable="false">5</string>
@@ -27,9 +18,6 @@
     <string name="button_connect">Connect</string>
     <string name="ask_ip">Server IP address:</string>
     <string name="button_cancel">Cancel</string>
-    <string name="my_wins">My wins:</string>
-    <string name="other_wins">Other wins:</string>
-    <string name="total_games">Total games:</string>
     <string name="msg_ip_address">Waiting for all Clients…</string>
     <string name="btn_emulator">Connect to Emulator</string>
     <string name="waiting_for_host_to_start">Waiting for host to start</string>
@@ -47,6 +35,13 @@
     <string name="gallery">Gallery</string>
     <string name="you_lost">You Lost!</string>
     <string name="returnMenu">Return</string>
+    <string name="LeaderbaordmultiPontos">LeaderBoard Points</string>
+    <string name="LeaderbaordmultiTempo">Leaderboard Time</string>
+    <string name="new_username">New Username</string>
+    <string name="galeria">Gallery</string>
+    <string name="start">Start</string>
+    <string name="share">Share</string>
+    <string name="lost">Lost</string>
 
     <!--<string name="timeleaderboard">Time:%d</string>
     <string name="pontosleaderboard">Pontos:%d</string>-->

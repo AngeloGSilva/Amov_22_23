@@ -73,9 +73,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             .load(getRandomGif())
             .into(imageView)
 
-        binding.endgameMenu.setOnClickListener{
-            finish()
-        }
+
 
         binding.boardGame.registerListener(this)
 
@@ -222,7 +220,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     )
                     layoutParams = paramsbt
-                    text = "Start [Min:1]"
+                    text = context.getString(R.string.start)
                     textSize = 10f
                     setOnClickListener {
                         model.server!!.StartGame()
@@ -236,7 +234,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     )
 
                     layoutParams = paramsbt
-                    text = "Share"
+                    text = context.getString(R.string.share)
                     textSize = 10f
                     setOnClickListener {
                         val shareIntent = Intent()
@@ -348,5 +346,10 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         val random = Random()
         val randomIndex = random.nextInt(gifs.size)
         return gifs[randomIndex]
+    }
+
+    override fun onDestroy() {
+        model.server?.JogDestroy()
+        super.onDestroy()
     }
 }

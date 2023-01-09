@@ -6,7 +6,66 @@
     android:padding="4dp">
 
     <LinearLayout
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEEE"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <ImageView
+            android:id="@+id/leaderboardimg"
+            android:src="@android:drawable/ic_dialog_map"
+            android:layout_width="64dp"
+            android:layout_gravity="center"
+            android:layout_height="64dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/leaderboardusername"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:padding="4dp"
+                android:text="@string/name"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/leaderboarduserpontos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:padding="4dp"
+                    android:text="@string/Pontos"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/leaderboardusertime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:padding="4dp"
+                    android:text="@string/time"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="4dp"
@@ -27,11 +86,7 @@
             android:id="@+id/leaderboardusername"
             android:textColor="#000000"
             android:background="#FFFFFF"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+
             <TextView
                 android:textStyle="bold"
                 android:padding="4dp"
@@ -55,7 +110,7 @@
                 android:textColor="#000000"
                 android:background="#FFFFFF"/>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
-    </LinearLayout>
+
 </FrameLayout>
