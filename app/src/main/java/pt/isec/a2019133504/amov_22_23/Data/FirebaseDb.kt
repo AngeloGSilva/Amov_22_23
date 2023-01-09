@@ -69,10 +69,10 @@ object FirebaseDb {
     }
 
     fun getScoresTempo() : Task<QuerySnapshot> {
-        return db.collection("Top5ScoresPontos").orderBy("totalScore", Query.Direction.DESCENDING).get()
+        return db.collection("Top5ScoresTempo").orderBy("tempo", Query.Direction.DESCENDING).get()
     }
 
     fun getScoresPontos() : Task<QuerySnapshot> {
-        return db.collection("Top5ScoresTempo").orderBy("tempo", Query.Direction.DESCENDING).get()
+        return db.collection("Top5ScoresPontos").orderBy("totalScore", Query.Direction.DESCENDING).get()
     }
 }

@@ -1,12 +1,14 @@
 package pt.isec.a2019133504.amov_22_23
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerScore
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.PlayerScore
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
-import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.MultiplayerScoresAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.PlayerScoreAdapter
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityScoreBinding
@@ -19,6 +21,33 @@ class ScoreActivity : AppCompatActivity() {
         val SINGLE = 0
         val MULTI = 1
         val type = "type"
+    }
+
+    private var dlg: AlertDialog? = null
+    private var ConnectedPlayerListView : ListView? = null
+
+    fun showDlg(mpScore: MultiplayerScore) {
+        val llh = LinearLayout(this).apply {
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            this.setPadding(50, 50, 50, 50)
+            layoutParams = params
+            setBackgroundColor(Color.rgb(240, 224, 208))
+            orientation = LinearLayout.VERTICAL
+            ConnectedPlayerListView = ListView(context).apply {
+                val paramsLV = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT)
+                layoutParams = paramsLV
+                adapter = PlayerScoreAdapter(mpScore.players, context)
+            }
+            addView(ConnectedPlayerListView)
+        }
+        dlg = AlertDialog.Builder(this)
+            .setView(llh)
+            .setOnCancelListener {
+                finish()
+            }
+            .create()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +71,17 @@ class ScoreActivity : AppCompatActivity() {
                     var scoreList = MultiplayerScore.fromQuery(it)
                     var adapter = MultiplayerScoresAdapter(scoreList,this)
                     binding.topScores.adapter = adapter
+                    binding.topScores.setOnItemClickListener() { parent, view, pos, id ->
+                        showDlg(binding.topScores.adapter.getItem(pos) as MultiplayerScore)
+                    }
+                }
+                FirebaseDb.getScoresTempo().addOnSuccessListener {
+                    var scoreList = MultiplayerScore.fromQuery(it)
+                    var adapter = MultiplayerScoresAdapter(scoreList,this)
+                    binding.TopScores2.adapter = adapter
+                    binding.TopScores2.setOnItemClickListener() { parent, view, pos, id ->
+                        showDlg(binding.topScores.adapter.getItem(pos) as MultiplayerScore)
+                    }
                 }
             }
         }
