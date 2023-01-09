@@ -27,30 +27,29 @@ class ScoreActivity : AppCompatActivity() {
     private var ConnectedPlayerListView : ListView? = null
 
     fun showDlg(mpScore: MultiplayerScore) {
-        runOnUiThread {
-            val llh = LinearLayout(this).apply {
-                val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                this.setPadding(50, 50, 50, 50)
-                layoutParams = params
-                setBackgroundColor(Color.rgb(240, 224, 208))
-                orientation = LinearLayout.VERTICAL
-                ConnectedPlayerListView = ListView(context).apply {
-                    val paramsLV = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT)
-                    layoutParams = paramsLV
-                    adapter = PlayerScoreAdapter(mpScore.players, context)
-                }
-                addView(ConnectedPlayerListView)
+        val llh = LinearLayout(this).apply {
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            this.setPadding(50, 50, 50, 50)
+            layoutParams = params
+            setBackgroundColor(Color.rgb(240, 224, 208))
+            orientation = LinearLayout.VERTICAL
+            ConnectedPlayerListView = ListView(context).apply {
+                val paramsLV = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT)
+                layoutParams = paramsLV
+                adapter = PlayerScoreAdapter(mpScore.players, context)
             }
-            dlg = AlertDialog.Builder(this)
-                .setTitle("Multiplayer Game")
-                .setView(llh)
-                .setOnCancelListener {
-                    finish()
-                }
-                .create()
+            addView(ConnectedPlayerListView)
         }
+        dlg = AlertDialog.Builder(this)
+            .setTitle("Multiplayer Game")
+            .setView(llh)
+            .setOnCancelListener {
+                finish()
+            }
+            .create()
+        dlg?.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
