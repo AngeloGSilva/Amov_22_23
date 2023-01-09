@@ -8,7 +8,7 @@ data class MultiplayerScore(val players: List<PlayerScore>, val Tempo: Long) {
     val TotalScore = players.sumOf { p -> p.pontuacao }
 
     constructor(document : DocumentSnapshot) : this(
-        document.get("players")!! as List<PlayerScore>,
+        PlayerScore.fromQuery(document.get("players")!! as ArrayList<HashMap<String, Any>>),
         document.getLong("tempo")!!,
     )
 
@@ -18,7 +18,6 @@ data class MultiplayerScore(val players: List<PlayerScore>, val Tempo: Long) {
             for (i in it) {
                 var idk = i.get("players")
                 ret.add(MultiplayerScore(i))
-
             }
             return ret
         }

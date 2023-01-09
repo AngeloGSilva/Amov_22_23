@@ -11,8 +11,22 @@ data class PlayerScore(val uid: String, val username: String, val pontuacao: Int
         document.getLong("tempo")!!
     )
 
+    constructor(document : HashMap<String, Any>) : this(
+        document.get("uid")!! as String,
+        document.get("username")!! as String,
+        document.get("pontuacao")!! as Int,
+        document.get("tempo")!! as Long
+    )
+
     companion object {
         fun fromQuery(it: QuerySnapshot) : List<PlayerScore> {
+            var ret = mutableListOf<PlayerScore>()
+            for (i in it)
+                ret.add(PlayerScore(i))
+            return ret
+        }
+
+        fun fromQuery(it: ArrayList<HashMap<String, Any>>) : List<PlayerScore> {
             var ret = mutableListOf<PlayerScore>()
             for (i in it)
                 ret.add(PlayerScore(i))
