@@ -30,7 +30,7 @@ class PlayerScoreAdapter(private val data: List<PlayerScore>, private val contex
         if (convertView != null)
             return processView(position, convertView)
         val inflater = LayoutInflater.from(context)
-        val rowView: View = inflater.inflate(R.layout.leaderboard_item, parent, false)
+        val rowView: View = inflater.inflate(R.layout.listview_item_player, parent, false)
         return processView(position, rowView)
     }
 
