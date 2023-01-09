@@ -74,6 +74,10 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             .into(imageView)
 
 
+        binding.endgameMenu.setOnClickListener{
+            val intent = Intent(this, Modo2Activity::class.java)
+            startActivity(intent)
+        }
 
         binding.boardGame.registerListener(this)
 
