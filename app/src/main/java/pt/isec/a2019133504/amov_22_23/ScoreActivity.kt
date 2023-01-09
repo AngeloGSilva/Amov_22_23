@@ -43,6 +43,7 @@ class ScoreActivity : AppCompatActivity() {
             addView(ConnectedPlayerListView)
         }
         dlg = AlertDialog.Builder(this)
+            .setTitle("Multiplayer Game")
             .setView(llh)
             .setOnCancelListener {
                 finish()
@@ -80,7 +81,7 @@ class ScoreActivity : AppCompatActivity() {
                     var adapter = MultiplayerScoresAdapter(scoreList,this)
                     binding.TopScores2.adapter = adapter
                     binding.TopScores2.setOnItemClickListener() { parent, view, pos, id ->
-                        showDlg(binding.topScores.adapter.getItem(pos) as MultiplayerScore)
+                        showDlg(binding.TopScores2.adapter.getItem(pos) as MultiplayerScore)
                     }
                 }
             }
