@@ -91,6 +91,10 @@ class SignInActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
                 checkphotoexists()
+                FirebaseDb.getUserData(auth.currentUser!!.uid).addOnSuccessListener {
+                    val userdata = UserData(it)
+                    CurrentUser.username = userdata.Username
+                }
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)
             }
@@ -103,7 +107,9 @@ class SignInActivity : AppCompatActivity() {
     fun createUserWithEmail(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
-                FirebaseDb.setUserData(result.user!!.uid, UserData("User_" + getRandomString(STRING_LENGTH)))
+                var userdata = UserData("User_" + getRandomString(STRING_LENGTH))
+                FirebaseDb.setUserData(result.user!!.uid, userdata)
+                CurrentUser.username = userdata.Username
                 checkphotoexists()
                 val intent = Intent(this,MainActivity::class.java)
                 startActivity(intent)

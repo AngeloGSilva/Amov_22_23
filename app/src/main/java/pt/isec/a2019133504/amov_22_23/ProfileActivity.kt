@@ -56,6 +56,11 @@ class ProfileActivity : AppCompatActivity() {
         storageRef = storage.reference
 
         checkUserPhoto()
+        FirebaseDb.getUserData(auth.currentUser!!.uid).addOnSuccessListener {
+            val userdata = UserData(it)
+            CurrentUser.username = userdata.Username
+            binding.UsernameView.text = userdata.Username
+        }
 
         binding.UsernameEdit?.setOnClickListener{
             binding.UsernameEdit!!.text.clear()
@@ -167,11 +172,6 @@ class ProfileActivity : AppCompatActivity() {
             if(progressdialog.isShowing)
                 progressdialog.dismiss()
             //Toast.makeText(this,"FAILIURE",Toast.LENGTH_SHORT).show()
-        }
-        FirebaseDb.getUserData(auth.currentUser!!.uid).addOnSuccessListener {
-            val userdata = UserData(it)
-            CurrentUser.username = userdata.Username
-            binding.UsernameView.text = userdata.Username
         }
     }
 }
