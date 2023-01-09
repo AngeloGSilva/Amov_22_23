@@ -163,6 +163,7 @@ class MultiPlayer() : ViewModel() {
                             .until(player.Timestamp, ChronoUnit.SECONDS))
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(c, intent, null)
+                        break
                     }
                 } finally {
                     //stopGame()
