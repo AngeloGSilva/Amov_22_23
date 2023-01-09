@@ -69,6 +69,10 @@ class SinglePlayer : ViewModel(){
     fun startGame(nivel: Int = 0, board: Int = 0, _pontos : Int = 0, tempo : Long = -1L) {
         NivelAtual = nivel
         BoardAtual = board
+        if (BoardAtual == 10){
+            BoardAtual = 0
+            NivelAtual++
+        }
         pontos = _pontos
         boards = Array(10) { board ->
             Board.fromLevel(Level.get(NivelAtual))
