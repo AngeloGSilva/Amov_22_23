@@ -21,12 +21,29 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     private val singlePlayer : SinglePlayer by viewModels()
     private lateinit var binding: ActivityMode1Binding
 
+    companion object{
+        val FROM_MULTIPLAYER = "FROM_MULTIPLAYER"
+        val NIVEL = "NIVEL"
+        val BOARD = "BOARD"
+        val PONTOS = "PONTOS"
+        val TEMPO = "TEMPO"
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (intent.getBooleanExtra(FROM_MULTIPLAYER, false)){
+            singlePlayer.startGame(intent.getIntExtra(NIVEL, 0),
+                intent.getIntExtra(BOARD, 0),
+                intent.getIntExtra(PONTOS, 0),
+                intent.getLongExtra(TEMPO, -1))
+        }else
+            singlePlayer.startGame()
+
         binding.boardGame.registerListener(this)
         binding.imageView.setImageBitmap(CurrentUser.imgdata)
         binding.boardGame.updateBoard(singlePlayer.returnboardcells())

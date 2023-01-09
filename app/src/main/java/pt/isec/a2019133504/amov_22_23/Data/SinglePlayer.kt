@@ -13,7 +13,6 @@ class SinglePlayer : ViewModel(){
         Board.fromLevel(Level.get(NivelAtual))
     }
     private var BoardAtual: Int = 0
-    var pause: Long = 0
 
     private var selectedRow = -1
     private var selectedCol = -1
@@ -67,8 +66,17 @@ class SinglePlayer : ViewModel(){
         return boards[BoardAtual]
     }
 
-    init {
-        startTimer(Level.get(NivelAtual).maxTime.toLong())
+    fun startGame(nivel: Int = 0, board: Int = 0, _pontos : Int = 0, tempo : Long = -1L) {
+        NivelAtual = nivel
+        BoardAtual = board
+        pontos = _pontos
+        boards = Array(10) { board ->
+            Board.fromLevel(Level.get(NivelAtual))
+        }
+        if (tempo == -1L)
+            startTimer(Level.get(NivelAtual).maxTime.toLong())
+        else
+            startTimer(tempo)
         cellsLiveData.postValue(boards[BoardAtual])
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         pontosLiveData.postValue(pontos)

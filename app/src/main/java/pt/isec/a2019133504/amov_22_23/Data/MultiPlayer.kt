@@ -2,6 +2,7 @@ package pt.isec.a2019133504.amov_22_23.Data
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.CountDownTimer
@@ -9,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
@@ -23,13 +25,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import pt.isec.a2019133504.amov_22_23.*
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
-import pt.isec.a2019133504.amov_22_23.GameActivity
-import pt.isec.a2019133504.amov_22_23.ProfileActivity
-import pt.isec.a2019133504.amov_22_23.R
 import java.io.*
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -54,6 +56,7 @@ class MultiPlayer() : ViewModel() {
     var playersLD = MutableLiveData(players)
     var boardLD = MutableLiveData<Board>()
     var TimerTransition = MutableLiveData<Int>()
+    var NivelAtual = -1
 
     var server : Server? = null
     private lateinit var socket : Socket
@@ -66,6 +69,7 @@ class MultiPlayer() : ViewModel() {
     fun startClient(c : Context,serverIP: String, serverPort: Int = Server.SERVER_PORT) {
         socket = Socket()
         players.clear()
+        NivelAtual = -1
         _state.postValue(State.WAITING_START)
         thread {
             try {
@@ -76,7 +80,7 @@ class MultiPlayer() : ViewModel() {
                 else
                     bitmap = Bitmap.createScaledBitmap(CurrentUser.imgdata!!,64,64,false)
                 Message.PlayerConnect(CurrentUser.uid!!, CurrentUser.username, bitmap).sendTo(socket)
-                startJogadorComm()
+                startJogadorComm(c)
             } catch (e: Exception) {
                 Log.e(tag, e.stackTraceToString())
                 //stopGame()
@@ -85,7 +89,7 @@ class MultiPlayer() : ViewModel() {
     }
 
 
-    private fun startJogadorComm() {
+    private fun startJogadorComm(c : Context) {
         thread {
             val bufferedReader = socket.getInputStream().bufferedReader()
             while(true) {
@@ -102,6 +106,7 @@ class MultiPlayer() : ViewModel() {
                             else {
                                 boards = msg.board.toTypedArray()
                                 level = msg.level
+                                NivelAtual++
                                 _state.postValue(State.WAITING_FOR_MOVE)
                                 updateBoard()
                             }
@@ -149,7 +154,15 @@ class MultiPlayer() : ViewModel() {
                 } catch (e: Exception) {
                     if (socket.isClosed)
                         break
-                    Log.e(tag, e.stackTraceToString())
+                    else if (!player.Lost){
+                        val intent = Intent(c, Mode1Activity::class.java)
+                        intent.putExtra(Mode1Activity.NIVEL, NivelAtual)
+                        intent.putExtra(Mode1Activity.BOARD, player.NrBoard)
+                        intent.putExtra(Mode1Activity.PONTOS, player.Pontos)
+                        intent.putExtra(Mode1Activity.TEMPO, Instant.now()
+                            .until(player.Timestamp, ChronoUnit.SECONDS))
+                        startActivity(c, intent, null)
+                    }
                 } finally {
                     //stopGame()
                 }
