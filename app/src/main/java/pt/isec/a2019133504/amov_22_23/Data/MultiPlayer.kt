@@ -162,6 +162,7 @@ class MultiPlayer() : ViewModel() {
                         intent.putExtra(Mode1Activity.TEMPO, Instant.now()
                             .until(player.Timestamp, ChronoUnit.SECONDS))
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(c, intent, null)
                     }
                 } finally {
