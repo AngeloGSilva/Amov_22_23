@@ -156,6 +156,7 @@ class MultiPlayer() : ViewModel() {
                         break
                     else if (!player.Lost){
                         val intent = Intent(c, Mode1Activity::class.java)
+                        intent.putExtra(Mode1Activity.FROM_MULTIPLAYER, true)
                         intent.putExtra(Mode1Activity.NIVEL, NivelAtual)
                         intent.putExtra(Mode1Activity.BOARD, player.NrBoard)
                         intent.putExtra(Mode1Activity.PONTOS, player.Pontos)
