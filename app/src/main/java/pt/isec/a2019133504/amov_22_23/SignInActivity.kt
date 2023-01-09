@@ -91,7 +91,7 @@ class SignInActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener(this) { result ->
                 checkphotoexists()
-                FirebaseDb.getUserData(auth.currentUser!!.uid).addOnSuccessListener {
+                FirebaseDb.getUserData(result.user!!.uid).addOnSuccessListener {
                     val userdata = UserData(it)
                     CurrentUser.username = userdata.Username
                 }
