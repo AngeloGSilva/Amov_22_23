@@ -42,4 +42,7 @@
     <string name="play_again">Jogar novamente</string>
     <string name="save">Guardar</string>
     <string name="gallery">Galeria</string>
+    <string name="you_lost">Perdeste!</string>
+    <string name="returnMenu">Voltar</string>
+
 </resources>

@@ -84,8 +84,6 @@ class SinglePlayer : ViewModel(){
 
     fun checkVitoria() {
 
-        //TODO ver a linha ou coluna e ver onde o resultado da linha ou coluna selecionada se encontra(soma mais alta ou segunda mais alta)
-        //TODO somar os pontos e continuar para a proxima board do msm niver ou proxima board do nivel seguinte
         timertask?.cancel()
         var res = 0
         if (selectedCol == -1 && selectedRow != -1)
@@ -96,7 +94,6 @@ class SinglePlayer : ViewModel(){
         pontos += res
 
         if (Level.isLast(NivelAtual) && BoardAtual == boards.size-1) {
-            //TODO para acabar
             fimLiveData.postValue(true)
             pontosLiveData.postValue(pontos)
             return
@@ -116,7 +113,6 @@ class SinglePlayer : ViewModel(){
                 timerCount.postValue(Level.get(NivelAtual).maxTime.toLong())
             else
                 timerCount.postValue(time)
-            //TODO show countdown
         } else{
             BoardAtual++
             time = timeleft + if (res == 0) 0 else Level.get(NivelAtual).winTime

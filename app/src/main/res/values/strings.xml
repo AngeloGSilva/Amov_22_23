@@ -44,6 +44,9 @@
     <string name="scores" translatable="false">Scores</string>
     <string name="save">Save</string>
     <string name="gallery">Gallery</string>
+    <string name="you_lost">You Lost!</string>
+    <string name="returnMenu">Return</string>
+
     <!--<string name="timeleaderboard">Time:%d</string>
     <string name="pontosleaderboard">Pontos:%d</string>-->
 </resources>
