@@ -67,20 +67,22 @@ class SinglePlayer : ViewModel(){
     }
 
     fun startGame(nivel: Int = 0, board: Int = 0, _pontos : Int = 0, tempo : Long = -1L) {
+        var tempooo = tempo
         NivelAtual = nivel
         BoardAtual = board
         if (BoardAtual == 10){
             BoardAtual = 0
             NivelAtual++
+            tempooo = -1L
         }
         pontos = _pontos
         boards = Array(10) { board ->
             Board.fromLevel(Level.get(NivelAtual))
         }
-        if (tempo == -1L)
+        if (tempooo == -1L)
             startTimer(Level.get(NivelAtual).maxTime.toLong())
         else
-            startTimer(tempo)
+            startTimer(tempooo)
         cellsLiveData.postValue(boards[BoardAtual])
         selectedCellLiveData.postValue(Pair(selectedRow, selectedCol))
         pontosLiveData.postValue(pontos)
