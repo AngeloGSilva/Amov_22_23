@@ -28,12 +28,12 @@ class ScoreActivity : AppCompatActivity() {
         when (intent.getIntExtra("type", SINGLE)) {
             SINGLE -> {
                 FirebaseDb.getScores().addOnSuccessListener {
-                    //TODO change adapter based on multiplayer or singleplayer
+
                 }
             }
             MULTI -> {
-                FirebaseDb.getScores().addOnSuccessListener {
-                    //TODO change adapter based on multiplayer or singleplayer
+                FirebaseDb.getScoresPontos().addOnSuccessListener {
+
                 }
             }
         }
