@@ -45,9 +45,6 @@ class ScoreActivity : AppCompatActivity() {
         dlg = AlertDialog.Builder(this)
             .setTitle("Multiplayer Game")
             .setView(llh)
-            .setOnCancelListener {
-                finish()
-            }
             .create()
         dlg?.show()
     }

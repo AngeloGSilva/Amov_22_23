@@ -30,8 +30,8 @@ class Player(val uid : String,val nome:String , val Imagem: _Bitmap,@Transient v
         NrBoard++
     }
 
-    fun hasLost(timeplayed : Long) {
-        TimePlayed = timeplayed;
+    fun hasLost(msplayed : Long) {
+        TimePlayed = msplayed/1000;
         Lost = true
     }
 
