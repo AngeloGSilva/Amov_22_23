@@ -146,7 +146,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
         }
 
         LeaderBoardPlayerAdapter = LeaderboardAdapter(model.players,this)
-        binding.leaderboard.adapter = LeaderBoardPlayerAdapter
+        binding.leaderboard?.adapter = LeaderBoardPlayerAdapter
 
         model.playersLD.observe(this) {
             LeaderBoardPlayerAdapter!!.notifyDataSetInvalidated()

@@ -7,16 +7,18 @@
     tools:context=".ScoreActivity">
 
     <TextView
+        android:id="@+id/topScores"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/LeaderbaordmultiPontos"
-        app:layout_constraintBottom_toTopOf="@+id/top_scores"
+        app:layout_constraintBottom_toTopOf="@+id/LeaderbaordmultiScores"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/top_scores"
+        android:id="@+id/LeaderbaordmultiScores"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -26,9 +28,18 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@id/Top_scores2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/LeaderbaordmultiTempo"
+        app:layout_constraintBottom_toTopOf="@+id/LeaderbaordmultiTempo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LeaderbaordmultiScores" />
 
     <ListView
-        android:id="@+id/Top_scores2"
+        android:id="@+id/LeaderbaordmultiTempo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -36,14 +47,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_scores" />
+        app:layout_constraintTop_toBottomOf="@+id/Top_scores2" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/LeaderbaordmultiTempo"
-        app:layout_constraintBottom_toTopOf="@+id/Top_scores2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_scores" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

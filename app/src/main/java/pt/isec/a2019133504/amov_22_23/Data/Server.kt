@@ -138,7 +138,7 @@ class Server {
         val mpp : MutableList<PlayerScore> = mutableListOf()
         for (mp in playerList.players.values)
             mpp.add(PlayerScore(mp.uid, mp.nome, mp.Pontos, mp.TimePlayed))
-        FirebaseDb.addMultiScore(MultiplayerScore(mpp, System.currentTimeMillis() - startingTime + pauses))
+        FirebaseDb.addMultiScore(MultiplayerScore(mpp, (System.currentTimeMillis() - startingTime + pauses)/1000))
     }
 
     public fun JogDestroy(){

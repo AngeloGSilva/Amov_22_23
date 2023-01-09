@@ -63,25 +63,25 @@ class ScoreActivity : AppCompatActivity() {
                 FirebaseDb.getScores().addOnSuccessListener {
                     var scoreList = PlayerScore.fromQuery(it)
                     var adapter = PlayerScoreAdapter(scoreList,this)
-                    binding.topScores.adapter = adapter
-                    binding.LeaderbaordmultiTempo.visibility=View.INVISIBLE
+                    binding.LeaderbaordmultiScores.adapter = adapter
+                    binding.TopScores2.visibility=View.INVISIBLE
                 }
             }
             MULTI -> {
                 FirebaseDb.getScoresPontos().addOnSuccessListener {
                     var scoreList = MultiplayerScore.fromQuery(it)
                     var adapter = MultiplayerScoresAdapter(scoreList,this)
-                    binding.topScores.adapter = adapter
-                    binding.topScores.setOnItemClickListener() { parent, view, pos, id ->
-                        showDlg(binding.topScores.adapter.getItem(pos) as MultiplayerScore)
+                    binding.LeaderbaordmultiScores.adapter = adapter
+                    binding.LeaderbaordmultiScores.setOnItemClickListener() { parent, view, pos, id ->
+                        showDlg(binding.LeaderbaordmultiScores.adapter.getItem(pos) as MultiplayerScore)
                     }
                 }
                 FirebaseDb.getScoresTempo().addOnSuccessListener {
                     var scoreList = MultiplayerScore.fromQuery(it)
                     var adapter = MultiplayerScoresAdapter(scoreList,this)
-                    binding.TopScores2.adapter = adapter
-                    binding.TopScores2.setOnItemClickListener() { parent, view, pos, id ->
-                        showDlg(binding.TopScores2.adapter.getItem(pos) as MultiplayerScore)
+                    binding.LeaderbaordmultiTempo.adapter = adapter
+                    binding.LeaderbaordmultiTempo.setOnItemClickListener() { parent, view, pos, id ->
+                        showDlg(binding.LeaderbaordmultiTempo.adapter.getItem(pos) as MultiplayerScore)
                     }
                 }
             }
