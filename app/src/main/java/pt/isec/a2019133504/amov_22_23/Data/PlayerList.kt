@@ -33,7 +33,7 @@ class PlayerList {
 
     fun markBelowThreshold(threshold: Int, timeplayed : Long) {
         for (p in _players.values)
-            if (p.Pontos < threshold)
+            if (!p.Lost && p.Pontos < threshold)
                 p.hasLost(timeplayed)
     }
 
