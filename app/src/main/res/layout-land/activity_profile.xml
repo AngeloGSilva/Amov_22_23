@@ -64,7 +64,7 @@
 
             <Button
                 android:id="@+id/saveData"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
@@ -90,8 +90,8 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
-            android:text="Galeria"
-            android:textSize="10sp" />
+            android:text="@string/galeria"
+            android:textSize="10sp"/>
 
         <Button
             android:id="@+id/btn_capture"
@@ -99,7 +99,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
             android:text="@string/btn_take_photo"
-            android:textSize="10sp" />
+            android:textSize="10sp"/>
 
     </LinearLayout>
 
