@@ -2,7 +2,7 @@
 <resources>
     <string name="mode1">Modo 1</string>
     <string name="mode2">Modo 2</string>
-    <string name="name">Nome</string>
+    <string name="name">Nome: %s</string>
     <string name="btn_take_photo">Câmera</string>
     <string name="msg_email">E-mail:</string>
     <string name="msg_email_address">E-mail address</string>
@@ -40,5 +40,7 @@
     <string name="start">Começar</string>
     <string name="galeria">Galeria</string>
     <string name="new_username">Novo Username</string>
+    <string name="credits">Trabalho Realizado em Android/Kotlin 2022/2023, por Ângelo Silva, Leonardo Gomes e Rodrigo Cardoso</string>
+    <string name="credititle">Créditos</string>
 
 </resources>

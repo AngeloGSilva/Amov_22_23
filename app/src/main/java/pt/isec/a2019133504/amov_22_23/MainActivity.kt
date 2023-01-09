@@ -50,5 +50,10 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(ScoreActivity.type, ScoreActivity.MULTI)
             startActivity(intent)
         }
+
+        binding.MainLogo.setOnClickListener{
+            val intent = Intent(this, Credits::class.java)
+            startActivity(intent)
+        }
     }
 }

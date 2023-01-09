@@ -35,14 +35,17 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         supportActionBar?.hide()
         binding = ActivityMode1Binding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        if (intent.getBooleanExtra(FROM_MULTIPLAYER, false)){
-            singlePlayer.startGame(intent.getIntExtra(NIVEL, 0),
-                intent.getIntExtra(BOARD, 0),
-                intent.getIntExtra(PONTOS, 0),
-                intent.getLongExtra(TEMPO, -1))
-        }else
-            singlePlayer.startGame()
+        if(!singlePlayer.starter) {
+            if (intent.getBooleanExtra(FROM_MULTIPLAYER, false)) {
+                singlePlayer.startGame(
+                    intent.getIntExtra(NIVEL, 0),
+                    intent.getIntExtra(BOARD, 0),
+                    intent.getIntExtra(PONTOS, 0),
+                    intent.getLongExtra(TEMPO, -1)
+                )
+            } else
+                singlePlayer.startGame()
+        }
 
         binding.boardGame.registerListener(this)
         binding.imageView.setImageBitmap(CurrentUser.imgdata)
@@ -76,12 +79,10 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
     }
 
     private fun updateFim(estado : Boolean){
-        //TODO melhorar mensagem de fim e guardar pontos etc
         binding.boardGame.isVisible = false
         binding.NextLevelTimer.isVisible = false
         binding.timertitle.isVisible = false
         binding.timer.isVisible = false
-        binding.btnAddFirestore.isVisible = true
         binding.btnMenuInicial.isVisible = true
         binding.tryAgain.isVisible = true
 

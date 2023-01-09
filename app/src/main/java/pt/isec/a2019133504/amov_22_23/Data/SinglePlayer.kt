@@ -17,24 +17,15 @@ class SinglePlayer : ViewModel(){
     private var selectedRow = -1
     private var selectedCol = -1
 
-    //para atualizar dados na view
     var selectedCellLiveData = MutableLiveData<Pair<Int, Int>>()
 
-    //var maioresValores = MutableLiveData<Pair<Double,Double>>()
-
+    var starter : Boolean = false
     private var timeleft: Long = 0
     var pontosLiveData = MutableLiveData<Int>()
     var cellsLiveData = MutableLiveData<Board>()
     var fimLiveData = MutableLiveData<Boolean>()
     var timerCount = MutableLiveData<Long>()
     var nextLevel = MutableLiveData<Boolean>()
-
-    //TODO Init apenas para criar boards
-    //TODO objeto singlePlayer onde sao criadas boards e passadas para o MathGame
-    //TODO single player ter o timer no mathGame
-    //TODO class multiplayer onde vai receber boards/set delas
-    //TODO fling no single vai incaminhr para o mathgame no multiplayer envia em json para o server
-    //TODO apagar a cena da vitoria
 
     private val timer = Timer()
     private var timertask : TimerTask? = null
@@ -47,7 +38,6 @@ class SinglePlayer : ViewModel(){
             override fun run() {
                 timeleft--
                 timerCount.postValue(timeleft)
-                Log.d("Singleplayer Timer", timeleft.toString())
                 if (timeleft == 0L) {
                     this.cancel()
                     fimLiveData.postValue(true)
@@ -68,12 +58,14 @@ class SinglePlayer : ViewModel(){
 
     fun startGame(nivel: Int = 0, board: Int = 0, _pontos : Int = 0, tempo : Long = -1L) {
         var newLevel = false
+        starter = true
         NivelAtual = nivel
         pontos = _pontos
         BoardAtual = board
         if (Level.isLast(NivelAtual) && BoardAtual == boards.size-1) {
             fimLiveData.postValue(true)
             pontosLiveData.postValue(pontos)
+            starter = false
             return
         }
         if (BoardAtual == 10){
@@ -115,6 +107,7 @@ class SinglePlayer : ViewModel(){
         if (Level.isLast(NivelAtual) && BoardAtual == boards.size-1) {
             fimLiveData.postValue(true)
             pontosLiveData.postValue(pontos)
+            starter=false
             return
         }
         val time : Long

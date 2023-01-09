@@ -18,13 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timer">
 
-        <Button
-            android:id="@+id/btn_addFirestore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/add_score_to_firebase"
-            android:visibility="invisible" />
 
         <Button
             android:id="@+id/tryAgain"

@@ -139,7 +139,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     binding.endgameMenu.isVisible = true
                     binding.endgametext.isVisible = true
                     timer.cancel()
-                    //TODO botão para o inicio
                 }
                 else -> {}
             }
@@ -183,27 +182,27 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             this.setPadding(50, 50, 50, 50)
             layoutParams = params
-            setBackgroundColor(Color.rgb(240, 224, 208))
+            setBackgroundColor(Color.rgb(215, 215, 215))
             orientation = LinearLayout.VERTICAL
             addView(LinearLayout(context).apply {
                 val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 this.setPadding(50, 50, 50, 50)
                 layoutParams = params
-                setBackgroundColor(Color.rgb(240, 224, 208))
+                setBackgroundColor(Color.rgb(215, 215, 215))
                 orientation = LinearLayout.HORIZONTAL
                 addView(ProgressBar(context).apply {
                     isIndeterminate = true
                     val paramsPB = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     paramsPB.gravity = Gravity.CENTER_VERTICAL
                     layoutParams = paramsPB
-                    indeterminateTintList = ColorStateList.valueOf(Color.rgb(96, 96, 32))
+                    indeterminateTintList = ColorStateList.valueOf(Color.rgb(0, 0, 0))
                 })
                 addView(TextView(context).apply {
                     val paramsTV = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     layoutParams = paramsTV
                     text = String.format(getString(R.string.msg_ip_address))
                     textSize = 20f
-                    setTextColor(Color.rgb(96, 96, 32))
+                    setTextColor(Color.rgb(0, 0, 0))
                 })
             })
             addView(LinearLayout(context).apply {
@@ -212,7 +211,7 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 layoutParams = params
-                setBackgroundColor(Color.rgb(240, 224, 208))
+                setBackgroundColor(Color.rgb(215, 215, 215))
                 orientation = LinearLayout.HORIZONTAL
                 addView(Button(context).apply {
                     val paramsbt = LinearLayout.LayoutParams(

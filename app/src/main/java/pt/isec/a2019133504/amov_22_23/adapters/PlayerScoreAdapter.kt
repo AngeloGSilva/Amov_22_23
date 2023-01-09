@@ -39,7 +39,7 @@ class PlayerScoreAdapter(private val data: List<PlayerScore>, private val contex
         val textViewTime = rowView.findViewById<View>(R.id.SingleTempo) as TextView
         val textViewPontos = rowView.findViewById<View>(R.id.SinglePontos) as TextView
         val score = getItem(position)
-        textViewUser.setText(score.username)
+        textViewUser.setText(context.getString(R.string.name,score.username))
         textViewPontos.setText(context.getString(R.string.Pontos, score.pontuacao))
         textViewTime.setText(context.getString(R.string.Tempo, score.Tempo))
         return rowView

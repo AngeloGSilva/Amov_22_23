@@ -1,7 +1,6 @@
 <resources>
     <string name="mode1">Mode 1</string>
     <string name="mode2">Mode 2</string>
-    <string name="name">Name: %s</string>
     <string name="btn_take_photo">Camera</string>
     <string name="msg_email">E-mail:</string>
     <string name="msg_email_address">E-mail address</string>
@@ -13,6 +12,7 @@
     <string name="GameNextLevelTimer" translatable="false">5</string>
     <string name="Pontos">Points: %d</string>
     <string name="Tempo">Time: %d</string>
+    <string name="name">Name: %s</string>
     <string name="server_mode">Server</string>
     <string name="error_address">Address not recognized</string>
     <string name="button_connect">Connect</string>
@@ -42,6 +42,8 @@
     <string name="start">Start</string>
     <string name="share">Share</string>
     <string name="lost">Lost</string>
+    <string name="credits">Project devoloped in Android/Kotlin, by  Ângelo Silva - 2017016269, Leonardo Gomes - 2019133504 e Rodrigo Cardoso - 2018011775</string>
+    <string name="credititle">Credits</string>
 
     <!--<string name="timeleaderboard">Time:%d</string>
     <string name="pontosleaderboard">Pontos:%d</string>-->
