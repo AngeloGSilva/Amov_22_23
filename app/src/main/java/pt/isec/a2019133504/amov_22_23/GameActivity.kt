@@ -21,7 +21,6 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import org.checkerframework.checker.units.qual.Current
 import pt.isec.a2019133504.amov_22_23.Data.*
-import pt.isec.a2019133504.amov_22_23.Data.Facts.facts
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.adapters.ConnectedPlayersAdapter
 import pt.isec.a2019133504.amov_22_23.adapters.LeaderboardAdapter
@@ -338,13 +337,6 @@ class GameActivity : AppCompatActivity(), BoardView.OnTouchListener {
             .create()
 
         dlg.show()
-    }
-
-    fun getRandomFact(): String {
-        val random = Random()
-        //TODO PRTUGES
-        val randomIndex = random.nextInt(facts.size)
-        return "Fact: " + facts[randomIndex]
     }
 
     fun getRandomGif(): String{

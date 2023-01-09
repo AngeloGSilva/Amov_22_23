@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.json.Json
-import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerPlayer
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.MultiplayerScore
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.PlayerScore
 import pt.isec.a2019133504.amov_22_23.Data.Messages.*
 import java.io.PrintStream
 import java.net.ServerSocket
@@ -135,15 +135,15 @@ class Server {
     }
 
     fun EndGame() {
-        val mpp : MutableList<MultiplayerPlayer> = mutableListOf()
+        val mpp : MutableList<PlayerScore> = mutableListOf()
         for (mp in playerList.players.values)
-            mpp.add(MultiplayerPlayer(mp.uid, mp.nome, mp.Pontos))
+            mpp.add(PlayerScore(mp.uid, mp.nome, mp.Pontos, mp.TimePlayed))
         FirebaseDb.addMultiScore(MultiplayerScore(mpp, System.currentTimeMillis() - startingTime + pauses))
     }
 
     fun NextLevel() : Boolean {
         if (NivelAtual>=0)
-            playerList.markBelowThreshold(Level.get(NivelAtual).threshold)
+            playerList.markBelowThreshold(Level.get(NivelAtual).threshold, System.currentTimeMillis() - startingTime + pauses)
         if (playerList.allLost() || Level.isLast(NivelAtual)) {
             _state.postValue(State.GAMEOVER)
             playerList.sendToAll(Message.GameOver())

@@ -3,7 +3,7 @@ package pt.isec.a2019133504.amov_22_23
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
-import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.Score
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.PlayerScore
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityScoreBinding
 
@@ -20,7 +20,6 @@ class ScoreActivity : AppCompatActivity() {
 
 
         FirebaseDb.getScores().addOnSuccessListener {
-            val scores = Score.fromQuery(it)
             //TODO change adapter based on multiplayer or singleplayer
         }
 

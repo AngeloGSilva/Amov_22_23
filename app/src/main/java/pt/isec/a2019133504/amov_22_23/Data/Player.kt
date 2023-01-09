@@ -21,12 +21,18 @@ class Player(val uid : String,val nome:String , val Imagem: _Bitmap,@Transient v
     var Pontos : Int = 0
     var NrBoard : Int = 0
     var Timestamp : _Instant = Instant.MAX
+    var TimePlayed : Long = 0
     var Lost = false
 
     fun assignScore(pontos : Int, segundos : Int) {
         Pontos += pontos
         Timestamp = Timestamp.plusSeconds(segundos.toLong())
         NrBoard++
+    }
+
+    fun hasLost(timeplayed : Long) {
+        TimePlayed = timeplayed;
+        Lost = true
     }
 
     fun sendMessage(msg: Message){

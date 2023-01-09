@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import pt.isec.a2019133504.amov_22_23.Data.Board
 import pt.isec.a2019133504.amov_22_23.Data.CurrentUser
 import pt.isec.a2019133504.amov_22_23.Data.FirebaseDb
-import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.Score
+import pt.isec.a2019133504.amov_22_23.Data.FirebaseData.PlayerScore
 import pt.isec.a2019133504.amov_22_23.Data.SinglePlayer
 import pt.isec.a2019133504.amov_22_23.View.BoardView
 import pt.isec.a2019133504.amov_22_23.databinding.ActivityMode1Binding
@@ -69,7 +69,7 @@ class Mode1Activity : AppCompatActivity(), BoardView.OnTouchListener {
         binding.tryAgain.isVisible = true
 
         FirebaseDb.addScore(
-            Score(FirebaseAuth.getInstance().currentUser!!.uid, CurrentUser.username, singlePlayer.pontos.toLong(), singlePlayer.timerCount.value!!.toLong())
+            PlayerScore(FirebaseAuth.getInstance().currentUser!!.uid, CurrentUser.username, singlePlayer.pontos, singlePlayer.timerCount.value!!.toLong())
         )
 
         binding.tryAgain.setOnClickListener(){

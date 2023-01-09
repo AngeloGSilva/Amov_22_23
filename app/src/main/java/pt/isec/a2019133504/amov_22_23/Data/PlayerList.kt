@@ -31,10 +31,10 @@ class PlayerList {
             p.NrBoard = BoardNr
     }
 
-    fun markBelowThreshold(threshold: Int) {
+    fun markBelowThreshold(threshold: Int, timeplayed : Long) {
         for (p in _players.values)
             if (p.Pontos < threshold)
-                p.Lost = true
+                p.hasLost(timeplayed)
     }
 
     fun allFinished(NrBoards: Int) : Boolean {
